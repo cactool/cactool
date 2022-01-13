@@ -22,7 +22,9 @@ def signup():
         password = request.form.get("password")
         
         if username and password:
-            pass
+            hashed_password = pbkdf2_sha256(password)
+        else:
+            return # TODO: Some error
 
 if __name__ == "__main__":
     db.init_app(app)
