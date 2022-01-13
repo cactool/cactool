@@ -5,7 +5,7 @@
 Cactool is
 
 # Installation
-## Instal; the requirements
+## Install the requirements
 ```bash
 pip install -r requirements.txt
 ```
