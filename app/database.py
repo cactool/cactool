@@ -7,3 +7,5 @@ class User(db.Model):
     admin = db.Column(db.Boolean)
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(1024))
+    firstname = db.Column(db.String(50))
+    surname = db.Column(db.String(50))
