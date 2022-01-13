@@ -4,8 +4,13 @@
 
 Cactool is
 
-# Installation instructions
-## Instal the requirements
+# Installation
+## Instal; the requirements
 ```bash
 pip install -r requirements.txt
+```
+
+# Usage
+```bash
+FLASK_APP=app flask run
 ```
