@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from passlib.hash import pbkdf2_sha256
-from database import db, User
+import uuid
+from app.database import db, User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -43,7 +44,13 @@ def signup():
 
         if username and password and firstname and surname:
             hashed_password = pbkdf2_sha256(password)
-            user = User(username=username, password=hashed_password, firstname=firstname, surname=surname)
+            user = User(
+                username=username,
+                password=hashed_password,
+                firstname=firstname,
+                surname=surname,
+                ID=uuid.uuid4().hex
+            )
             db.session.add(user)
             db.session.commit()
 
