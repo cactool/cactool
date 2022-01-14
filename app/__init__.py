@@ -1,10 +1,20 @@
 from flask import Flask, render_template, request
 from passlib.hash import pbkdf2_sha256
 import uuid
-from database import db, User
+from flask_login import LoginManager
+from app.database import db, User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
+
+db.init_app(app)
+with app.app_context():
+    db.create_all()
 
 @app.route("/")
 def index():
@@ -62,7 +72,5 @@ def signup():
             return "some fields left blank" # TODO: Some error
 
 if __name__ == "__main__":
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
+    app = create_app() 
     app.run(debug=True)
