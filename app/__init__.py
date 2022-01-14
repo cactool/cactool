@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from passlib.hash import pbkdf2_sha256
 import uuid
-from app.database import db, User
+from database import db, User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -20,11 +20,13 @@ def login():
         
         
         user = User.query.filter_by(username=username).first()
-        
+
+        if not user:
+            return "user doesn't exist" # TODO: Error, user doesn't exist
         if pbkdf2_sha256.verify(password, user.password):
-            return # TODO: Login
+            return "success" # TODO: Login
         else:
-            return # TODO: Do not log in
+            return "wrong password" # TODO: Do not log in
  
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -43,7 +45,7 @@ def signup():
             return #TODO: error
 
         if username and password and firstname and surname:
-            hashed_password = pbkdf2_sha256(password)
+            hashed_password = pbkdf2_sha256.hash(password)
             user = User(
                 username=username,
                 password=hashed_password,
@@ -54,10 +56,10 @@ def signup():
             db.session.add(user)
             db.session.commit()
 
-            return # TODO: Some success
+            return "success" # TODO: Some success
             
         else:
-            return # TODO: Some error
+            return "some fields left blank" # TODO: Some error
 
 if __name__ == "__main__":
     db.init_app(app)
