@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 from passlib.hash import pbkdf2_sha256
 import uuid
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user
 from app.database import db, User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = "development" # TODO: ????
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
@@ -20,6 +21,11 @@ with app.app_context():
 def index():
     return render_template("index.html")
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "GET":
@@ -32,11 +38,13 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if not user:
-            return "user doesn't exist" # TODO: Error, user doesn't exist
-        if pbkdf2_sha256.verify(password, user.password):
-            return "success" # TODO: Login
+            flash("User doesn't exist") # TODO: Error, user doesn't exist
+        elif pbkdf2_sha256.verify(password, user.password):
+            login_user(user) # TODO: Check remember
+            flash("Logged in successfully") # TODO: Login
         else:
-            return "wrong password" # TODO: Do not log in
+            flash("wrong password") # TODO: Do not log in
+        return render_template("login.html")
  
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -52,9 +60,9 @@ def signup():
         existing_user = User.query.filter_by(username=username).first()
         
         if existing_user:
-            return #TODO: error
+            flash("user already exists with this username") #TODO: error
 
-        if username and password and firstname and surname:
+        elif username and password and firstname and surname:
             hashed_password = pbkdf2_sha256.hash(password)
             user = User(
                 username=username,
@@ -66,10 +74,13 @@ def signup():
             db.session.add(user)
             db.session.commit()
 
-            return "success" # TODO: Some success
+            flash("success") # TODO: Some success
             
         else:
-            return "some fields left blank" # TODO: Some error
+            flash("some fields left blank") # TODO: Some error
+        
+        
+        return render_template("signup.html")
 
 if __name__ == "__main__":
     app = create_app() 

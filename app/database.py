@@ -10,3 +10,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(1024))
     firstname = db.Column(db.String(50))
     surname = db.Column(db.String(50))
+
+    def get_id(self):
+        return self.ID
