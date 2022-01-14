@@ -17,11 +17,11 @@
         <main class="flex-shrink-0">
             {% include 'navigation.html' %}
             {% include 'flash.html' %}
-            <form action="/login" method="post">
+            <form action="/signup" method="post">
             <section class="py-5" id="features">
                 <div class="container px-5 my-5">
                     <div class="row gx-5">
-                        <div class="col-lg-4 mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">Log in</h2></div>
+                        <div class="col-lg-4 mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">Sign up</h2></div>
                         <div class="col-lg-8">
                             <div class="row gx-5 row-cols-1 row-cols-md-2">
                                 <div class="col mb-5 h-100">
@@ -34,8 +34,18 @@
                                     <h2 class="h5">Password</h2>
                                     <input name=password type=password class="mb-0"/>
                                 </div>
+                                <div class="col mb-5 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                                    <h2 class="h5">First name</h2>
+                                    <input name=firstname class="mb-0"/>
+                                </div>
+                                <div class="col mb-5 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                                    <h2 class="h5">Surname</h2>
+                                    <input name=surname class="mb-0"/>
+                                </div>
                             </div>
-                            <input type="submit" class="btn btn-primary btn-lg px-4 me-sm-3" value="Log in"/>
+                            <input type="submit" class="btn btn-primary btn-lg px-4 me-sm-3" value="Sign up"/>
                         </div>
                     </div>
                 </div>
