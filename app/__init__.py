@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, url_for, redirect
 from passlib.hash import pbkdf2_sha256
-import uuid
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user
 from app.database import db, User
+import uuid
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -19,8 +19,17 @@ with app.app_context():
 
 @app.route("/")
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+        
     return render_template("index.html")
 
+@app.route("/dashboard")
+def dashboard():
+    if not current_user.is_authenticated:
+        return redirect(url_for("login"))
+    
+    return render_template("dashboard.html")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -36,14 +45,13 @@ def login():
         
         
         user = User.query.filter_by(username=username).first()
-
         if not user:
-            flash("User doesn't exist") # TODO: Error, user doesn't exist
+            flash("No user with that username exists")
         elif pbkdf2_sha256.verify(password, user.password):
-            login_user(user) # TODO: Check remember
-            flash("Logged in successfully") # TODO: Login
+            login_user(user)
+            flash("Logged in successfully")
         else:
-            flash("wrong password") # TODO: Do not log in
+            flash("You enterred the wrong password for this account")
         return render_template("login.html")
  
 
@@ -56,11 +64,11 @@ def signup():
         password = request.form.get("password")
         firstname = request.form.get("firstname")
         surname = request.form.get("surname")
-        
+
         existing_user = User.query.filter_by(username=username).first()
         
         if existing_user:
-            flash("user already exists with this username") #TODO: error
+            flash("A user with this username already exists")
 
         elif username and password and firstname and surname:
             hashed_password = pbkdf2_sha256.hash(password)
@@ -69,15 +77,15 @@ def signup():
                 password=hashed_password,
                 firstname=firstname,
                 surname=surname,
-                ID=uuid.uuid4().hex
+                id=uuid.uuid4().hex
             )
             db.session.add(user)
             db.session.commit()
 
-            flash("success") # TODO: Some success
+            flash("Successfilly created an account")
             
         else:
-            flash("some fields left blank") # TODO: Some error
+            flash("Some fields were left blank")
         
         
         return render_template("signup.html")
