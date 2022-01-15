@@ -36,7 +36,7 @@ class User(UserMixin, db.Model):
         return self.ID
     
     datasets = db.relationship("Dataset", secondary=dataset_access)
-    datasets = db.relationship("Project", secondary=project_access)
+    projects = db.relationship("Project", secondary=project_access)
 
     def get_id(self):
         return self.id

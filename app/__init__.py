@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, flash, url_for, redirect
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_user, current_user
-from app.database import db, User
+from app.database import db, User, Project, project_access
 import uuid
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "development" # TODO: ????
 
@@ -35,6 +35,42 @@ def dashboard():
 def load_user(user_id):
     return User.query.get(user_id)
 
+
+@app.route("/project/<project_id>")
+def view_project(project_id):
+    flash(f"Viewing project with id {project_id}")
+    return render_template("dashboard.html")
+
+@app.route("/project/create", methods=["POST", "GET"])
+def create_project():
+    if request.method == "GET":
+        return render_template("create_project.html") 
+    
+    name = request.form.get("name")
+    if not name:
+        flash("Please supply a name")
+        return render_template("create_project.html")
+        
+    if not current_user.is_authenticated:
+        flash("Please log in")
+        return render_template("create_project.html")
+        
+    user = current_user
+    
+    project = Project(
+        id = uuid.uuid4().hex,
+        name = name        
+    )
+    
+    user.projects.append(project)
+
+    db.session.add(project)
+    db.session.commit()
+    
+    flash("Successfully created project")
+    return redirect(url_for("dashboard")) 
+
+
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "GET":
@@ -52,7 +88,9 @@ def login():
             flash("Logged in successfully")
         else:
             flash("You enterred the wrong password for this account")
-        return render_template("login.html")
+            
+        
+        return redirect(url_for("dashboard")) 
  
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -88,7 +126,7 @@ def signup():
             flash("Some fields were left blank")
         
         
-        return render_template("signup.html")
+        return redirect(url_for("login")) 
 
 if __name__ == "__main__":
     app = create_app() 
