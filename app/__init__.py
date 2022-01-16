@@ -86,14 +86,33 @@ def read_dataset(file):
     
 
     columns = next(reader) # TODO: Consider case when file is nefariously empty
+    dataset_columns = []
     for column in columns:
         column = DatasetColumn(
             id = uuid.uuid4().hex,
             type = types.Type.STRING,
             name = column
         )
+        dataset_columns.append(column)
         dataset.columns.append(column)
         db.session.add(column)
+    
+    for row_number, row in enumerate(reader):
+        values = row
+        row = DatasetRow(
+                row_number = row_number    
+        )
+        for column, value in zip(dataset_columns, values):
+            dsrv = DatasetRowValue(
+                dataset_id = dataset.id,
+                dataset_row_number = row_number,
+                column_id = column.id,
+                value = value
+            )
+            db.session.add(dsrv)
+            row.values.append(dsrv)
+        dataset.rows.append(row)
+        db.session.add(row)
     
     db.session.add(dataset)
     db.session.commit()

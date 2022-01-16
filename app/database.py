@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+import csv
 import app.types as types
  
 db = SQLAlchemy()
@@ -51,6 +52,10 @@ class Dataset(db.Model):
 
     projects = db.relationship("Project", secondary=project_datasets)
     users = db.relationship("User", secondary=dataset_access)
+    
+    def emit_csv(self) -> str:
+        writer = csv.DictWriter()
+        pass
 
 
 class DatasetColumn(db.Model):
@@ -77,7 +82,7 @@ class DatasetRow(db.Model):
 class DatasetRowValue(db.Model):
     dataset_id = db.Column(db.String(512), primary_key=True)
     dataset_row_number = db.Column(db.Integer, primary_key=True)
-    index = db.Column(db.Integer, primary_key=True)
+    column_id = db.Column(db.ForeignKey(DatasetColumn.id), primary_key=True)
 
     value = db.Column(db.String(65535), primary_key=True)
     
@@ -87,7 +92,7 @@ class DatasetRowValue(db.Model):
             [DatasetRow.dataset_id, DatasetRow.row_number]
         ),
         db.UniqueConstraint(
-            dataset_id, dataset_row_number, index
+            dataset_id, dataset_row_number, column_id
         )
     )
     

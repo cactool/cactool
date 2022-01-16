@@ -4,3 +4,4 @@ class Type(enum.Enum):
     NUMBER = "number"
     LIST = "list"
     BOOLEAN = "boolean"
+    SOCIAL_MEDIA = "social_media"
