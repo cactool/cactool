@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, flash, url_for, redirect
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_user, current_user
-from app.database import db, User, Project, project_access
+from app.database import db, User, Project, project_access, Dataset, DatasetColumn, DatasetRow, DatasetRowValue
+import app.types as types
+from werkzeug.utils import secure_filename
 import uuid
+import csv
+import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -38,8 +42,85 @@ def load_user(user_id):
 
 @app.route("/project/<project_id>")
 def view_project(project_id):
-    flash(f"Viewing project with id {project_id}")
-    return render_template("dashboard.html")
+    # TODO: auth, existence check
+    # flash(f"Viewing project with id {project_id}")
+    return render_template("view_project.html", project=Project.query.get(project_id))
+
+@app.route("/dataset/add/<project_id>", methods=["POST", "GET"])
+def add_dataset(project_id):
+    # TODO: Move project_id out of URL
+    # TODO: Access control
+    if request.method == "GET":
+        return render_template("add_dataset.html")
+    
+    dataset_id = request.form.get("dataset_id")
+    project = Project.query.get(project_id)
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        flash("Selected dataset doesn't exist")
+        return render_template("add_dataset.html")
+
+    if not project:
+        flash("Selected project doesn't exist")
+        return render_template("add_dataset.html")
+
+    project.datasets.append(dataset)
+    db.session.commit()
+    
+    return redirect(url_for("view_project", project_id=project_id))
+
+    
+    
+
+def read_dataset(file):
+    reader = csv.reader(file.read().decode().splitlines())
+    
+    
+    date_string = datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S")
+
+    dataset = Dataset(
+        id = uuid.uuid4().hex,
+        name = secure_filename(file.filename),
+        description = f"Uploaded {date_string}" 
+    )
+    
+
+    columns = next(reader) # TODO: Consider case when file is nefariously empty
+    for column in columns:
+        column = DatasetColumn(
+            id = uuid.uuid4().hex,
+            type = types.Type.STRING,
+            name = column
+        )
+        dataset.columns.append(column)
+        db.session.add(column)
+    
+    db.session.add(dataset)
+    db.session.commit()
+      
+    return dataset
+
+@app.route("/dataset/import", methods=["POST", "GET"])
+def import_dataset():
+    if not current_user.is_authenticated:
+        flash("Please log in to perform this action") 
+        return redirect(url_for("login"))
+    if request.method == "GET":
+        return render_template("import_dataset.html")
+    
+    # Check None (TODO)
+    print(request.files)
+    file = request.files.get("file")
+    if not file:
+        flash("Please submit a file") # TODO: Error
+        return render_template("import_dataset.html")
+    
+    dataset = read_dataset(file)
+    current_user.datasets.append(dataset)
+    db.session.commit()
+    print(current_user.datasets)
+    print("append")
+    return render_template("import_dataset.html")
 
 @app.route("/project/create", methods=["POST", "GET"])
 def create_project():

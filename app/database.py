@@ -44,8 +44,10 @@ class User(UserMixin, db.Model):
 class Dataset(db.Model):
     id = db.Column(db.String(512), unique=True, primary_key=True)
     name = db.Column(db.String(50))
+    description = db.Column(db.String(1024))
     
-    rows = db.relationship("DatasetRow", lazy=True)
+    columns = db.relationship("DatasetColumn")
+    rows = db.relationship("DatasetRow")
 
     projects = db.relationship("Project", secondary=project_datasets)
     users = db.relationship("User", secondary=dataset_access)
@@ -53,7 +55,13 @@ class Dataset(db.Model):
 
 class DatasetColumn(db.Model):
     id = db.Column(db.String(512), primary_key=True, unique=True) # Do I want a separate ID? (TODO)
+    name = db.Column(db.String(50))
     type = db.Column(db.Enum(types.Type))
+    dataset_id = db.Column(db.ForeignKey(Dataset.id))
+
+    dataset = db.relationship(Dataset, foreign_keys="DatasetColumn.dataset_id")
+    
+    # TODO: Unique (dataset, name) constraint 
 
 class DatasetRow(db.Model):   
     dataset_id = db.Column(db.String(512), db.ForeignKey(Dataset.id), primary_key=True)
@@ -87,5 +95,6 @@ class DatasetRowValue(db.Model):
 class Project(db.Model):
     id = db.Column(db.String(512), primary_key=True, unique=True)
     name = db.Column(db.String(50))
+    description = db.Column(db.String(1024))
 
     datasets = db.relationship("Dataset", secondary=project_datasets)
