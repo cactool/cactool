@@ -2,15 +2,20 @@
 
 # Introduction
 
-Cactool is
+Cactool is a web tool to help researcher code data containing social media posts.
 
-# Installation
-## Install the requirements
+# Installation and usage
+## 1. Download the code
+```bash
+git clone https://github.com/cactool/cactool/
+```
+## 2. Install the requirements
 ```bash
 pip install -r requirements.txt
 ```
-
-# Usage
+## 3. Start the website
 ```bash
-FLASK_APP=app flask run
+./run.sh
 ```
+# Images
+![projects](https://user-images.githubusercontent.com/18627392/149658748-f480a750-2a05-4aad-83bd-c30cdbe86891.png)

@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: Cactool
+message: 'If you use this software, please cite it as below.'
+type: software
+authors:
+  - given-names: Sam
+    family-names: Ezeh
+    email: sam.z.ezeh@gmail.com
+    orcid: 'https://orcid.org/0000-0003-1218-6116'
+repository-code: 'https://github.com/cactool/cactool'
+url: 'https://github.com/cactool/cactool'
+abstract: Abstract
+keywords:
+  - Insert keyword here
+license: MIT
