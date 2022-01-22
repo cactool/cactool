@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, url_for, redirect
+from flask import Flask, render_template, request, flash, url_for, redirect, send_file
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_user, current_user
 from app.database import db, User, Project, project_access, Dataset, DatasetColumn, DatasetRow, DatasetRowValue
@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 import uuid
 import csv
 import datetime
+import tempfile
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -156,13 +158,43 @@ def export_dataset():
     
     # Check access (TODO)
     # Check existence (TODO) 
+    
+    fd, path = tempfile.mkstemp()
+
     dataset = Dataset.query.get(dataset_id)
+    writer = csv.DictWriter( # TODO: Unique constraint on fieldnames
+        fd, # Denial of service? (TODO)
+        fieldnames = map(
+            lambda column: column.name,
+            dataset.columns
+        )
+    )
+    
+    writer.writeheader()
+
+    for row in dataset.rows:
+        writer.writerow(
+            {
+                entry.column.name: entry.value for entry in row.values
+            }
+        )
+    
     
     # TODO
     #   * Write dataset to csv
     #   * Return csv file as download
 
-    return render_template("export_dataset.html")
+    response = send_file(
+        fd,
+        as_attachment=True,
+        download_name=f"{dataset.name}",
+        # last_modified = 
+    )
+    
+    os.unlink(path)
+    os.close(fd)
+
+    return response
 
 
 @app.route("/project/create", methods=["POST", "GET"])

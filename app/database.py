@@ -86,6 +86,8 @@ class DatasetRowValue(db.Model):
 
     value = db.Column(db.String(65535), primary_key=True)
     
+    column = db.relationship("DatasetColumn")
+    
     __table_args__ = (
         db.ForeignKeyConstraint(
             [dataset_id, dataset_row_number],
