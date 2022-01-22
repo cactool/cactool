@@ -128,7 +128,6 @@ def import_dataset():
         return render_template("import_dataset.html")
     
     # Check None (TODO)
-    print(request.files)
     file = request.files.get("file")
     if not file:
         flash("Please submit a file") # TODO: Error
@@ -137,9 +136,34 @@ def import_dataset():
     dataset = read_dataset(file)
     current_user.datasets.append(dataset)
     db.session.commit()
-    print(current_user.datasets)
-    print("append")
     return render_template("import_dataset.html")
+
+
+@app.route("/dataset/export", methods=["POST", "GET"])
+def export_dataset():
+    if not current_user.is_authenticated:
+        flash("Please log in to perform this action") 
+        return redirect(url_for("login"))
+
+    if request.method == "GET":
+        return render_template("export_dataset.html")
+    
+    dataset_id = request.form.get("dataset_id")
+    if not file:
+        flash("Please select a dataset") # TODO: Error
+        return render_template("export_dataset.html")
+    
+    
+    # Check access (TODO)
+    # Check existence (TODO) 
+    dataset = Dataset.query.get(dataset_id)
+    
+    # TODO
+    #   * Write dataset to csv
+    #   * Return csv file as download
+
+    return render_template("export_dataset.html")
+
 
 @app.route("/project/create", methods=["POST", "GET"])
 def create_project():
