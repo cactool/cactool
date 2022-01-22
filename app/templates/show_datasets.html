@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Modern Business - Start Bootstrap Template</title>
+        <title>Cactool - Datasets</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
@@ -22,14 +22,13 @@
             <section class="py-5">
                 <div class="container px-5 my-5">
                     <div class="text-center mb-5">
-                        <h1 class="fw-bolder">{{ project.name }}</h1>
-                        <p class="lead fw-normal text-muted mb-0">Datasets</p>
+                        <h1 class="fw-bolder">Your datasets</h1>
                     </div>
                     <div class="row gx-5">
                             <!-- FAQ Accordion 1-->
                             <!-- <h2 class="fw-bolder mb-3">Account &amp; Billing</h2> -->
                             <div class="accordion mb-5" id="accordionExample">
-                                {% for dataset in project.datasets %}
+                                {% for dataset in current_user.datasets %}
                                     <div class="accordion-item">
                                         <h3 class="accordion-header" id="headingOne"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{{ dataset.name }}</button></h3>
                                         <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -55,7 +54,6 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                        <a href="/dataset/add/{{ project.id }}" class="btn btn-outline-dark">Add dataset</a>
 
                         <!--
                         <div class="col-xl-4">

@@ -71,8 +71,9 @@ def add_dataset(project_id):
     
     return redirect(url_for("view_project", project_id=project_id))
 
-    
-    
+@app.route("/datasets", methods=["GET"])
+def show_datasets():
+    return render_template("show_datasets.html")
 
 def read_dataset(file):
     reader = csv.reader(file.read().decode().splitlines())
@@ -150,8 +151,9 @@ def export_dataset():
     if request.method == "GET":
         return render_template("export_dataset.html")
     
+    print(request.form)
     dataset_id = request.form.get("dataset_id")
-    if not file:
+    if not dataset_id:
         flash("Please select a dataset") # TODO: Error
         return render_template("export_dataset.html")
     
@@ -162,34 +164,33 @@ def export_dataset():
     fd, path = tempfile.mkstemp()
 
     dataset = Dataset.query.get(dataset_id)
-    writer = csv.DictWriter( # TODO: Unique constraint on fieldnames
-        fd, # Denial of service? (TODO)
-        fieldnames = map(
-            lambda column: column.name,
-            dataset.columns
-        )
-    )
-    
-    writer.writeheader()
 
-    for row in dataset.rows:
-        writer.writerow(
-            {
-                entry.column.name: entry.value for entry in row.values
-            }
+    with open(path, "w") as file:
+        writer = csv.DictWriter( # TODO: Unique constraint on fieldnames
+            file, # Denial of service? (TODO)
+            fieldnames = list(map(
+                lambda column: column.name,
+                dataset.columns
+            ))
         )
-    
-    
-    # TODO
-    #   * Write dataset to csv
-    #   * Return csv file as download
+
+        writer.writeheader()
+
+        for row in dataset.rows:
+            writer.writerow(
+                {
+                    entry.column.name: entry.value for entry in row.values
+                }
+            )
+        file.close()
 
     response = send_file(
-        fd,
+        path,
         as_attachment=True,
         download_name=f"{dataset.name}",
-        # last_modified = 
+        # last_modified = # TODO possibly work out last modified time
     )
+    
     
     os.unlink(path)
     os.close(fd)
