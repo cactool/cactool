@@ -241,7 +241,10 @@ def login():
         if not user:
             flash("No user with that username exists")
         elif pbkdf2_sha256.verify(password, user.password):
-            login_user(user)
+            login_user(
+                user,
+                remember=True
+            )
             flash("Logged in successfully")
         else:
             flash("You enterred the wrong password for this account")
