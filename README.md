@@ -2,7 +2,7 @@
 
 # Introduction
 
-Cactool is a web tool to help researcher code data containing social media posts.
+Cactool is a web tool to help researchers code data containing social media posts.
 
 # Installation and usage
 ## 1. Download the code
