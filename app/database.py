@@ -9,7 +9,8 @@ db = SQLAlchemy()
 dataset_access = db.Table(
     "dataset_access",
     db.Column("user_id", db.ForeignKey("user.id")),
-    db.Column("dataset_id", db.ForeignKey("dataset.id"))
+    db.Column("dataset_id", db.ForeignKey("dataset.id")),
+    db.Column("access_level", db.Enum(types.AccessType))
 )
 
 project_datasets = db.Table(
@@ -78,6 +79,12 @@ class DatasetRow(db.Model):
     __table_args__ = (
         db.UniqueConstraint(dataset_id, row_number),
     )
+    
+    def serialise(self):
+        return {
+            entry.column.name: entry.value for entry in self.values
+        }
+
 
 class DatasetRowValue(db.Model):
     dataset_id = db.Column(db.String(512), primary_key=True)

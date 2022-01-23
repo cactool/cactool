@@ -22,14 +22,13 @@
             <section class="py-5">
                 <div class="container px-5 my-5">
                     <div class="text-center mb-5">
-                        <h1 class="fw-bolder">{{ project.name }}</h1>
-                        <p class="lead fw-normal text-muted mb-0">Datasets</p>
+                        <h1 class="fw-bolder">{{ dataset.name }}</h1>
+                        <p class="lead fw-normal text-muted mb-0">Viewing dataset</p>
                     </div>
                     <div class="row gx-5">
                             <!-- FAQ Accordion 1-->
                             <!-- <h2 class="fw-bolder mb-3">Account &amp; Billing</h2> -->
                             <div class="accordion mb-5" id="accordionExample">
-                                {% for dataset in project.datasets %}
                                     <div class="accordion-item">
                                         <h3 class="accordion-header" id="headingOne"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{{ dataset.name }}</button></h3>
                                         <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -39,29 +38,51 @@
                                                 {{ dataset.description }}
                                                 <br>
                                                 <br>
-                                                <a href="/project/{{ project.id }}" class="btn btn-outline-dark">Open</a>
+                                                <a href="/dataset/code/{{ dataset.id }}" class="btn btn-outline-dark">Code</a>
+                                                <a href="/dataset/{{ dataset.id }}" class="btn btn-outline-dark">Open</a>
+                                                <input
+                                                    href="/dataset/export/{{ dataset.id }}"
+                                                    class="btn btn-outline-dark"
+                                                    type=submit
+                                                    value="Export"
+                                                    form="{{ dataset.id }}"
+                                                />
+                                                <form action="/dataset/export" method="POST" id="{{dataset.id}}" hidden>
+                                                    <input name="dataset_id" value="{{ dataset.id }}" type=hidden/>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                {% endfor %}
                             </div>
-                        <a href="/dataset/add/{{ project.id }}" class="btn btn-outline-dark">Add dataset</a>
-
-                        <!--
-                        <div class="col-xl-4">
-                            <div class="card border-0 mt-xl-5">
-                                <div class="card-body p-4 py-lg-5">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <div class="text-center">
-                                            <div class="h6 fw-bolder">Follow us</div>
-                                            <a class="fs-5 px-2 link-dark" href="https://github.com/cactool/cactool"><i class="bi-github"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    -->
+                        
                     </div>
+                    <br>
+                        <div class="text-center mb-5">
+                            <h1 class="fw-bolder h4">Data Types</h1>
+                        </div>
+                        <div>
+                            {% for column in dataset.columns %}
+                            <div class="input-group">
+                                <div class="input-group-prepend col-5">
+                                    <span class="input-group-text col-12"> {{ column.name }} </span>
+                                </div>
+                                <!--<input type="text" class="form-control" aria-label="Data type">-->
+            <select class="form-select" aria-label="Default select example">
+  <option selected>Select Data Type</option>
+  <option value="soc">Social Media URL</option>
+  <option value="">Text</option>
+  <option value="">Number</option>
+</select>
+                            </div>
+                            <br>
+                            {% endfor %}
+                        </div>
+                        
+
+                        <div class="row gx-5">
+                            <a href="/dataset/update" class="btn btn-outline-dark">Update dataset</a>
+                        </div>
+
                 </div>
             </section>
         </main>

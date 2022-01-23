@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, url_for, redirect, send_file
+from flask import Flask, render_template, request, flash, url_for, redirect, send_file, jsonify, make_response
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_user, current_user
 from app.database import db, User, Project, project_access, Dataset, DatasetColumn, DatasetRow, DatasetRowValue
@@ -9,6 +9,7 @@ import csv
 import datetime
 import tempfile
 import os
+import requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -121,6 +122,36 @@ def read_dataset(file):
     db.session.commit()
       
     return dataset
+
+@app.route("/dataset/<dataset_id>", methods=["GET"])
+def view_dataset(dataset_id):
+    # TODO: Check Existence, Check access
+    dataset = Dataset.query.get(dataset_id)
+    return render_template("view_dataset.html", dataset=dataset)
+
+@app.route("/dataset/nextrow", methods=["POST"])
+def next_row():
+   # TODO: Existence, access 
+   print(request.json)
+   dataset_id = request.json["dataset_id"]
+   dataset = Dataset.query.get(dataset_id)
+   print(dataset.rows[0].serialise())
+   return jsonify(dataset.rows[0].serialise())
+    
+@app.route("/embed", methods=["GET"])
+def embed():
+    # TODO: Check existence
+    url = request.args.get("url")
+    return jsonify(requests.get("https://publish.twitter.com/oembed?url=" + url).json()) # TODO: Arbitrary data
+
+
+@app.route("/dataset/code/<dataset_id>", methods=["GET", "POST"])
+def code_dataset(dataset_id):
+    # TODO: Check access, existence
+    dataset = Dataset.query.get(dataset_id)
+    response = make_response(render_template("code_dataset.html", dataset=dataset))
+    response.headers["Access-Control-Allow-Origin"] = "publish.twitter.com"
+    return response
 
 @app.route("/dataset/import", methods=["POST", "GET"])
 def import_dataset():
