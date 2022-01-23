@@ -104,7 +104,8 @@ def read_dataset(file):
     for row_number, row in enumerate(reader):
         values = row
         row = DatasetRow(
-                row_number = row_number    
+                row_number = row_number,
+                coded=False 
         )
         for column, value in zip(dataset_columns, values):
             dsrv = DatasetRowValue(
@@ -127,16 +128,25 @@ def read_dataset(file):
 def view_dataset(dataset_id):
     # TODO: Check Existence, Check access
     dataset = Dataset.query.get(dataset_id)
-    return render_template("view_dataset.html", dataset=dataset)
+    return render_template("view_dataset.html", dataset=dataset, **types.Type.export())
 
 @app.route("/dataset/nextrow", methods=["POST"])
 def next_row():
-   # TODO: Existence, access 
-   print(request.json)
-   dataset_id = request.json["dataset_id"]
-   dataset = Dataset.query.get(dataset_id)
-   print(dataset.rows[0].serialise())
-   return jsonify(dataset.rows[0].serialise())
+    # TODO: Existence, access 
+    print(request.json)
+    dataset_id = request.json["dataset_id"]
+    dataset = Dataset.query.get(dataset_id)
+    rows = filter(
+        lambda row: not row.coded,
+        dataset.rows
+    )
+
+    try:
+       row = next(rows)
+    except StopIteration:
+        row = dataset.rows[0]
+
+    return row.serialise()
     
 @app.route("/embed", methods=["GET"])
 def embed():
@@ -145,13 +155,38 @@ def embed():
     return jsonify(requests.get("https://publish.twitter.com/oembed?url=" + url).json()) # TODO: Arbitrary data
 
 
+@app.route("/dataset/update", methods=["POST"])
+def update_dataset():
+    # TODO: Access, existence
+    dataset_id = request.form.get('dataset_id')
+    dataset = Dataset.query.get(dataset_id)
+    
+    for column in dataset.columns:
+        given_datatype = request.form.get(column.name)
+        print(given_datatype)
+        if given_datatype:
+            column.type = given_datatype
+    db.session.commit()
+    
+    return redirect(url_for("view_dataset", dataset_id=dataset_id))
+
 @app.route("/dataset/code/<dataset_id>", methods=["GET", "POST"])
 def code_dataset(dataset_id):
     # TODO: Check access, existence
     dataset = Dataset.query.get(dataset_id)
-    response = make_response(render_template("code_dataset.html", dataset=dataset))
-    response.headers["Access-Control-Allow-Origin"] = "publish.twitter.com"
-    return response
+    if request.method == "GET":
+        return render_template("code_dataset.html", dataset=dataset)
+    data = request.json
+    row_number = data["row_number"]
+    row = DatasetRow.query.get((dataset_id, row_number))
+    for (column_id, value) in data["values"].items():
+        row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
+        row_value.value = value
+    row.coded = True
+    row.coder = current_user.id 
+    db.session.commit()
+    return next_row()
+
 
 @app.route("/dataset/import", methods=["POST", "GET"])
 def import_dataset():

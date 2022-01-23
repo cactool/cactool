@@ -23,8 +23,8 @@
   </head>
   <body
     class="d-flex flex-column h-100"
-    onload="update_next_row('{{ dataset.id }}')"
-  >
+    onload="initialise('{{ dataset.id }}', {{  dataset.columns | map(attribute='id')  | list | safe }}, {{ dataset.columns | map(attribute='type.value') | list | safe }})"
+  > <!-- (TODO: Maybe don't use list() here for converting data) -->
     <main class="flex-shrink-0">
       <!-- Navigation-->
       {% include 'navigation.html' %} {% include 'flash.html' %}
@@ -37,14 +37,15 @@
           </div>
           <div>
             {% for column in dataset.columns %}
-            <div
-              id="column-{{ column.name }}"
-              class="text-center"
-            ></div>
+                <div
+                  id="column-{{ column.id }}"
+                  class="text-center">
+                </div>
             {% endfor %}
           </div>
+          <br>
           <div class="row gx-5">
-            <a href="/dataset/update" class="btn btn-outline-dark">Submit</a>
+            <a  onclick="submit()" class="btn btn-outline-dark">Submit</a>
           </div>
         </div>
       </section>

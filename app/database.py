@@ -75,6 +75,9 @@ class DatasetRow(db.Model):
 
     values = db.relationship("DatasetRowValue", lazy=True)
     dataset = db.relationship(Dataset, foreign_keys="DatasetRow.dataset_id")
+
+    coded = db.Column(db.Boolean())
+    coder = db.Column(db.ForeignKey(User.id))
     
     __table_args__ = (
         db.UniqueConstraint(dataset_id, row_number),
@@ -82,8 +85,21 @@ class DatasetRow(db.Model):
     
     def serialise(self):
         return {
-            entry.column.name: entry.value for entry in self.values
+            "dataset_id": self.dataset_id,
+            "row_number": self.row_number,
+            "columns": {
+                entry.column.id: {
+                     "name": entry.column.name,
+                     "prompt": entry.column.name,
+                     "value": entry.value,
+                     "type": entry.column.type.serialise()
+                }   for entry in self.values
+            }
         }
+    
+    @staticmethod
+    def empty(dataset_id, row_number):
+        return DatasetRow()
 
 
 class DatasetRowValue(db.Model):
@@ -91,7 +107,7 @@ class DatasetRowValue(db.Model):
     dataset_row_number = db.Column(db.Integer, primary_key=True)
     column_id = db.Column(db.ForeignKey(DatasetColumn.id), primary_key=True)
 
-    value = db.Column(db.String(65535), primary_key=True)
+    value = db.Column(db.String(65535))
     
     column = db.relationship("DatasetColumn")
     

@@ -1,10 +1,16 @@
 import enum
 class Type(enum.Enum):
-    STRING = "string"
-    NUMBER = "number"
-    LIST = "list"
-    BOOLEAN = "boolean"
-    SOCIAL_MEDIA = "social_media"
+    STRING = "STRING"
+    NUMBER = "NUMBER"
+    LIST = "LIST"
+    BOOLEAN = "BOOLEAN"
+    SOCIAL_MEDIA = "SOCIAL_MEDIA"
+    
+    def serialise(self):
+        return self.value
+    
+    def export():
+        return {entry.name: entry.value for entry in Type }
 
 class AccessType(enum.Enum):
     NONE = 0
