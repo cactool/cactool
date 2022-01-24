@@ -7,7 +7,7 @@ Cactool is a web tool to help researchers code data containing social media post
 # Installation and usage
 ## 1. Download the code
 ```bash
-git clone https://github.com/cactool/cactool/
+git clone https://github.com/cactool/cactool/ && cd cactool
 ```
 ## 2. Install the requirements
 ```bash
