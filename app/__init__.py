@@ -9,7 +9,6 @@ import csv
 import datetime
 import tempfile
 import os
-import requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
