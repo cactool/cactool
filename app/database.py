@@ -85,6 +85,7 @@ class DatasetRow(db.Model):
     
     def serialise(self):
         return {
+            "is_empty": False,
             "dataset_id": self.dataset_id,
             "row_number": self.row_number,
             "columns": {
@@ -99,7 +100,11 @@ class DatasetRow(db.Model):
     
     @staticmethod
     def empty(dataset_id, row_number):
-        return DatasetRow()
+        return {
+            {
+                
+            }
+        }
 
 
 class DatasetRowValue(db.Model):

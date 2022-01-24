@@ -18,6 +18,10 @@ function fetch_next_row(dataset_id, callback) {
 }
 
 function update_row(row){
+    if (row.is_empty){
+        alert("There's no more data to code") 
+        return;
+    }
     window.row_number = row.row_number
     var columns = row.columns
     for (const [column_id, data] of Object.entries(columns)){ 

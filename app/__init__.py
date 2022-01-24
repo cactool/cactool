@@ -70,7 +70,7 @@ def add_dataset(project_id):
     project.datasets.append(dataset)
     db.session.commit()
     
-    return redirect(url_for("view_project", project_id=project_id))
+    return redirect(url_for("dashboard"))
 
 @app.route("/datasets", methods=["GET"])
 def show_datasets():
@@ -133,7 +133,6 @@ def view_dataset(dataset_id):
 @app.route("/dataset/nextrow", methods=["POST"])
 def next_row():
     # TODO: Existence, access 
-    print(request.json)
     dataset_id = request.json["dataset_id"]
     dataset = Dataset.query.get(dataset_id)
     rows = filter(
@@ -142,19 +141,12 @@ def next_row():
     )
 
     try:
-       row = next(rows)
+       row = next(rows).serialise()
     except StopIteration:
-        row = dataset.rows[0]
+        row = { "is_empty": True }
 
-    return row.serialise()
+    return jsonify(row)
     
-@app.route("/embed", methods=["GET"])
-def embed():
-    # TODO: Check existence
-    url = request.args.get("url")
-    return jsonify(requests.get("https://publish.twitter.com/oembed?url=" + url).json()) # TODO: Arbitrary data
-
-
 @app.route("/dataset/update", methods=["POST"])
 def update_dataset():
     # TODO: Access, existence
@@ -163,7 +155,6 @@ def update_dataset():
     
     for column in dataset.columns:
         given_datatype = request.form.get(column.name)
-        print(given_datatype)
         if given_datatype:
             column.type = given_datatype
     db.session.commit()
@@ -205,7 +196,7 @@ def import_dataset():
     dataset = read_dataset(file)
     current_user.datasets.append(dataset)
     db.session.commit()
-    return render_template("import_dataset.html")
+    return redirect(url_for('view_projects'))
 
 
 @app.route("/dataset/export", methods=["POST", "GET"])
@@ -217,7 +208,6 @@ def export_dataset():
     if request.method == "GET":
         return render_template("export_dataset.html")
     
-    print(request.form)
     dataset_id = request.form.get("dataset_id")
     if not dataset_id:
         flash("Please select a dataset") # TODO: Error
