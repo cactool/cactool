@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: ./scripts/delete-database.sh && gunicorn app:app
