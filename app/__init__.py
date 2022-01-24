@@ -70,7 +70,7 @@ def add_dataset(project_id):
     project.datasets.append(dataset)
     db.session.commit()
     
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("view_project", project_id=project_id))
 
 @app.route("/datasets", methods=["GET"])
 def show_datasets():
