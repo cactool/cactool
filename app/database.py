@@ -34,14 +34,14 @@ class User(UserMixin, db.Model):
     firstname = db.Column(db.String(50))
     surname = db.Column(db.String(50))
 
-    def get_id(self):
-        return self.ID
-    
     datasets = db.relationship("Dataset", secondary=dataset_access)
     projects = db.relationship("Project", secondary=project_access)
 
     def get_id(self):
         return self.id
+    
+    def initials(self):
+        return self.firstname[0].upper() + self.surname[0].upper()
     
 class Dataset(db.Model):
     id = db.Column(db.String(512), unique=True, primary_key=True)
