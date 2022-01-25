@@ -89,7 +89,9 @@ function checkbox(column_name, value, id) { /******* TODO: sanitisation ********
                     <div class="input-group-prepend col-6">
                         <span class="input-group-text col-12"> ${column_name} </span>
                     </div>
-                    <input class="form-check-input" type=checkbox ${value? 'checked' : ''}>
+
+                    <input id=check-${id} class="btn-check" type=checkbox ${value? 'checked' : ''}>
+                    <label for=check-${id} class="btn btn-outline-primary"> poorly labeled checkbox </label>
                 </div>
             `
 }
