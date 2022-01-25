@@ -110,6 +110,7 @@
                     <option {{ 'selected' if column.type.value == SOCIAL_MEDIA else '' }} value="SOCIAL_MEDIA">Social Media URL</option>
                     <option {{ 'selected' if column.type.value == STRING else '' }} value="STRING">Text</option>
                     <option {{ 'selected' if column.type.value == NUMBER else ''}} value="NUMBER">Number</option>
+                    <option {{ 'selected' if column.type.value == BOOLEAN else ''}} value="BOOLEAN">True / False</option>
                   </select>
                 </div>
                 <br />
@@ -119,6 +120,10 @@
 
           <div class="row gx-5">
             <input type=submit form="types" href="/dataset/update" class="btn btn-outline-dark" value="Update dataset"/>
+          </div>
+          <br>
+          <div class="row gx-5">
+            <a href="/dataset/delete/{{ dataset.id }}" class="btn btn-outline-danger">Delete project</a>
           </div>
         </div>
       </section>

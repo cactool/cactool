@@ -1,4 +1,5 @@
 const SOCIAL_MEDIA = "SOCIAL_MEDIA"
+const BOOLEAN = "BOOLEAN"
 
 function fetch_next_row(dataset_id, callback) {
     fetch(
@@ -28,6 +29,10 @@ function update_row(row){
         id = "column-" + column_id
         if (data.type === SOCIAL_MEDIA){
             twitter_embed(data.value, id)
+        }
+        else if (data.type == BOOLEAN) {
+            console.log(data.value)
+            checkbox(data.prompt, data.value === "true", id)
         }
         else {
             input(data.prompt, data.value, id)
@@ -77,6 +82,18 @@ function input(column_name, value, id) { /******* TODO: SANITISE ME!!!! ********
                 </div>
             `
 }
+
+function checkbox(column_name, value, id) { /******* TODO: sanitisation *********/
+            document.getElementById(id).innerHTML = `
+                <div class="input-group">
+                    <div class="input-group-prepend col-6">
+                        <span class="input-group-text col-12"> ${column_name} </span>
+                    </div>
+                    <input class="form-check-input" type=checkbox ${value? 'checked' : ''}>
+                </div>
+            `
+}
+
 
 function clear(id){
     document.getElementById(id).innerHTML = "";

@@ -56,21 +56,10 @@
                                 {% endfor %}
                             </div>
                         <a href="/dataset/add/{{ project.id }}" class="btn btn-outline-dark">Add dataset</a>
-
-                        <!--
-                        <div class="col-xl-4">
-                            <div class="card border-0 mt-xl-5">
-                                <div class="card-body p-4 py-lg-5">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <div class="text-center">
-                                            <div class="h6 fw-bolder">Follow us</div>
-                                            <a class="fs-5 px-2 link-dark" href="https://github.com/cactool/cactool"><i class="bi-github"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    -->
+                    </div>
+                    <br>
+                    <div class="row gx-5">
+                        <a href="/project/delete/{{ project.id }}" class="btn btn-outline-danger">Delete project</a>
                     </div>
                 </div>
             </section>

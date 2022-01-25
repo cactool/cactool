@@ -193,6 +193,24 @@ def code_dataset(dataset_id):
     return next_row()
 
 
+@app.route("/dataset/delete/<dataset_id>")
+def delete_dataset(dataset_id):
+    # TODO: Check access, query
+    db.session.delete(Dataset.query.get(dataset_id))
+    db.session.commit()
+    
+    return redirect(url_for("show_datasets"))
+
+
+@app.route("/project/delete/<project_id>")
+def delete_project(project_id):
+    # TODO: Check access, query
+    db.session.delete(Project.query.get(project_id))
+    db.session.commit()
+
+    return redirect(url_for("dashboard"))
+
+
 @app.route("/dataset/import", methods=["POST", "GET"])
 def import_dataset():
     if not current_user.is_authenticated:
@@ -274,7 +292,7 @@ def export_dataset():
 @app.route("/logout", methods=["GET"])
 def logout():
     logout_user()
-    redirect(url_for("index"))
+    return redirect(url_for("index"))
 
 
 @app.route("/project/create", methods=["POST", "GET"])
@@ -292,7 +310,7 @@ def create_project():
         return render_template("create_project.html")
 
     user = current_user
-    
+
     description = request.form.get("description")
 
     project = Project(
