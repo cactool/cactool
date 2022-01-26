@@ -73,11 +73,15 @@ class DatasetRow(db.Model):
     dataset_id = db.Column(db.String(512), db.ForeignKey(Dataset.id), primary_key=True)
     row_number = db.Column(db.Integer, primary_key=True)
 
+    coded = db.Column(db.Boolean())
+    coder = db.Column(db.ForeignKey(User.id), nullable=True)
+
+
     values = db.relationship("DatasetRowValue", lazy=True)
     dataset = db.relationship(Dataset, foreign_keys="DatasetRow.dataset_id")
 
-    coded = db.Column(db.Boolean())
-    coder = db.Column(db.ForeignKey(User.id))
+    
+    # no_load = FailToLoadReport User ids
     
     __table_args__ = (
         db.UniqueConstraint(dataset_id, row_number),

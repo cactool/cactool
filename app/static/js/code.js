@@ -1,5 +1,7 @@
 const SOCIAL_MEDIA = "SOCIAL_MEDIA"
 const BOOLEAN = "BOOLEAN"
+const HIDDEN = "HIDDEN"
+const LIKERT = "LIKERT"
 
 function fetch_next_row(dataset_id, callback) {
     fetch(
@@ -31,8 +33,13 @@ function update_row(row){
             twitter_embed(data.value, id)
         }
         else if (data.type == BOOLEAN) {
-            console.log(data.value)
             checkbox(data.prompt, data.value === "true", id)
+        }
+        else if (data.type == HIDDEN) {
+            hidden(data.prompt, data.value, id)
+        }
+        else if (data.type == LIKERT) {
+            likert(data.prompt, data.value, id)
         }
         else {
             input(data.prompt, data.value, id)
@@ -96,6 +103,35 @@ function checkbox(column_name, value, id) { /******* TODO: sanitisation ********
             `
 }
 
+function likert(column_name, value, id) { /******* TODO: sanitisation *********/
+    document.getElementById(id).innerHTML = `
+        <div class="input-group">
+            <div class="input-group-prepend col-6">
+                <span class="input-group-text col-12"> ${column_name} </span>
+            </div>
+        
+            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
+            <label class="btn btn-danger" for="option1">Didn't like</label>
+
+            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+            <label class="btn" style="background-color: orange;" for="option2">Tolerable</label>
+
+            <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off">
+            <label class="btn btn-warning" for="option3">Liked</label>
+
+            <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off">
+            <label class="btn" style="background-color: #20c997 !important;" for="option4">Liked a lot</label>
+        
+            <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off">
+            <label class="btn btn-success" for="option5">Loved</label>
+        </div>
+    `
+
+}
+
+function hidden(column_name, value, id) {
+    document.getElementById(id).innerHTML = ``
+}
 
 function clear(id){
     document.getElementById(id).innerHTML = "";

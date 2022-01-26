@@ -111,6 +111,8 @@
                     <option {{ 'selected' if column.type.value == STRING else '' }} value="STRING">Text</option>
                     <option {{ 'selected' if column.type.value == NUMBER else ''}} value="NUMBER">Number</option>
                     <option {{ 'selected' if column.type.value == BOOLEAN else ''}} value="BOOLEAN">True / False</option>
+                    <option {{ 'selected' if column.type.value == LIKERT else ''}} value="LIKERT">Likert Scale</option>
+                    <option {{ 'selected' if column.type.value == HIDDEN else ''}} value="HIDDEN">Hidden</option>
                   </select>
                 </div>
                 <br />

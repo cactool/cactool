@@ -9,9 +9,14 @@ import csv
 import datetime
 import tempfile
 import os
+import os.path
+import sqlite3
+
+DATABASE_LOCATION = "app/db.sqlite3"
+DATABASE_URI = 'sqlite:///db.sqlite3'
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "development"  # TODO: ????
 
@@ -89,6 +94,8 @@ def show_datasets():
 
 
 def read_dataset(file, description=None):
+    conn = sqlite3.connect(DATABASE_LOCATION)
+    conn.execute("pragma journal_mode=wal")
     reader = csv.reader(file.read().decode().splitlines())
 
     dataset = Dataset(
@@ -97,36 +104,39 @@ def read_dataset(file, description=None):
         description=f"Uploaded {date_string()}" if not description else description
     )
 
+    db.session.add(dataset)
+    db.session.commit()
+
+    # Using sqlite3 for performance
+
     # TODO: Consider case when file is nefariously empty
     columns = next(reader)
-    dataset_columns = []
+    column_ids = []
     for column in columns:
-        column = DatasetColumn(
-            id=uuid.uuid4().hex,
-            type=types.Type.STRING,
-            name=column
+        conn.execute(
+            "INSERT INTO dataset_column (id, type, name, dataset_id) VALUES (?,?,?,?)",
+            (dscid := uuid.uuid4().hex, types.Type.STRING.value, column, dataset.id)
         )
-        dataset_columns.append(column)
-        dataset.columns.append(column)
-        db.session.add(column)
+        
+        column_ids.append(dscid)
 
     for row_number, row in enumerate(reader):
+        print(row_number)
         values = row
-        row = DatasetRow(
-            row_number=row_number,
-            coded=False
+        
+        conn.execute(
+            "INSERT INTO dataset_row (dataset_id, row_number, coded) VALUES (?, ?, ?)",
+            (dataset.id, row_number, False)
         )
-        for column, value in zip(dataset_columns, values):
-            dsrv = DatasetRowValue(
-                dataset_id=dataset.id,
-                dataset_row_number=row_number,
-                column_id=column.id,
-                value=value
+
+        for column_id, value in zip(column_ids, values):
+            print(dataset.id, row_number, column_id)
+            conn.execute(
+                "INSERT INTO dataset_row_value (dataset_id, dataset_row_number, column_id, value) VALUES (?, ?, ?, ?)",
+                (dataset.id, row_number, column_id, value)
             )
-            db.session.add(dsrv)
-            row.values.append(dsrv)
-        dataset.rows.append(row)
-        db.session.add(row)
+
+    conn.commit()
 
     db.session.add(dataset)
     db.session.commit()
@@ -354,8 +364,8 @@ def login():
 def password_strength(password):
     # Very basic password strength requirements
     if len(password) >= 8 \
-            and any(str.isalpha, password)\
-            and any(str.isnumeric, password):
+            and any(map(str.isalpha, password))\
+            and any(map(str.isnumeric, password)):
         return True
     return False
 

@@ -5,6 +5,8 @@ class Type(enum.Enum):
     LIST = "LIST"
     BOOLEAN = "BOOLEAN"
     SOCIAL_MEDIA = "SOCIAL_MEDIA"
+    HIDDEN = "HIDDEN"
+    LIKERT = "LIKERT"
     
     def serialise(self):
         return self.value
