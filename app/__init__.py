@@ -269,7 +269,7 @@ def export_dataset():
             fieldnames=list(map(
                 lambda column: column.name,
                 dataset.columns
-            ) + ["coder", "coded"])
+            )) + ["coder", "coded"]
         )
 
         writer.writeheader()
