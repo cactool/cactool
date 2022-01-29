@@ -61,7 +61,13 @@ function submit(){
     } 
     
     for (column of window.columns) {
-        if(column.type !== SOCIAL_MEDIA){
+        if(column.type === SOCIAL_MEDIA && column.type === HIDDEN){
+            continue
+        }
+        if(column.type == LIKERT){
+            data.values[column.name] = document.querySelector(`input[name="options-column-${id}"]:checked`).value;
+        }
+        else{
             data.values[column.name] = get_value(column.name)
         }
 
@@ -110,20 +116,20 @@ function likert(column_name, value, id) { /******* TODO: sanitisation *********/
                 <span class="input-group-text col-12"> ${column_name} </span>
             </div>
         
-            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
-            <label class="btn btn-danger" for="option1">Didn't like</label>
+            <input type="radio" class="btn-check" name="options-${id}" id="$option1-${id}" autocomplete="off">
+            <label class="btn btn-danger" for="option1-${id}">Didn't like</label>
 
-            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
-            <label class="btn" style="background-color: orange;" for="option2">Tolerable</label>
+            <input type="radio" class="btn-check" name="options-${id}" id="option2-${id}" autocomplete="off">
+            <label class="btn" style="background-color: orange;" for="option2-${id}">Tolerable</label>
 
-            <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off">
-            <label class="btn btn-warning" for="option3">Liked</label>
+            <input type="radio" class="btn-check" name="options-${id}" id="option3-${id}" autocomplete="off">
+            <label class="btn btn-warning" for="option3-${id}">Liked</label>
 
-            <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off">
-            <label class="btn" style="background-color: #20c997 !important;" for="option4">Liked a lot</label>
+            <input type="radio" class="btn-check" name="options-${id}" id="option4-${id}" autocomplete="off">
+            <label class="btn" style="background-color: #20c997 !important;" for="option4-${id}">Liked a lot</label>
         
-            <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off">
-            <label class="btn btn-success" for="option5">Loved</label>
+            <input type="radio" class="btn-check" name="options-${id}" id="option5-${id}" autocomplete="off">
+            <label class="btn btn-success" for="option5-${id}">Loved</label>
         </div>
     `
 
