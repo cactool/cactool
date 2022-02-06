@@ -206,7 +206,7 @@ def code_dataset(dataset_id):
 @app.route("/dataset/delete/<dataset_id>", methods=["POST", "GET"])
 def delete_dataset(dataset_id):
     # TODO: Check access, query
-    if request.methof == "GET":
+    if request.method == "GET":
         return render_template("delete_dataset.html")
     if request.method == "POST":
         db.session.delete(Dataset.query.get(dataset_id))
