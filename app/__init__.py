@@ -203,22 +203,28 @@ def code_dataset(dataset_id):
     return next_row()
 
 
-@app.route("/dataset/delete/<dataset_id>")
+@app.route("/dataset/delete/<dataset_id>", methods=["POST", "GET"])
 def delete_dataset(dataset_id):
     # TODO: Check access, query
-    db.session.delete(Dataset.query.get(dataset_id))
-    db.session.commit()
-    
-    return redirect(url_for("show_datasets"))
+    if request.methof == "GET":
+        return render_template("delete_dataset.html")
+    if request.method == "POST":
+        db.session.delete(Dataset.query.get(dataset_id))
+        db.session.commit()
+        
+        return redirect(url_for("show_datasets"))
 
 
-@app.route("/project/delete/<project_id>")
+@app.route("/project/delete/<project_id>", methods=["POST", "GET"])
 def delete_project(project_id):
     # TODO: Check access, query
-    db.session.delete(Project.query.get(project_id))
-    db.session.commit()
+    if request.method == "GET":
+        return render_template("delete_project.html")
+    if request.method == "POST":
+        db.session.delete(Project.query.get(project_id))
+        db.session.commit()
 
-    return redirect(url_for("dashboard"))
+        return redirect(url_for("dashboard"))
 
 
 @app.route("/dataset/import", methods=["POST", "GET"])
