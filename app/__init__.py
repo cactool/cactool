@@ -203,24 +203,32 @@ def code_dataset(dataset_id):
     return next_row()
 
 
-@app.route("/dataset/delete/<dataset_id>", methods=["POST", "GET"])
-def delete_dataset(dataset_id):
+@app.route("/dataset/delete", methods=["POST"])
+def delete_dataset():
+    dataset_id = request.form.get("dataset_id") # TODO: Check if undefined
+    confirm = request.form.get("confirm") == "true"
     # TODO: Check access, query
-    if request.method == "GET":
-        return render_template("delete_dataset.html")
-    if request.method == "POST":
-        db.session.delete(Dataset.query.get(dataset_id))
+    dataset = Dataset.query.get(dataset_id)
+    if not confirm:
+        return render_template("delete_dataset.html", dataset=dataset)
+    else:
+
+        dataset = Dataset.query.get(dataset_id)
+        db.session.delete(dataset)
         db.session.commit()
         
         return redirect(url_for("show_datasets"))
 
 
-@app.route("/project/delete/<project_id>", methods=["POST", "GET"])
-def delete_project(project_id):
+@app.route("/project/delete", methods=["POST"])
+def delete_project():
+    project_id = request.form.get("project_id")
+    confirm = request.form.get("confirm") == "true"
     # TODO: Check access, query
-    if request.method == "GET":
-        return render_template("delete_project.html")
-    if request.method == "POST":
+    project = Project.query.get(project_id)
+    if not confirm:
+        return render_template("delete_project.html", project=project)
+    else:
         db.session.delete(Project.query.get(project_id))
         db.session.commit()
 

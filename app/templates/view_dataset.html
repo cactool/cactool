@@ -124,8 +124,12 @@
             <input type=submit form="types" href="/dataset/update" class="btn btn-outline-dark" value="Update dataset"/>
           </div>
           <br>
+          <form hidden id="delete" method="POST" action="/dataset/delete/">
+            <input name="dataset_id" value="{{dataset.id}}" hidden/>
+            <input name="confirm" value="false">
+          </form>
           <div class="row gx-5">
-            <a href="/dataset/delete/{{ dataset.id }}" class="btn btn-outline-danger">Delete dataset</a>
+            <input type="submit" form="delete" href="/dataset/delete/{{ dataset.id }}" class="btn btn-outline-danger" value="Delete dataset"/>
           </div>
         </div>
       </section>

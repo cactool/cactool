@@ -48,8 +48,8 @@ class Dataset(db.Model):
     name = db.Column(db.String(50))
     description = db.Column(db.String(1024))
     
-    columns = db.relationship("DatasetColumn")
-    rows = db.relationship("DatasetRow")
+    columns = db.relationship("DatasetColumn", cascade="all, delete-orphan")
+    rows = db.relationship("DatasetRow", cascade="all, delete-orphan")
 
     projects = db.relationship("Project", secondary=project_datasets)
     users = db.relationship("User", secondary=dataset_access)
@@ -77,7 +77,7 @@ class DatasetRow(db.Model):
     coder = db.Column(db.ForeignKey(User.id), nullable=True)
 
 
-    values = db.relationship("DatasetRowValue", lazy=True)
+    values = db.relationship("DatasetRowValue", lazy=True, cascade="all, delete-orphan")
     dataset = db.relationship(Dataset, foreign_keys="DatasetRow.dataset_id")
 
     

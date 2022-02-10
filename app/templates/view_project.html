@@ -56,11 +56,15 @@
                                 {% endfor %}
                             </div>
                         <a href="/dataset/add/{{ project.id }}" class="btn btn-outline-dark">Add dataset</a>
+
                     </div>
                     <br>
+
                     <div class="row gx-5">
-                        
-                        <a href="/project/delete/{{ project.id }}" class="btn btn-outline-danger">Delete project</a>
+                        <form action="/project/delete" method="POST" id="delete" hidden>
+                            <input name="project_id" value="{{ project.id }}" hidden/>
+                        </form>
+                        <input type="submit" form="delete" class="btn btn-outline-danger" value="Delete project"></input>
                         
                     </div>
                 </div>
