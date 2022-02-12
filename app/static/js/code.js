@@ -3,7 +3,7 @@ const BOOLEAN = "BOOLEAN"
 const HIDDEN = "HIDDEN"
 const LIKERT = "LIKERT"
 
-function fetch_next_row(dataset_id, callback) {
+function fetch_nepost_unavailable_row(dataset_id, callback) {
     fetch(
         "/dataset/nextrow",
         {
@@ -22,7 +22,7 @@ function fetch_next_row(dataset_id, callback) {
 
 function update_row(row){
     if (row.is_empty){
-        alert("There's no more data to code") 
+        window.location.replace(`/dataset/${window.dataset_id}/nomore`)
         return;
     }
     window.row_number = row.row_number

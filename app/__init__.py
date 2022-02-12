@@ -166,6 +166,11 @@ def view_dataset(dataset_id):
     dataset = Dataset.query.get(dataset_id)
     return render_template("view_dataset.html", dataset=dataset, **types.Type.export())
 
+@app.route("/dataset/<dataset_id>", methods=["GET"])
+def no_more_data(dataset_id):
+    flash("There is no more data for this dataset")
+    return url_for(view_dataset, dataset_id=dataset_id)
+
 
 @app.route("/dataset/nextrow", methods=["POST"])
 def next_row():
