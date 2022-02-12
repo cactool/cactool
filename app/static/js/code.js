@@ -30,7 +30,7 @@ function update_row(row){
     for (const [column_id, data] of Object.entries(columns)){ 
         id = "column-" + column_id
         if (data.type === SOCIAL_MEDIA){
-            twitter_embed(data.value, id)
+            social_media_embed(data.value, id)
         }
         else if (data.type == BOOLEAN) {
             checkbox(data.prompt, data.value === "true", id)
@@ -104,7 +104,7 @@ function checkbox(column_name, value, id) { /******* TODO: sanitisation ********
                     </div>
 
                     <input id=check-${id} class="btn-check" type=checkbox ${value? 'checked' : ''}>
-                    <label for=check-${id} class="btn btn-outline-primary"> poorly labeled checkbox </label>
+                    <label for=check-${id} class="btn btn-outline-primary"> Yes </label>
                 </div>
             `
 }
@@ -135,7 +135,7 @@ function likert(column_name, value, id) { /******* TODO: sanitisation *********/
 
 }
 
-function hidden(column_name, value, id) {
+function hidden(_column_name, _value, id) {
     document.getElementById(id).innerHTML = ``
 }
 
@@ -143,7 +143,11 @@ function clear(id){
     document.getElementById(id).innerHTML = "";
 }
 
-function twitter_embed(url, id) { /* TODO: Change to disallow arbitrary twitter urls */
+function social_media_embed(url, id){
+    twitter_embed(url, id)
+}
+
+function twitter_embed(url, id) {
         clear(id)
         twttr.widgets.createTweet(
             url.split("/").at(-1),
