@@ -86,6 +86,44 @@ function submit(){
     ).then(next_row)
 }
 
+function skip(){
+    data = {
+        dataset_id: window.dataset_id,
+        row_number: window.row_number,
+        skip: true,
+    } 
+    
+    fetch(
+        `/dataset/code/${ window.dataset_id }`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
+    ).then(next_row)
+}
+
+function post_unavailable(){
+    data = {
+        dataset_id: window.dataset_id,
+        row_number: window.row_number,
+        post_unavailable: true,
+    } 
+    
+    fetch(
+        `/dataset/code/${ window.dataset_id }`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
+    ).then(next_row)
+}
+
 function input(column_name, value, id) { /******* TODO: SANITISE ME!!!! *********/
             document.getElementById(id).innerHTML = `
                 <div class="input-group">

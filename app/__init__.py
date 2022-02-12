@@ -139,7 +139,6 @@ def read_dataset(file, description=None):
         column_ids.append(dscid)
 
     for row_number, row in enumerate(reader):
-        print(row_number)
         values = row
         
         conn.execute(
@@ -148,7 +147,6 @@ def read_dataset(file, description=None):
         )
 
         for column_id, value in zip(column_ids, values):
-            print(dataset.id, row_number, column_id)
             conn.execute(
                 "INSERT INTO dataset_row_value (dataset_id, dataset_row_number, column_id, value) VALUES (?, ?, ?, ?)",
                 (dataset.id, row_number, column_id, value)
@@ -211,10 +209,15 @@ def code_dataset(dataset_id):
     data = request.json
     row_number = data["row_number"]
     row = DatasetRow.query.get((dataset_id, row_number))
-    for (column_id, value) in data["values"].items():
-        row_value = DatasetRowValue.query.get(
-            (dataset_id, row_number, column_id))
-        row_value.value = value
+    if data.get("skip"):
+        row.skip = True
+    elif data.get("post_unavailable"):
+        row.post_unavailable = True
+    else:
+        for (column_id, value) in data["values"].items():
+            row_value = DatasetRowValue.query.get(
+                (dataset_id, row_number, column_id))
+            row_value.value = value
     row.coded = True
     row.coder = current_user.id
     db.session.commit()
@@ -318,7 +321,8 @@ def export_dataset():
                 }
                 | {
                     "coder": row.coder.initials() if row.coder is not None else "",
-                    "coded": row.coded
+                    "coded": row.coded,
+                    "skip": row.skip
                 }
             )
         file.close()

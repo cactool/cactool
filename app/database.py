@@ -75,7 +75,9 @@ class DatasetRow(db.Model):
 
     coded = db.Column(db.Boolean())
     coder = db.Column(db.ForeignKey(User.id), nullable=True)
-
+    
+    skip = db.Column(db.Boolean())
+    post_unavailable = db.Column(db.Boolean())
 
     values = db.relationship("DatasetRowValue", lazy=True, cascade="all, delete-orphan")
     dataset = db.relationship(Dataset, foreign_keys="DatasetRow.dataset_id")
