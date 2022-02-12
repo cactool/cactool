@@ -105,7 +105,7 @@
                   <div class="input-group-prepend col-5">
                     <span class="input-group-text col-12"> {{ column.name }} </span>
                   </div>
-                  <select name="{{ column.name }}" class="form-select" aria-label="Default select example">
+                  <select name="{{ column.name }}-type" class="form-select" aria-label="Default select example">
                     <option>Select Data Type</option>
                     <option {{ 'selected' if column.type.value == SOCIAL_MEDIA else '' }} value="SOCIAL_MEDIA">Social Media URL</option>
                     <option {{ 'selected' if column.type.value == STRING else '' }} value="STRING">Text</option>
@@ -114,6 +114,7 @@
                     <option {{ 'selected' if column.type.value == LIKERT else ''}} value="LIKERT">Likert Scale</option>
                     <option {{ 'selected' if column.type.value == HIDDEN else ''}} value="HIDDEN">Hidden</option>
                   </select>
+                  <input value="{{ column.prompt }}" class="form-control" name="{{ column.name }}-prompt"/>
                 </div>
                 <br />
                 {% endfor %}

@@ -64,8 +64,10 @@ class DatasetColumn(db.Model):
     name = db.Column(db.String(50))
     type = db.Column(db.Enum(types.Type))
     dataset_id = db.Column(db.ForeignKey(Dataset.id))
+    prompt = db.Column(db.String(512))
 
     dataset = db.relationship(Dataset, foreign_keys="DatasetColumn.dataset_id")
+    
     
     # TODO: Unique (dataset, name) constraint 
 
@@ -97,7 +99,7 @@ class DatasetRow(db.Model):
             "columns": {
                 entry.column.id: {
                      "name": entry.column.name,
-                     "prompt": entry.column.name,
+                     "prompt": entry.column.prompt,
                      "value": entry.value,
                      "type": entry.column.type.serialise()
                 }   for entry in self.values

@@ -33,8 +33,8 @@ def read_dataset(file, database_location, description=None):
     column_ids = []
     for column in columns:
         conn.execute(
-            "INSERT INTO dataset_column (id, type, name, dataset_id) VALUES (?,?,?,?)",
-            (dscid := uuid.uuid4().hex, Type.STRING.value, column, dataset.id)
+            "INSERT INTO dataset_column (id, type, name, prompt, dataset_id) VALUES (?,?,?,?,?)",
+            (dscid := uuid.uuid4().hex, Type.STRING.value, column, column, dataset.id)
         )
         
         column_ids.append(dscid)
@@ -111,9 +111,12 @@ def update_dataset():
         redirect(url_for("datasets.show_datasets"))
 
     for column in dataset.columns:
-        given_datatype = request.form.get(column.name)
-        if given_datatype:
-            column.type = given_datatype
+        datatype = request.form.get(column.name + "-type")
+        prompt = request.form.get(column.name + "-prompt")
+        if datatype:
+            column.type = datatype
+        if prompt or column.type == Type.HIDDEN:
+            column.prompt = prompt
     db.session.commit()
 
     return redirect(url_for("datasets.view_dataset", dataset_id=dataset_id))
