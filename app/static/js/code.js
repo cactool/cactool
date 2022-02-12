@@ -3,7 +3,7 @@ const BOOLEAN = "BOOLEAN"
 const HIDDEN = "HIDDEN"
 const LIKERT = "LIKERT"
 
-function fetch_nepost_unavailable_row(dataset_id, callback) {
+function fetch_next_row(dataset_id, callback) {
     fetch(
         "/dataset/nextrow",
         {
