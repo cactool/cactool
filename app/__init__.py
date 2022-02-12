@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, flash, url_for, redirect, sen
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_user, current_user, logout_user
 from app.database import db, User, Project, project_access, Dataset, DatasetColumn, DatasetRow, DatasetRowValue
-import app.types as types
 from werkzeug.utils import secure_filename
+from flask_migrate import Migrate
+
+import app.types as types
 import uuid
 import csv
 import datetime
@@ -38,11 +40,14 @@ login_manager.login_view = "login"
 login_manager.init_app(app)
 
 db.init_app(app)
+migrate = Migrate(app, db)
+
 with app.app_context():
     try:
         db.create_all()
     except:
         pass
+
 
 
 @app.route("/")

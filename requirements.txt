@@ -4,3 +4,4 @@ Flask_SQLAlchemy
 passlib
 Werkzeug
 gunicorn
+Flask-Migrate

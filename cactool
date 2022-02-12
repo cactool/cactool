@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ $1 = "update" ]; then
+    ./scripts/update.sh
+else
+    gunicorn app:app
+fi

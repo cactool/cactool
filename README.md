@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ```
 ## 3. Start the website
 ```bash
-./run.sh
+./cactool
 ```
 # Images
 ![projects](https://user-images.githubusercontent.com/18627392/149658748-f480a750-2a05-4aad-83bd-c30cdbe86891.png)
