@@ -133,9 +133,12 @@ def no_more_data(dataset_id):
 
 @datasets.route("/dataset/nextrow", methods=["POST"])
 def next_row():
-    # TODO: Existence, access
+    # TODO: access
     dataset_id = request.json["dataset_id"]
     dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        flash("The selected dataset doesn't exist")
+        return redirect(url_for("view_datasets"))
     rows = filter(
         lambda row: not row.coded,
         dataset.rows
@@ -150,16 +153,19 @@ def next_row():
 
 @datasets.route("/dataset/code/<dataset_id>", methods=["GET", "POST"])
 def code_dataset(dataset_id):
-    # TODO: Check access, existence
+    # TODO: Check access
     dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        flash("The selected dataset doesn't exist")
+        return redirect(url_for("view_datasets"))
     if request.method == "GET":
         return render_template("code_dataset.html", dataset=dataset)
     data = request.json
     row_number = data["row_number"]
     row = DatasetRow.query.get((dataset_id, row_number))
-    if data.get("skip"):
+    if data.get("skip") == "true":
         row.skip = True
-    elif data.get("post_unavailable"):
+    elif data.get("post_unavailable") == "true":
         row.post_unavailable = True
     else:
         for (column_id, value) in data["values"].items():
@@ -174,8 +180,8 @@ def code_dataset(dataset_id):
 
 @datasets.route("/dataset/delete", methods=["POST"])
 def delete_dataset():
-    dataset_id = request.form.get("dataset_id") # TODO: Check if undefined
-    confirm = request.form.get("confirm") == "true"
+    dataset_id = request.form.get("dataset_id")
+    confirm = request.form.get("confirm") == "true" # Only if the confirm string is exactly "true"
     # TODO: Check access, query
     dataset = Dataset.query.get(dataset_id)
     if not confirm:
@@ -199,15 +205,17 @@ def export_dataset():
 
     dataset_id = request.form.get("dataset_id")
     if not dataset_id:
-        flash("Please select a dataset")  # TODO: Error
+        flash("Please select a dataset")
         return render_template("export_dataset.html")
 
     # Check access (TODO)
-    # Check existence (TODO)
 
     fd, path = tempfile.mkstemp()
 
     dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        flash("The selected dataset doesn't exist")
+        return redirect(url_for("view_datasets"))
 
     with open(path, "w") as file:
         writer = csv.DictWriter(  # TODO: Unique constraint on fieldnames
@@ -228,7 +236,8 @@ def export_dataset():
                 | {
                     "coder": row.coder.initials() if row.coder is not None else "",
                     "coded": row.coded,
-                    "skip": row.skip
+                    "skipped": row.skip, 
+                    "post_unavailable": row.post_unavailable
                 }
             )
         file.close()
