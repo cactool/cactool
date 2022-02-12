@@ -248,13 +248,15 @@ def delete_project():
         return redirect(url_for("dashboard"))
 
 
-@app.route("/dataset/import", methods=["POST", "GET"])
-def import_dataset():
+@app.route("/dataset/import/<project_id>", methods=["POST", "GET"])
+def import_dataset(project_id):
     if not current_user.is_authenticated:
         flash("Please log in to perform this action")
         return redirect(url_for("login"))
+
+    # TODO: Check access rights, and existence
     if request.method == "GET":
-        return render_template("import_dataset.html")
+        return render_template("import_dataset.html", project_id=project_id)
 
     # Check None (TODO)
     file = request.files.get("file")
@@ -265,8 +267,11 @@ def import_dataset():
 
     dataset = read_dataset(file, description=description)
     current_user.datasets.append(dataset)
+    # TODO: Check existence
+    project = Project.query.get(project_id)
+    project.datasets.append(dataset)
     db.session.commit()
-    return redirect(url_for('show_datasets'))
+    return redirect(url_for('view_project', project_id=project_id))
 
 
 @app.route("/dataset/export", methods=["POST", "GET"])
