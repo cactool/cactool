@@ -62,9 +62,13 @@ def read_dataset(file, database_location, description=None):
 
 @datasets.route("/dataset/<dataset_id>", methods=["GET"])
 def view_dataset(dataset_id):
-    # TODO: Check Existence, Check access
+    # TODO: Check access
     dataset = Dataset.query.get(dataset_id)
-    return render_template("view_dataset.html", dataset=dataset, **Type.export())
+    if dataset:
+        return render_template("view_dataset.html", dataset=dataset, **Type.export())
+    else:
+        flash("The selected dataset doesn't exist")
+        return redirect(url_for("datasets.show_datasets"))
 
 
 
@@ -74,7 +78,7 @@ def import_dataset(project_id):
         flash("Please log in to perform this action")
         return redirect(url_for("authentication.login"))
 
-    # TODO: Check access rights, and existence
+    # TODO: Check access rights
     if request.method == "GET":
         return render_template("import_dataset.html", project_id=project_id)
 
@@ -82,23 +86,29 @@ def import_dataset(project_id):
     file = request.files.get("file")
     description = request.form.get("description")
     if not file:
-        flash("Please submit a file")  # TODO: Error
+        flash("Please submit a file")
         return render_template("import_dataset.html")
 
     dataset = read_dataset(file, current_app.config["DATABASE_LOCATION"], description=description)
     current_user.datasets.append(dataset)
-    # TODO: Check existence
     project = Project.query.get(project_id)
-    project.datasets.append(dataset)
-    db.session.commit()
-    return redirect(url_for('projects.view_project', project_id=project_id))
+    if project:
+        project.datasets.append(dataset)
+        db.session.commit()
+        return redirect(url_for('projects.view_project', project_id=project_id))
+    flash("The selected project doesn't exit")
+    return redirect(url_for("home.dashboard"))
 
 
 @datasets.route("/dataset/update", methods=["POST"])
 def update_dataset():
-    # TODO: Access, existence
+    # TODO: Access
     dataset_id = request.form.get('dataset_id')
     dataset = Dataset.query.get(dataset_id)
+    
+    if not dataset:
+        flash("The selected dataset doesn't exist")
+        redirect(url_for("datasets.show_datasets"))
 
     for column in dataset.columns:
         given_datatype = request.form.get(column.name)

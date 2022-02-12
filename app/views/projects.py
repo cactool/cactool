@@ -8,9 +8,13 @@ projects = Blueprint("projects", __name__)
 
 @projects.route("/project/<project_id>")
 def view_project(project_id):
-    # TODO: auth, existence check
-    # flash(f"Viewing project with id {project_id}")
-    return render_template("view_project.html", project=Project.query.get(project_id))
+    project = Project.query.get(project_id)
+    # TODO: Access rights
+    if project:
+        return render_template("view_project.html", project=project)
+    else:
+        flash("The selected project doesn't exist")
+        return redirect(url_for("home.dashboard"))
 
 @projects.route("/dataset/add/<project_id>", methods=["POST", "GET"])
 def add_dataset(project_id):
@@ -72,12 +76,12 @@ def create_project():
 def delete_project():
     project_id = request.form.get("project_id")
     confirm = request.form.get("confirm") == "true"
-    # TODO: Check access, query
+    # TODO: Check access
     project = Project.query.get(project_id)
     if not confirm:
         return render_template("delete_project.html", project=project)
     elif project:
         db.session.delete(Project.query.get(project_id))
         db.session.commit()
-
+    flash("The selected project doesn't exist")
     return redirect(url_for("home.dashboard"))
