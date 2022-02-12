@@ -18,6 +18,7 @@
     />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/static/css/styles.css" rel="stylesheet" />
+    <link href="/static/css/cactool.css" rel="stylesheet" />
     <script src="/static/js/twitter.js"></script>
     <script src="/static/js/code.js"></script>
   </head>
@@ -44,10 +45,10 @@
             {% endfor %}
           </div>
           <br>
-          <div class="row gx-5">
-            <a onclick="submit()" class="btn btn-outline-dark">Submit</a>
-            <a onclick="submit()" class="btn btn-outline-primary">Skip</a>
-            <a onclick="submit()" class="btn btn-outline-danger">The post doesn't show</a>
+          <div class="row gy-1">
+            <a onclick="submit()" class="btn btn-primary">Submit</a>
+            <a onclick="submit()" class="btn btn-warning">Skip</a>
+            <a onclick="submit()" class="btn btn-danger">The post doesn't show</a>
           </div>
         </div>
       </section>

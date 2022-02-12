@@ -1,7 +1,9 @@
+# Configuration files 
+config.json
+
 # Database
 db.sqlite3
 db.sqlite3-*
-
 
 ### Flask ###
 instance/*

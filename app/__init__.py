@@ -11,6 +11,19 @@ import tempfile
 import os
 import os.path
 import sqlite3
+import json
+import secrets
+
+if not os.path.exists("config.json"):
+    secret_key = secrets.token_urlsafe(64)
+    with open("config.default.json") as file:
+        config = json.load(file)
+        config["secret-key"] = secret_key
+    with open("config.json", "w") as file:
+        json.dump(config, file, indent=2, sort_keys=True)
+else:
+    with open("config.json") as file:
+        config = json.load(file)
 
 DATABASE_LOCATION = "app/db.sqlite3"
 DATABASE_URI = 'sqlite:///db.sqlite3'
@@ -18,7 +31,7 @@ DATABASE_URI = 'sqlite:///db.sqlite3'
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = "development"  # TODO: ????
+app.secret_key = config["secret-key"]
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
@@ -387,6 +400,7 @@ def password_strength(password):
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
     if request.method == "GET":
+        flash("Passwords must have 8 or more characters and must contain a number and a letter")
         return render_template("signup.html")
     if request.method == "POST":
         username = request.form.get("username")
@@ -424,4 +438,4 @@ def signup():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True)
+    app.run()

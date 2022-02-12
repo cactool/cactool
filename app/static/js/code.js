@@ -61,11 +61,12 @@ function submit(){
     } 
     
     for (column of window.columns) {
-        if(column.type === SOCIAL_MEDIA && column.type === HIDDEN){
+        console.log(column.type)
+        if(column.type === SOCIAL_MEDIA || column.type === HIDDEN){
             continue
         }
-        if(column.type == LIKERT){
-            data.values[column.name] = document.querySelector(`input[name="options-column-${id}"]:checked`).value;
+        else if(column.type == LIKERT){
+            data.values[column.name] = document.querySelector(`input[name="options-${id}"]:checked`).value;
         }
         else{
             data.values[column.name] = get_value(column.name)
@@ -115,23 +116,39 @@ function likert(column_name, value, id) { /******* TODO: sanitisation *********/
             <div class="input-group-prepend col-6">
                 <span class="input-group-text col-12"> ${column_name} </span>
             </div>
+             
+            <label for="option1-${id}" class="l15">
+                Didn't like
+                <br>
+                <input type="radio" name="options-${id}" id="$option1-${id}" autocomplete="off" value="1">
+            </label>
+
+            <label class="l15" for="option2-${id}">
+                Tolerable
+                <br>
+                <input type="radio" name="options-${id}" id="option2-${id}" autocomplete="off" value="2">
+            </label>
+
+            <label for="option3-${id}" class="l15">
+                Liked
+                <br>
+                <input type="radio" name="options-${id}" id="option3-${id}" autocomplete="off" value="3">
+            </label>
+
+            <label for="option4-${id}" class="l15">
+                Liked a lot
+                <br>
+                <input type="radio" name="options-${id}" id="option4-${id}" autocomplete="off" value="4">
+            </label>
         
-            <input type="radio" class="btn-check" name="options-${id}" id="$option1-${id}" autocomplete="off">
-            <label class="btn btn-danger" for="option1-${id}">Didn't like</label>
-
-            <input type="radio" class="btn-check" name="options-${id}" id="option2-${id}" autocomplete="off">
-            <label class="btn" style="background-color: orange;" for="option2-${id}">Tolerable</label>
-
-            <input type="radio" class="btn-check" name="options-${id}" id="option3-${id}" autocomplete="off">
-            <label class="btn btn-warning" for="option3-${id}">Liked</label>
-
-            <input type="radio" class="btn-check" name="options-${id}" id="option4-${id}" autocomplete="off">
-            <label class="btn" style="background-color: #20c997 !important;" for="option4-${id}">Liked a lot</label>
-        
-            <input type="radio" class="btn-check" name="options-${id}" id="option5-${id}" autocomplete="off">
-            <label class="btn btn-success" for="option5-${id}">Loved</label>
+            <label for="option5-${id}" class="l15">
+                Loved
+                <br>
+                <input type="radio" name="options-${id}" id="option5-${id}" autocomplete="off" value="5">
+            </label>
         </div>
     `
+    document.querySelecto(`input[name="options-${id}"][value=${value}]`).checked = true;
 
 }
 
