@@ -447,7 +447,7 @@ def signup():
             db.session.add(user)
             db.session.commit()
 
-            flash("Successfilly created an account")
+            flash("Successfully created an account")
 
         else:
             flash("Some fields were left blank")
