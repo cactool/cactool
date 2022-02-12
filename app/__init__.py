@@ -16,7 +16,7 @@ import secrets
 
 if not os.path.exists("config.json"):
     secret_key = secrets.token_urlsafe(64)
-    with open("config.default.json") as file:
+    with open("defaults/config.json") as file:
         config = json.load(file)
         config["secret-key"] = secret_key
     with open("config.json", "w") as file:
