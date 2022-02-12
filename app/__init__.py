@@ -423,7 +423,7 @@ def signup():
                 password=hashed_password,
                 firstname=firstname,
                 surname=surname,
-                id=uuid.uuid4().hex
+                id=secrets.token_hex(8)
             )
             db.session.add(user)
             db.session.commit()
