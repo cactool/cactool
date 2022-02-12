@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 import os
 import os.path
 import json
+import secrets
 
 from app.views.authentication import authentication
 from app.views.home import home
