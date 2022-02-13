@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 import csv
 from app.types import Type, AccessLevel
+import cryptography.fernet
  
 db = SQLAlchemy()
 
@@ -125,6 +126,18 @@ class Dataset(db.Model):
     def emit_csv(self) -> str:
         writer = csv.DictWriter()
         pass
+
+    def confirm(self, code, ekey):
+        fernet = cryptography.fernet.Fernet(ekey)
+        print("ccc", fernet.decrypt(code))
+        return fernet.decrypt(code) == self.id.encode()
+
+    def code(self, ekey):
+        fernet = cryptography.fernet.Fernet(ekey)
+        return fernet.encrypt(self.id.encode()).hex()
+
+    def generate_invite_link(self, base_url, ekey):
+        return base_url + f"dataset/invite/{self.id}/{self.code(ekey)}"
 
 
 class DatasetColumn(db.Model):

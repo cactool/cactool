@@ -1,3 +1,4 @@
+{% from "macros.html" import show_dataset %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,66 +35,19 @@
             <!-- FAQ Accordion 1-->
             <!-- <h2 class="fw-bolder mb-3">Account &amp; Billing</h2> -->
             <div class="accordion mb-5" id="accordionExample">
-              <div class="accordion-item">
-                <h3 class="accordion-header" id="headingOne">
-                  <button
-                    class="accordion-button"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseOne"
-                    aria-expanded="true"
-                    aria-controls="collapseOne"
-                  >
-                    {{ dataset.name }}
-                  </button>
-                </h3>
-                <div
-                  class="accordion-collapse collapse show"
-                  id="collapseOne"
-                  aria-labelledby="headingOne"
-                  data-bs-parent="#accordionExample"
-                >
-                  <div class="accordion-body">
-                    <strong>Contains {{ dataset.rows | length }} rows</strong>
-                    <br />
-                    {{ dataset.description }}
-                    <br />
-                    <br />
-                    <a
-                      href="/dataset/code/{{ dataset.id }}"
-                      class="btn btn-outline-dark"
-                      >Code</a
-                    >
-                    <a
-                      href="/dataset/{{ dataset.id }}"
-                      class="btn btn-outline-dark"
-                      >Open</a
-                    >
-                    <input
-                      href="/dataset/export/{{ dataset.id }}"
-                      class="btn btn-outline-dark"
-                      type="submit"
-                      value="Export"
-                      form="{{ dataset.id }}"
-                    />
-                    <form
-                      action="/dataset/export"
-                      method="POST"
-                      id="{{dataset.id}}"
-                      hidden
-                    >
-                      <input
-                        name="dataset_id"
-                        value="{{ dataset.id }}"
-                        type="hidden"
-                      />
-                    </form>
-                  </div>
-                </div>
-              </div>
+              {{ show_dataset(dataset, current_user) }}
             </div>
           </div>
-          <br />
+          
+          <div class="text-center mb-5">
+            <h1 class="fw-bolder h4">Coder Invite Link</h1>
+          </div>
+          <div class="input-group">
+            <input class="form-control" value="{{ invite_link }}" readonly style="background-color: transparent; font-family: monospace;">
+          </div>
+          
+          <br/>
+
           <div class="text-center mb-5">
             <h1 class="fw-bolder h4">Data Types</h1>
           </div>

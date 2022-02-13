@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
+from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify, send_file
 from flask_login import current_user
 from ..database import db, Project, Dataset, DatasetRow, DatasetRowValue, DatasetAccess, AccessLevel
 from ..types import Type
@@ -60,12 +60,44 @@ def read_dataset(file, database_location, description=None):
 
     return dataset
 
+@datasets.route("/dataset/invite/<dataset_id>/<invite_code>", methods=["GET"])
+def dataset_invite(dataset_id, invite_code):
+    if not current_user:
+        flash("You need to be logged in to complete this action")
+        return redirect(url_for("authentication.login"))
+
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        return "The selected dataset doesn't exist"
+    if dataset.confirm(bytes.fromhex(invite_code), current_app.encryption_key):
+        if not current_user.can_code(dataset):
+            current_user.dataset_rights.append(
+                DatasetAccess(
+                    dataset,
+                    AccessLevel.CODE
+                )
+            )
+            return redirect(url_for("datasets.view_dataset", dataset_id=dataset.id))
+        else:
+            flash("You already have access to this dataset")
+            return redirect(url_for("datasets.view_dataset", dataset_id=dataset.id))
+    else:
+        return f"The incorrect code was supplied"
+
 @datasets.route("/dataset/<dataset_id>", methods=["GET"])
 def view_dataset(dataset_id):
     # TODO: Check access
     dataset = Dataset.query.get(dataset_id)
     if dataset:
-        return render_template("view_dataset.html", dataset=dataset, **Type.export())
+        return render_template(
+            "view_dataset.html",
+            dataset=dataset,
+            **Type.export(),
+            invite_link=dataset.generate_invite_link(
+                request.host_url,
+                current_app.encryption_key
+            )
+        )
     else:
         flash("The selected dataset doesn't exist")
         return redirect(url_for("datasets.show_datasets"))
@@ -176,6 +208,8 @@ def code_dataset(dataset_id):
     elif data.get("post_unavailable") == "true":
         row.post_unavailable = True
     else:
+        row.skip = False
+        row.post_unavailable = False
         for (column_id, value) in data["values"].items():
             row_value = DatasetRowValue.query.get(
                 (dataset_id, row_number, column_id))
@@ -231,7 +265,7 @@ def export_dataset():
             fieldnames=list(map(
                 lambda column: column.name,
                 dataset.columns
-            )) + ["coder", "coded"]
+            )) + ["coded", "coder", "post_unavailable", "skipped"]
         )
 
         writer.writeheader()

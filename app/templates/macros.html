@@ -1,0 +1,66 @@
+{% macro show_dataset(dataset, user)%}
+
+<div class="accordion-item">
+    <h3 class="accordion-header" id="headingOne">
+      <button
+        class="accordion-button"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseOne"
+        aria-expanded="true"
+        aria-controls="collapseOne"
+      >
+        {{ dataset.name }}
+      </button>
+    </h3>
+    <div
+      class="accordion-collapse collapse show"
+      id="collapseOne"
+      aria-labelledby="headingOne"
+      data-bs-parent="#accordionExample"
+    >
+      <div class="accordion-body">
+        <strong>Contains {{ dataset.rows | length }} rows</strong>
+        <br />
+        {{ dataset.description }}
+        <br />
+        <br />
+        {% if user.can_code(dataset) %}
+        <a
+          href="/dataset/code/{{ dataset.id }}"
+          class="btn btn-outline-dark"
+          >Code</a
+        >
+        {% endif %}
+        {% if user.can_edit(dataset) %}
+        <a
+          href="/dataset/{{ dataset.id }}"
+          class="btn btn-outline-dark"
+          >Edit</a
+        >
+        {% endif %}
+        {% if user.can_export(dataset) %}
+        <input
+          href="/dataset/export/{{ dataset.id }}"
+          class="btn btn-outline-dark"
+          type="submit"
+          value="Export"
+          form="{{ dataset.id }}"
+        />
+        <form
+          action="/dataset/export"
+          method="POST"
+          id="{{dataset.id}}"
+          hidden
+        >
+          <input
+            name="dataset_id"
+            value="{{ dataset.id }}"
+            type="hidden"
+          />
+        </form>
+        {% endif %}
+      </div>
+    </div>
+</div>
+{% endmacro %}

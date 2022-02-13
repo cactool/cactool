@@ -2,6 +2,9 @@ from flask import Flask
 from flask_login import LoginManager
 from app.database import db, User
 from flask_migrate import Migrate
+from cryptography.hazmat.primitives.hashes import SHA256
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import base64
 
 import os
 import os.path
@@ -42,8 +45,17 @@ app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = config["secret-key"]
 
+kdf = PBKDF2HMAC(
+    algorithm=SHA256,
+    length=32,
+    salt=b"",
+    iterations=390000
+)
+
+app.encryption_key = base64.urlsafe_b64encode(kdf.derive(app.secret_key.encode()))
+
 login_manager = LoginManager()
-login_manager.login_view = "login"
+login_manager.login_view = "authentication.login"
 login_manager.init_app(app)
 
 db.init_app(app)
