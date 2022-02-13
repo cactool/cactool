@@ -5,3 +5,4 @@ passlib
 Werkzeug
 gunicorn
 Flask-Migrate
+cryptography
