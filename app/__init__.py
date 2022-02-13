@@ -62,10 +62,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 with app.app_context():
-    try:
-        db.create_all()
-    except Exception as e:
-        pass
+    db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
