@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
 from flask_login import current_user
-from ..database import db, Project, Dataset, DatasetRow, DatasetRowValue
+from ..database import db, Project, Dataset, DatasetRow, DatasetRowValue, DatasetAccess, AccessLevel
 from ..types import Type
 from ..dates import date_string
 from werkzeug.utils import secure_filename
@@ -90,7 +90,15 @@ def import_dataset(project_id):
         return render_template("import_dataset.html")
 
     dataset = read_dataset(file, current_app.config["DATABASE_LOCATION"], description=description)
-    current_user.datasets.append(dataset)
+    
+    current_user.dataset_rights.append(
+        DatasetAccess(
+            user_id=current_user.id,
+            dataset_id=dataset.id,
+            access_level=AccessLevel.ADMIN
+        )
+    )
+    
     project = Project.query.get(project_id)
     if project:
         project.datasets.append(dataset)
@@ -124,7 +132,7 @@ def update_dataset():
 
 @datasets.route("/datasets", methods=["GET"])
 def show_datasets():
-    return render_template("show_datasets.html")
+    return render_template("show_datasets.html", datasets=current_user.viewable_datasets())
 
 @datasets.route("/dataset/<dataset_id>/nomore", methods=["GET"])
 def no_more_data(dataset_id):

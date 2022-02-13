@@ -7,12 +7,12 @@ db = SQLAlchemy()
 
 
 class AccessContainer:
-    def grants(self, thing, access_type):
-        return self.container_id == thing.id and access_type <= self.access_level
+    def grants(self, access_type, thing=False):
+        return (not thing or self.container_id == thing.id) and access_type <= self.access_level
 
     def grant_condition(self, access_type):
-        def condition(project):
-            return self.grants(project, access_type)
+        def condition(thing):
+            return self.grants(access_type, thing)
         return condition
     
     @property
@@ -27,6 +27,8 @@ class DatasetAccess(db.Model, AccessContainer):
     user_id = db.Column(db.ForeignKey("user.id"), primary_key=True)
     dataset_id = db.Column(db.ForeignKey("dataset.id"), primary_key=True)
     access_level = db.Column(db.Enum(AccessLevel))
+    
+    dataset = db.relationship("Dataset")
     
     @property
     def container_id(self):
@@ -58,6 +60,16 @@ class User(UserMixin, db.Model):
     dataset_rights = db.relationship(DatasetAccess)
     project_rights = db.relationship(ProjectAccess)
     
+
+    def viewable_datasets(self):
+        datasets = []
+        for access in self.dataset_rights:
+            if access.grants(AccessLevel.CODE):
+                datasets.append(access.dataset)
+        
+        return datasets
+                
+    
     def can(self, access_type, thing):
         if isinstance(thing, Dataset):
             return self.can_dataset(thing, access_type)
@@ -69,11 +81,11 @@ class User(UserMixin, db.Model):
 
     def can_dataset(self, dataset, access_type):
         rights = DatasetAccess.query.get((self.id, dataset.id))
-        return rights and rights.grants(dataset, access_type)
+        return rights and rights.grants(access_type, dataset)
     
     def can_project(self, project, access_type):
         rights = ProjectAccess.query.get((self.id, project.id))
-        return rights and rights.grants(project, access_type)
+        return rights and rights.grants(access_type, project)
 
     def can_edit(self, thing):
        return self.can(
