@@ -1,30 +1,51 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 import csv
-import app.types as types
+from app.types import Type, AccessLevel
  
 db = SQLAlchemy()
 
 
-dataset_access = db.Table(
-    "dataset_access",
-    db.Column("user_id", db.ForeignKey("user.id")),
-    db.Column("dataset_id", db.ForeignKey("dataset.id")),
-    db.Column("access_level", db.Enum(types.AccessType))
-)
+class AccessContainer:
+    def grants(self, thing, access_type):
+        return self.container_id == thing.id and access_type <= self.access_level
 
+    def grant_condition(self, access_type):
+        def condition(project):
+            return self.grants(project, access_type)
+        return condition
+    
+    @property
+    def access_level(self):
+        raise NotImplementedError()
+
+    @property
+    def container_id(self):
+        raise NotImplementedError()
+
+class DatasetAccess(db.Model, AccessContainer):
+    user_id = db.Column(db.ForeignKey("user.id"), primary_key=True)
+    dataset_id = db.Column(db.ForeignKey("dataset.id"), primary_key=True)
+    access_level = db.Column(db.Enum(AccessLevel))
+    
+    @property
+    def container_id(self):
+        return self.dataset_id
+
+class ProjectAccess(db.Model, AccessContainer):
+    user_id = db.Column(db.ForeignKey("user.id"), primary_key=True)
+    project_id = db.Column(db.ForeignKey("project.id"), primary_key=True)
+    access_level = db.Column(db.Enum(AccessLevel))
+    
+    @property
+    def container_id(self):
+        return self.project_id
+    
 project_datasets = db.Table(
     "project_datasets",
     db.Column("project_id", db.ForeignKey("project.id")),
     db.Column("dataset_id", db.ForeignKey("dataset.id"))
 )
-
-project_access = db.Table(
-    "project_access",
-    db.Column("user_id", db.ForeignKey("user.id")),
-    db.Column("project_id", db.ForeignKey("project.id"))
-)
-
 
 class User(UserMixin, db.Model):
     id = db.Column(db.String(512), unique=True, primary_key=True)
@@ -34,8 +55,44 @@ class User(UserMixin, db.Model):
     firstname = db.Column(db.String(50))
     surname = db.Column(db.String(50))
 
-    datasets = db.relationship("Dataset", secondary=dataset_access)
-    projects = db.relationship("Project", secondary=project_access)
+    dataset_rights = db.relationship(DatasetAccess)
+    project_rights = db.relationship(ProjectAccess)
+    
+    def can(self, access_type, thing):
+        if isinstance(thing, Dataset):
+            return self.can_dataset(thing, access_type)
+ 
+        if isinstance(thing, Project):
+            return self.can_project(thing, access_type)
+        
+        raise TypeError("User.can expects an instance of Project or Dataset")
+
+    def can_dataset(self, dataset, access_type):
+        rights = DatasetAccess.query.get((self.id, dataset.id))
+        return rights and rights.grants(dataset, access_type)
+    
+    def can_project(self, project, access_type):
+        rights = ProjectAccess.query.get((self.id, project.id))
+        return rights and rights.grants(project, access_type)
+
+    def can_edit(self, thing):
+       return self.can(
+           AccessLevel.ADMIN,
+           thing 
+       )
+
+    def can_export(self, thing):
+        return self.can(
+            AccessLevel.EXPORT,
+            thing 
+        )
+        
+    def can_code(self, thing):
+        return self.can(
+            AccessLevel.CODE,
+            thing
+        )
+
 
     def get_id(self):
         return self.id
@@ -52,7 +109,6 @@ class Dataset(db.Model):
     rows = db.relationship("DatasetRow", cascade="all, delete-orphan")
 
     projects = db.relationship("Project", secondary=project_datasets)
-    users = db.relationship("User", secondary=dataset_access)
     
     def emit_csv(self) -> str:
         writer = csv.DictWriter()
@@ -62,7 +118,7 @@ class Dataset(db.Model):
 class DatasetColumn(db.Model):
     id = db.Column(db.String(512), primary_key=True, unique=True) # Do I want a separate ID? (TODO)
     name = db.Column(db.String(50))
-    type = db.Column(db.Enum(types.Type))
+    type = db.Column(db.Enum(Type))
     dataset_id = db.Column(db.ForeignKey(Dataset.id))
     prompt = db.Column(db.String(512))
 

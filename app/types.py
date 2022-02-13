@@ -1,4 +1,6 @@
 import enum
+import functools
+
 class Type(enum.Enum):
     STRING = "STRING"
     NUMBER = "NUMBER"
@@ -14,8 +16,15 @@ class Type(enum.Enum):
     def export():
         return {entry.name: entry.value for entry in Type }
 
-class AccessType(enum.Enum):
+@functools.total_ordering
+class AccessLevel(enum.Enum):
     NONE = 0
     CODE = 1
     EXPORT = 2
     ADMIN = 3
+
+    def grants(self, other):
+        return other.value <= self.value
+    
+    def __gt__(self, other):
+        return other.value < self.value 

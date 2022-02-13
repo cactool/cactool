@@ -7,7 +7,6 @@ import secrets
 authentication = Blueprint("authentication", __name__)
 
 def password_strength(password):
-    # Very basic password strength requirements
     if len(password) >= 8 \
             and any(map(str.isalpha, password))\
             and any(map(str.isnumeric, password)):
@@ -60,7 +59,7 @@ def signup():
 
         elif username and password and firstname and surname:
             if not password_strength(password):
-                flash("Your password isn't strong enough")  # TODO: Explain
+                flash("Your password isn't strong enough")
                 return render_template("signup.html")
             hashed_password = pbkdf2_sha256.hash(password)
             user = User(

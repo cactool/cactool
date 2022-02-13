@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import current_user
-from ..database import db, Project, Dataset
+from ..database import db, Project, Dataset, ProjectAccess
 from ..dates import date_string
+from app.types import AccessLevel
 import uuid
 
 projects = Blueprint("projects", __name__)
@@ -63,7 +64,14 @@ def create_project():
         description=description if description else f"Uploaded {date_string()}"
     )
 
-    user.projects.append(project)
+    user.project_rights.append(
+        ProjectAccess(
+            user_id = user.id,
+            project_id = project.id,
+            access_level = AccessLevel.ADMIN
+        )
+    )
+
 
     db.session.add(project)
     db.session.commit()
