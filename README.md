@@ -1,5 +1,5 @@
 # Cactool
-
+[![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654)
 # Introduction
 
 Cactool is a web tool to help researchers code data containing social media posts.
