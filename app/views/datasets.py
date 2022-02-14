@@ -223,8 +223,10 @@ def code_dataset(dataset_id):
     row = DatasetRow.query.get((dataset_id, row_number))
     if data.get("skip"):
         row.skip = True
+        row.post_unavailable = False
     elif data.get("post_unavailable"):
         row.post_unavailable = True
+        row.skip = False
     else:
         row.skip = False
         row.post_unavailable = False
@@ -233,7 +235,7 @@ def code_dataset(dataset_id):
                 (dataset_id, row_number, column_id))
             row_value.value = value
     row.coded = True
-    row.coder = current_user.id
+    row.coder = current_user
     db.session.commit()
     return next_row()
 
