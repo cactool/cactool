@@ -166,16 +166,15 @@ class DatasetRow(db.Model):
     row_number = db.Column(db.Integer, primary_key=True)
 
     coded = db.Column(db.Boolean())
-    coder = db.Column(db.ForeignKey(User.id), nullable=True)
+    coder_id = db.Column(db.ForeignKey(User.id), nullable=True)
     
     skip = db.Column(db.Boolean())
     post_unavailable = db.Column(db.Boolean())
 
     values = db.relationship("DatasetRowValue", lazy=True, cascade="all, delete-orphan")
     dataset = db.relationship(Dataset, foreign_keys="DatasetRow.dataset_id")
-
     
-    # no_load = FailToLoadReport User ids
+    coder = db.relationship("User", foreign_keys="DatasetRow.coder_id")
     
     __table_args__ = (
         db.UniqueConstraint(dataset_id, row_number),
