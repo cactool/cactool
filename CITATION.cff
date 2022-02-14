@@ -9,6 +9,7 @@ authors:
     orcid: 'https://orcid.org/0000-0003-1218-6116'
 repository-code: 'https://github.com/cactool/cactool'
 url: 'https://github.com/cactool/cactool'
+doi: 10.5281/zenodo.6070206
 abstract: A discourse-analysis research tool for coding datasets containing social media data
 keywords:
   - software
