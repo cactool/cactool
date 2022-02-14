@@ -37,8 +37,11 @@ app.register_blueprint(authentication)
 app.register_blueprint(projects)
 app.register_blueprint(datasets)
 
-if not os.path.exists(app.instance_path):
-    os.makedirs(app.instance_path)
+if not os.path.isdir(app.instance_path):
+    try:
+        os.makedirs(app.instance_path)
+    except FileExistsError:
+        pass
 
 DATABASE_LOCATION = os.path.join(app.instance_path, DATABASE_FILE_NAME)
 DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
