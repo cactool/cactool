@@ -1,7 +1,5 @@
 from flask import Blueprint, url_for, redirect, render_template
 from flask_login import current_user
-from app.types import AccessLevel
-from ..database import Project
 
 home = Blueprint("home", __name__)
 
@@ -18,11 +16,6 @@ def dashboard():
     if not current_user.is_authenticated:
         return redirect(url_for("authentication.login"))
 
-    projects = []
-    for access in current_user.project_rights:
-        project = Project.query.get(access.project_id)
-        print(access.access_level)
-        if project and current_user.can_edit(project):
-            projects.append(project)
-
+    projects = current_user.editable_projects()
+    
     return render_template("dashboard.html", projects=projects)

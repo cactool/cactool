@@ -199,7 +199,30 @@ function clear(id){
 }
 
 function social_media_embed(url, id){
-    twitter_embed(url, id)
+    hostname = new URL(url).hostname
+    if (hostname.endsWith("twitter.com"))
+        twitter_embed(url, id)
+    else if (hostname.endsWith("tiktok.com"))
+        tiktok_embed(url, id)
+    else if (hostname.endsWith("instagram.com"))
+        instagram_embed(url, id)
+}
+
+function tiktok_embed(url, id) {
+    fetch(
+        "https://tiktok.com/oembed?url=" + url,
+        {
+            method: "GET"
+        }
+    )
+    .then(response => response.json())
+    .then(
+        function(data){
+            div = document.createElement("div")
+            div.innerHTML = data["html"]
+            document.getElementById(id).appendChild(div)
+        }
+    )
 }
 
 function twitter_embed(url, id) {

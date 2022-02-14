@@ -65,7 +65,6 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 with app.app_context():
-    print(app.config["DATABASE_LOCATION"])
     db.create_all()
 
 @login_manager.user_loader

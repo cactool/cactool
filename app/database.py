@@ -69,7 +69,15 @@ class User(UserMixin, db.Model):
                 datasets.append(access.dataset)
         
         return datasets
-                
+    
+    def editable_projects(self):
+        projects = []
+        for access in self.project_rights:
+            project = Project.query.get(access.project_id)
+            if project and self.can_edit(project):
+                projects.append(project)
+
+        return projects      
     
     def can(self, access_type, thing):
         if isinstance(thing, Dataset):

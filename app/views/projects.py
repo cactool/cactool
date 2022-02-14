@@ -10,8 +10,7 @@ projects = Blueprint("projects", __name__)
 @projects.route("/project/<project_id>")
 def view_project(project_id):
     project = Project.query.get(project_id)
-    # TODO: Access rights
-    if project:
+    if project and current_user.can_edit(project):
         return render_template("view_project.html", project=project)
     else:
         flash("The selected project doesn't exist")
@@ -19,8 +18,6 @@ def view_project(project_id):
 
 @projects.route("/dataset/add/<project_id>", methods=["POST", "GET"])
 def add_dataset(project_id):
-    # TODO: Move project_id out of URL
-    # TODO: Access control
     if request.method == "GET":
         return render_template("add_dataset.html")
 
@@ -34,6 +31,10 @@ def add_dataset(project_id):
     if not project:
         flash("The selected project doesn't exist")
         return render_template("add_dataset.html")
+    
+    if not current_user.can_edit(project) or not current_user.can_edit(dataset):
+        flash("Deprecated endpoint")
+        return "Deprecated endpoint"
 
     project.datasets.append(dataset)
     db.session.commit()
@@ -84,11 +85,13 @@ def create_project():
 def delete_project():
     project_id = request.form.get("project_id")
     confirm = request.form.get("confirm") == "true"
-    # TODO: Check access
     project = Project.query.get(project_id)
     if not confirm:
         return render_template("delete_project.html", project=project)
     elif project:
+        if not current_user.can_edit(project):
+            flash("You can't delete this project")
+            return redirect(url_for("home.dashboard"))
         db.session.delete(Project.query.get(project_id))
         db.session.commit()
     flash("The selected project doesn't exist")

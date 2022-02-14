@@ -86,22 +86,25 @@ def dataset_invite(dataset_id, invite_code):
 
 @datasets.route("/dataset/<dataset_id>", methods=["GET"])
 def view_dataset(dataset_id):
-    # TODO: Check access
     dataset = Dataset.query.get(dataset_id)
-    if dataset:
-        return render_template(
-            "view_dataset.html",
-            dataset=dataset,
-            **Type.export(),
-            invite_link=dataset.generate_invite_link(
-                request.host_url,
-                current_app.encryption_key
-            )
-        )
-    else:
+    if not dataset:
         flash("The selected dataset doesn't exist")
         return redirect(url_for("datasets.show_datasets"))
 
+    if not current_user.can_edit(dataset):
+        flash("You don't have access to that dataset")
+        redirect(url_for("datasets.show_datasets"))
+
+    return render_template(
+        "view_dataset.html",
+        dataset=dataset,
+        **Type.export(),
+        invite_link=dataset.generate_invite_link(
+            request.host_url,
+            current_app.encryption_key
+        )
+    )
+    
 
 
 @datasets.route("/dataset/import/<project_id>", methods=["POST", "GET"])
@@ -110,7 +113,16 @@ def import_dataset(project_id):
         flash("Please log in to perform this action")
         return redirect(url_for("authentication.login"))
 
-    # TODO: Check access rights
+    project = Project.query.get(project_id)
+
+    if not project:
+        flash("The selected project doesn't exit")
+        return redirect(url_for("home.dashboard"))
+
+    if not current_user.can_edit(project):
+        flash(message)
+        return redirect(url_for("home.dashboard"))
+
     if request.method == "GET":
         return render_template("import_dataset.html", project_id=project_id)
 
@@ -131,23 +143,22 @@ def import_dataset(project_id):
         )
     )
     
-    project = Project.query.get(project_id)
-    if project:
-        project.datasets.append(dataset)
-        db.session.commit()
-        return redirect(url_for('projects.view_project', project_id=project_id))
-    flash("The selected project doesn't exit")
-    return redirect(url_for("home.dashboard"))
+    project.datasets.append(dataset)
+    db.session.commit()
+    return redirect(url_for('projects.view_project', project_id=project_id))
 
 
 @datasets.route("/dataset/update", methods=["POST"])
 def update_dataset():
-    # TODO: Access
     dataset_id = request.form.get('dataset_id')
     dataset = Dataset.query.get(dataset_id)
     
     if not dataset:
         flash("The selected dataset doesn't exist")
+        redirect(url_for("datasets.show_datasets"))
+    
+    if not current_user.can_edit(dataset):
+        flash("You do not have access to this dataset")
         redirect(url_for("datasets.show_datasets"))
 
     for column in dataset.columns:
@@ -169,16 +180,18 @@ def show_datasets():
 @datasets.route("/dataset/<dataset_id>/nomore", methods=["GET"])
 def no_more_data(dataset_id):
     flash("There is no more data for this dataset")
-    return redirect(url_for("datasets.view_dataset", dataset_id=dataset_id))
+    return redirect(url_for("datasets.show_datasets", dataset_id=dataset_id))
 
 @datasets.route("/dataset/nextrow", methods=["POST"])
 def next_row():
-    # TODO: access
     dataset_id = request.json["dataset_id"]
     dataset = Dataset.query.get(dataset_id)
     if not dataset:
         flash("The selected dataset doesn't exist")
-        return redirect(url_for("view_datasets"))
+        return redirect(url_for("datasets.view_datasets"))
+    if not current_user.can_code(dataset):
+        flash("You don't have access to this dataset")
+        return redirect(url_for("datasets.view_datasets"))
     rows = filter(
         lambda row: not row.coded,
         dataset.rows
@@ -193,19 +206,21 @@ def next_row():
 
 @datasets.route("/dataset/code/<dataset_id>", methods=["GET", "POST"])
 def code_dataset(dataset_id):
-    # TODO: Check access
     dataset = Dataset.query.get(dataset_id)
     if not dataset:
         flash("The selected dataset doesn't exist")
-        return redirect(url_for("view_datasets"))
+        return redirect(url_for("datasets.view_datasets"))
+    if not current_user.can_code(dataset):
+        flash("You don't have access to this dataset")
+        redirect(url_for("datasets.show_datasets"))
     if request.method == "GET":
         return render_template("code_dataset.html", dataset=dataset)
     data = request.json
     row_number = data["row_number"]
     row = DatasetRow.query.get((dataset_id, row_number))
-    if data.get("skip") == "true":
+    if data.get("skip"):
         row.skip = True
-    elif data.get("post_unavailable") == "true":
+    elif data.get("post_unavailable"):
         row.post_unavailable = True
     else:
         row.skip = False
@@ -224,12 +239,16 @@ def code_dataset(dataset_id):
 def delete_dataset():
     dataset_id = request.form.get("dataset_id")
     confirm = request.form.get("confirm") == "true" # Only if the confirm string is exactly "true"
-    # TODO: Check access, query
     dataset = Dataset.query.get(dataset_id)
+    
     if not confirm:
         return render_template("delete_dataset.html", dataset=dataset)
     else:
-
+        if not dataset:
+            return redirect(url_for("datasets.show_dataset"))
+        if not current_user.can_edit(dataset):
+            flash("You don't have access to this dataset")
+            return redirect(url_for("datasets.show_datasets"))
         dataset = Dataset.query.get(dataset_id)
         db.session.delete(dataset)
         db.session.commit()
@@ -240,7 +259,7 @@ def delete_dataset():
 def export_dataset():
     if not current_user.is_authenticated:
         flash("Please log in to perform this action")
-        return redirect(url_for("login"))
+        return redirect(url_for("authentication.login"))
 
     if request.method == "GET":
         return render_template("export_dataset.html")
@@ -250,14 +269,16 @@ def export_dataset():
         flash("Please select a dataset")
         return render_template("export_dataset.html")
 
-    # Check access (TODO)
-
     fd, path = tempfile.mkstemp()
 
     dataset = Dataset.query.get(dataset_id)
     if not dataset:
         flash("The selected dataset doesn't exist")
         return redirect(url_for("view_datasets"))
+    
+    if not current_user.can_export(dataset):
+        flash("You can't export this dataset")
+        return redirect(url_for("datasets.show_dataset"))
 
     with open(path, "w") as file:
         writer = csv.DictWriter(  # TODO: Unique constraint on fieldnames
@@ -288,7 +309,6 @@ def export_dataset():
         path,
         as_attachment=True,
         download_name=f"{dataset.name}",
-        # last_modified = # TODO possibly work out last modified time
     )
 
     os.unlink(path)
