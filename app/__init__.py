@@ -37,6 +37,9 @@ app.register_blueprint(authentication)
 app.register_blueprint(projects)
 app.register_blueprint(datasets)
 
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
 DATABASE_LOCATION = os.path.join(app.instance_path, DATABASE_FILE_NAME)
 DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
 
@@ -62,6 +65,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 with app.app_context():
+    print(app.config["DATABASE_LOCATION"])
     db.create_all()
 
 @login_manager.user_loader

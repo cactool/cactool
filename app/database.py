@@ -129,7 +129,6 @@ class Dataset(db.Model):
 
     def confirm(self, code, ekey):
         fernet = cryptography.fernet.Fernet(ekey)
-        print("ccc", fernet.decrypt(code))
         return fernet.decrypt(code) == self.id.encode()
 
     def code(self, ekey):
