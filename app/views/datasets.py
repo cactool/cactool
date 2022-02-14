@@ -28,8 +28,12 @@ def read_dataset(file, database_location, description=None):
 
     # Using sqlite3 for performance
 
-    # TODO: Consider case when file is nefariously empty
-    columns = next(reader)
+    try:
+        columns = next(reader)
+    except StopIteration:
+        flash("The uploaded file was malformed")
+        redirect(url_for("datasets.show_datasets"))
+
     column_ids = []
     for column in columns:
         conn.execute(
@@ -126,7 +130,6 @@ def import_dataset(project_id):
     if request.method == "GET":
         return render_template("import_dataset.html", project_id=project_id)
 
-    # Check None (TODO)
     file = request.files.get("file")
     description = request.form.get("description")
     if not file:
@@ -281,7 +284,7 @@ def export_dataset():
         return redirect(url_for("datasets.show_dataset"))
 
     with open(path, "w") as file:
-        writer = csv.DictWriter(  # TODO: Unique constraint on fieldnames
+        writer = csv.DictWriter(
             file,  # Denial of service? (TODO)
             fieldnames=list(map(
                 lambda column: column.name,

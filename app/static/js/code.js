@@ -124,22 +124,38 @@ function post_unavailable(){
     ).then(next_row)
 }
 
-function input(column_name, value, id) { /******* TODO: SANITISE ME!!!! *********/
+function sanitise(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    const regex = /[&<>"'/]/ig;
+    return string.replace(
+        regex,
+        match => map[match]
+    );
+  }
+
+function input(column_name, value, id) {
             document.getElementById(id).innerHTML = `
                 <div class="input-group">
                     <div class="input-group-prepend col-6">
-                        <span class="input-group-text col-12"> ${column_name} </span>
+                        <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
                     </div>
-                    <input class="form-control" value='${value}'>
+                    <input class="form-control" value='${sanitise(value)}'>
                 </div>
             `
 }
 
-function checkbox(column_name, value, id) { /******* TODO: sanitisation *********/
+function checkbox(column_name, value, id) {
             document.getElementById(id).innerHTML = `
                 <div class="input-group">
                     <div class="input-group-prepend col-6">
-                        <span class="input-group-text col-12"> ${column_name} </span>
+                        <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
                     </div>
 
                     <input id=check-${id} class="btn-check" type=checkbox ${value? 'checked' : ''}>
@@ -148,11 +164,11 @@ function checkbox(column_name, value, id) { /******* TODO: sanitisation ********
             `
 }
 
-function likert(column_name, value, id) { /******* TODO: sanitisation *********/
+function likert(column_name, value, id) {
     document.getElementById(id).innerHTML = `
         <div class="input-group">
             <div class="input-group-prepend col-6">
-                <span class="input-group-text col-12"> ${column_name} </span>
+                <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
             </div>
              
             <label for="option1-${id}" class="l15">

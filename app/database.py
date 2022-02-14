@@ -148,7 +148,7 @@ class Dataset(db.Model):
 
 
 class DatasetColumn(db.Model):
-    id = db.Column(db.String(512), primary_key=True, unique=True) # Do I want a separate ID? (TODO)
+    id = db.Column(db.String(512), primary_key=True, unique=True)
     name = db.Column(db.String(50))
     type = db.Column(db.Enum(Type))
     dataset_id = db.Column(db.ForeignKey(Dataset.id))
@@ -157,7 +157,9 @@ class DatasetColumn(db.Model):
     dataset = db.relationship(Dataset, foreign_keys="DatasetColumn.dataset_id")
     
     
-    # TODO: Unique (dataset, name) constraint 
+    __table_args__ = (
+        db.UniqueConstraint(dataset_id, name),
+    )
 
 class DatasetRow(db.Model):   
     dataset_id = db.Column(db.String(512), db.ForeignKey(Dataset.id), primary_key=True)

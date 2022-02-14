@@ -25,7 +25,6 @@
   <body
     class="d-flex flex-column h-100"
     onload="initialise('{{ dataset.id }}', {{  dataset.columns | map(attribute='id')  | list | safe }}, {{ dataset.columns | map(attribute='type.value') | list | safe }})"
-  > <!-- (TODO: Maybe don't use list() here for converting data) -->
     <main class="flex-shrink-0">
       <!-- Navigation-->
       {% include 'navigation.html' %} {% include 'flash.html' %}
