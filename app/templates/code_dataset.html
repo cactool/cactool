@@ -24,7 +24,7 @@
   </head>
   <body
     class="d-flex flex-column h-100"
-    onload="initialise('{{ dataset.id }}', {{  dataset.columns | map(attribute='id')  | list | safe }}, {{ dataset.columns | map(attribute='type.value') | list | safe }})"
+    onload="initialise('{{ dataset.id }}', {{  dataset.columns | map(attribute='id')  | list | safe }}, {{ dataset.columns | map(attribute='type.value') | list | safe }})">
     <main class="flex-shrink-0">
       <!-- Navigation-->
       {% include 'navigation.html' %} {% include 'flash.html' %}

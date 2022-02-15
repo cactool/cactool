@@ -54,24 +54,34 @@
           <div>
             <form id="types" action="/dataset/update" method="post">
                 <input type="hidden" name="dataset_id" value="{{ dataset.id }}">
-                {% for column in dataset.columns %}
-                <div class="input-group">
-                  <div class="input-group-prepend col-5">
-                    <span class="input-group-text col-12"> {{ column.name }} </span>
-                  </div>
-                  <select name="{{ column.name }}-type" class="form-select" aria-label="Default select example">
-                    <option>Select Data Type</option>
-                    <option {{ 'selected' if column.type.value == SOCIAL_MEDIA else '' }} value="SOCIAL_MEDIA">Social Media URL</option>
-                    <option {{ 'selected' if column.type.value == STRING else '' }} value="STRING">Text</option>
-                    <option {{ 'selected' if column.type.value == NUMBER else ''}} value="NUMBER">Number</option>
-                    <option {{ 'selected' if column.type.value == BOOLEAN else ''}} value="BOOLEAN">True / False</option>
-                    <option {{ 'selected' if column.type.value == LIKERT else ''}} value="LIKERT">Likert Scale</option>
-                    <option {{ 'selected' if column.type.value == HIDDEN else ''}} value="HIDDEN">Hidden</option>
-                  </select>
-                  <input value="{{ column.prompt }}" class="form-control" name="{{ column.name }}-prompt"/>
-                </div>
-                <br />
-                {% endfor %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Column Name</th>
+                      <th scope="col">Question Type</th>
+                      <th scope="col">Prompt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for column in dataset.columns %}
+                    <tr>
+                    <th scope="row">{{ column.name }}</th>
+                    <th scope="row">
+                      <select name="{{ column.name }}-type" class="form-select" aria-label="Default select example">
+                        <option>Select Data Type</option>
+                        <option {{ 'selected' if column.type.value == SOCIAL_MEDIA else '' }} value="SOCIAL_MEDIA">Social Media URL</option>
+                        <option {{ 'selected' if column.type.value == STRING else '' }} value="STRING">Text</option>
+                        <option {{ 'selected' if column.type.value == NUMBER else ''}} value="NUMBER">Number</option>
+                        <option {{ 'selected' if column.type.value == BOOLEAN else ''}} value="BOOLEAN">True / False</option>
+                        <option {{ 'selected' if column.type.value == LIKERT else ''}} value="LIKERT">Likert Scale</option>
+                        <option {{ 'selected' if column.type.value == HIDDEN else ''}} value="HIDDEN">Hidden</option>
+                      </select>
+                    </th>
+                    <th scope="row"><input value="{{ column.prompt }}" class="form-control" name="{{ column.name }}-prompt"/></th>
+                    </tr> 
+                    {% endfor %}
+                  </tbody>
+                </table>
             </form>
           </div>
 
