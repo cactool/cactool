@@ -30,7 +30,7 @@ function update_row(row){
     for (const [column_id, data] of Object.entries(columns)){ 
         id = "column-" + column_id
         if (data.type === SOCIAL_MEDIA){
-            social_media_embed(data.value, id)
+            social_media_embed(data.value, id, column_id)
         }
         else if (data.type == BOOLEAN) {
             checkbox(data.prompt, data.value === "true", id)
@@ -214,19 +214,19 @@ function clear(id){
     document.getElementById(id).innerHTML = "";
 }
 
-function social_media_embed(url, id){
+function social_media_embed(url, id, column_id){
     hostname = new URL(url).hostname
     if (hostname.endsWith("twitter.com"))
         twitter_embed(url, id)
     else if (hostname.endsWith("tiktok.com"))
-        tiktok_embed(url, id)
+        tiktok_embed(url, id, column_id)
     else if (hostname.endsWith("instagram.com"))
         instagram_embed(url, id)
 }
 
-function tiktok_embed(url, id) {
+function tiktok_embed(url, id, column_id) {
     fetch(
-        "https://tiktok.com/oembed?url=" + url,
+        `/dataset/code/tiktok/${window.dataset_id}/${window.row_number}/${column_id}`,
         {
             method: "GET"
         }

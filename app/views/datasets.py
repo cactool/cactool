@@ -9,6 +9,7 @@ import os
 import sqlite3
 import uuid
 import csv
+import requests
 
 datasets = Blueprint("datasets", __name__)
 
@@ -238,6 +239,21 @@ def code_dataset(dataset_id):
     row.coder = current_user
     db.session.commit()
     return next_row()
+
+@datasets.route("/dataset/code/tiktok/<dataset_id>/<row_number>/<column_id>", methods=["GET"])
+def render_tiktok(dataset_id, row_number, column_id):
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset or not current_user.can_code(dataset):
+        flash("You don't have access to that dataset")
+        return redirect(url_for("show_datasets"))
+    row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
+
+    url = row_value.value 
+    domain = requests.utils.urlparse(url)
+
+    response = requests.get(f"https://www.tiktok.com/oembed?url={requests.utils.quote(url)}")
+    
+    return jsonify(response.json())
 
 
 @datasets.route("/dataset/delete", methods=["POST"])
