@@ -11,7 +11,7 @@ git clone https://github.com/cactool/cactool/ && cd cactool
 ```
 ## 2. Install the requirements
 ```bash
-pip install -r requirements.txt
+pip install -Ur requirements.txt
 ```
 ## 3. Start the website
 ```bash
