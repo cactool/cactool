@@ -1,3 +1,4 @@
 {
-    "secret-key": ""
+    "secret-key": "",
+    "upload_size_limit": 16
 }

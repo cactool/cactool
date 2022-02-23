@@ -224,7 +224,7 @@ function social_media_embed(url, id, column_id){
         instagram_embed(url, id)
 }
 
-function tiktok_embed(url, id, column_id) {
+function tiktok_embed(_url, id, column_id) {
     fetch(
         `/dataset/code/tiktok/${window.dataset_id}/${window.row_number}/${column_id}`,
         {

@@ -29,6 +29,8 @@ if not os.path.exists("config.json"):
 else:
     with open("config.json") as file:
         config = json.load(file)
+        if not "upload_size_limit" in config:
+            config["upload_size_limit"] = 16
 
 app = Flask(__name__)
 
@@ -49,6 +51,7 @@ DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["MAX_CONTENT_LENGTH"] = config["upload_size_limit"] * 1024**2
 app.secret_key = config["secret-key"]
 
 kdf = PBKDF2HMAC(
