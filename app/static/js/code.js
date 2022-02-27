@@ -2,6 +2,9 @@ const SOCIAL_MEDIA = "SOCIAL_MEDIA"
 const BOOLEAN = "BOOLEAN"
 const HIDDEN = "HIDDEN"
 const LIKERT = "LIKERT"
+const ONE_TO_SEVEN = "ONE_TO_SEVEN"
+const ONE_TO_FIVE = "ONE_TO_FIVE"
+const ONE_TO_THREE = "ONE_TO_THREE"
 
 function fetch_next_row(dataset_id, callback) {
     fetch(

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from ..database import db, User
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
@@ -45,8 +45,12 @@ def logout():
 def signup():
     if request.method == "GET":
         flash("Passwords must have 8 or more characters and must contain a number and a letter")
-        return render_template("signup.html")
+        return render_template("signup.html", use_code=current_app.config["signup-code"] is not None)
     if request.method == "POST":
+        if (code := current_app.config["signup-code"]) is not None:
+            if request.form.get("signup-code") != code:
+                flash("The signup code entered was not correct")
+                return render_template("signup.html") 
         username = request.form.get("username")
         password = request.form.get("password")
         firstname = request.form.get("firstname")

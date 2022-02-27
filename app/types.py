@@ -1,6 +1,7 @@
 import enum
 import functools
 
+
 class Type(enum.Enum):
     STRING = "STRING"
     NUMBER = "NUMBER"
@@ -9,12 +10,16 @@ class Type(enum.Enum):
     SOCIAL_MEDIA = "SOCIAL_MEDIA"
     HIDDEN = "HIDDEN"
     LIKERT = "LIKERT"
-    
+    ONE_TO_SEVEN = "ONE_TO_SEVEN"
+    ONE_TO_FIVE = "ONE_TO_FIVE"
+    ONE_TO_THREE = "ONE_TO_THREE"
+
     def serialise(self):
         return self.value
-    
+
     def export():
-        return {entry.name: entry.value for entry in Type }
+        return {entry.name: entry.value for entry in Type}
+
 
 @functools.total_ordering
 class AccessLevel(enum.Enum):
@@ -25,6 +30,6 @@ class AccessLevel(enum.Enum):
 
     def grants(self, other):
         return other.value <= self.value
-    
+
     def __gt__(self, other):
-        return other.value < self.value 
+        return other.value < self.value

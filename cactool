@@ -3,5 +3,6 @@
 if [[ $1 = "update" ]]; then
     ./scripts/update.sh
 else
+    flask db upgrade
     gunicorn app:app
 fi

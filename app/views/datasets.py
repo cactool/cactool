@@ -44,6 +44,7 @@ def read_dataset(file, database_location, description=None):
         
         column_ids.append(dscid)
 
+    chunk_size = current_app.config["max_rows_in_memory"]
     for row_number, row in enumerate(reader):
         values = row
         
@@ -57,6 +58,9 @@ def read_dataset(file, database_location, description=None):
                 "INSERT INTO dataset_row_value (dataset_id, dataset_row_number, column_id, value) VALUES (?, ?, ?, ?)",
                 (dataset.id, row_number, column_id, value)
             )
+        
+        if chunk_size != -1 and row_number % chunk_size:
+            conn.commit()
 
     conn.commit()
 
@@ -303,7 +307,7 @@ def export_dataset():
 
     with open(path, "w") as file:
         writer = csv.DictWriter(
-            file,  # Denial of service? (TODO)
+            file,
             fieldnames=list(map(
                 lambda column: column.name,
                 dataset.columns
