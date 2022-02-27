@@ -1,4 +1,5 @@
 {
     "secret-key": "",
-    "signup-code": ""
+    "signup-code": "",
+    "port": 8080
 }

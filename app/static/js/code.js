@@ -6,6 +6,12 @@ const ONE_TO_SEVEN = "ONE_TO_SEVEN"
 const ONE_TO_FIVE = "ONE_TO_FIVE"
 const ONE_TO_THREE = "ONE_TO_THREE"
 
+const ORDINAL_LOOKUP = {
+    [ONE_TO_THREE]: 3,
+    [ONE_TO_FIVE]: 5,
+    [ONE_TO_SEVEN]: 7
+}
+
 function fetch_next_row(dataset_id, callback) {
     fetch(
         "/dataset/nextrow",
@@ -44,6 +50,13 @@ function update_row(row){
         else if (data.type == LIKERT) {
             likert(data.prompt, data.value, id)
         }
+        else if (
+            data.type == ONE_TO_THREE
+            || data.type == ONE_TO_FIVE
+            || data.type == ONE_TO_SEVEN
+        ) {
+            numerical_ordinal(data.prompt, data.value, id, ORDINAL_LOOKUP[data.type])
+        }
         else {
             input(data.prompt, data.value, id)
         }
@@ -68,7 +81,11 @@ function submit(){
         if(column.type === SOCIAL_MEDIA || column.type === HIDDEN){
             continue
         }
-        else if(column.type == LIKERT){
+        else if(
+            column.type == LIKERT
+            || column.type == ONE_TO_THREE
+            || column.type == ONE_TO_FIVE
+            || column.type == ONE_TO_SEVEN){
             data.values[column.name] = document.querySelector(`input[name="options-${id}"]:checked`).value;
         }
         else{
@@ -141,7 +158,22 @@ function sanitise(string) {
         regex,
         match => map[match]
     );
-  }
+}
+
+function es(string) {
+    const map = {
+        '\\': '\\\\',
+        '"': '\\"',
+        "'": '\\\';',
+        '\n': '',
+        '\r': ''
+    };
+    const regex = /[\\"'\n\r]/ig;
+    return string.replace(
+        regex,
+        match => map[match]
+    );
+}
 
 function input(column_name, value, id) {
             document.getElementById(id).innerHTML = `
@@ -205,7 +237,30 @@ function likert(column_name, value, id) {
             </label>
         </div>
     `
-    document.querySelecto(`input[name="options-${id}"][value=${value}]`).checked = true;
+    document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
+
+}
+
+function numerical_ordinal(column_name, value, id, number) {
+    html = `
+        <div class="input-group">
+            <div class="input-group-prepend col-6">
+                <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
+            </div>
+    `
+    
+    for (i = 0; i < number; i++){
+        html += `
+            <label for="option${i + 1}-${id}" class="l15">
+                ${i + 1} 
+                <br>
+                <input type="radio" name="options-${id}" id="$option${i + 1}-${id}" autocomplete="off" value="${i + 1}">
+            </label>
+    `
+    }
+    html += "</div>"
+    document.getElementById(id).innerHTML = html
+    document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
 
 }
 
