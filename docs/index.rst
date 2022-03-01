@@ -11,9 +11,10 @@ Cactool documentation
    :caption: Contents:
 
    install
-   usage
    configuration
    security
+   low-memory-machines
+   advanced-configuration
 
 
 
