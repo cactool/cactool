@@ -4,6 +4,9 @@
 
 Cactool is a web tool to help researchers code data containing social media posts.
 
+# Documentation
+The documentation for Cactool can be found on [Read the Docs](https://cactool.readthedocs.io)
+
 # Installation and usage
 ## 1. Download the code
 ```bash
