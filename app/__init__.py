@@ -29,12 +29,13 @@ if not os.path.exists("config.json"):
 else:
     with open("config.json") as file:
         config = json.load(file)
-        if not "upload_size_limit" in config:
-            config["upload_size_limit"] = 16
-        if not "max_rows_in_memory" in config:
-            config["max_rows_in_memory"] = -1
-        if not "signup-code" in config or config["signup-code"] == "":
-            config["signup-code"] = None
+
+if not "upload_size_limit" in config:
+    config["upload_size_limit"] = 16
+if not "max_rows_in_memory" in config:
+    config["max_rows_in_memory"] = -1
+if not "signup-code" in config or config["signup-code"] == "":
+    config["signup-code"] = None
 
 app = Flask(__name__)
 
