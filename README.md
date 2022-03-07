@@ -1,7 +1,7 @@
 <a href="#">![Cactool](https://i.imgur.com/XooF3N8.png)</a>
 
 # Cactool
-[![docs](https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat)](https://cactool.readthedocs.io) [![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654)
+[![docs](https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat)](https://cactool.readthedocs.io) [![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654) [![stability-beta](https://img.shields.io/badge/stability-beta-33bbff.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#beta)
 
 # Introduction
 Cactool is a platform developed for researchers to collaboratively and manually code pre-existing datasets of social media posts for content and discourse analysis. After the initial setup, getting started is easy: import a csv of social media URLs; set your coding variables; and grant access to your coders who can get started right away.
@@ -12,8 +12,6 @@ Cactool is a platform developed for researchers to collaboratively and manually 
 - **Manage Multiple Datasets** Want to split your project by source/themes? You can manage multiple concurrent datasets at the same time.
 - **Built for collaboration** Cactool comes pre-packaged with user management; codes attributed are attributed to each coder for coder reliability calculation (such as [ReCal](http://dfreelon.org/utils/recalfront/)). Multiple people can be coding at the same time without sharing documents. No need to worry about version control or splitting up data.
 - **Code on the Go** Cactool is mobile friendly and can be accessed remotely (we recommend using a VPN to connect, see our tutorial for why).
-
-Current version:```Beta```
  
 # Documentation
 Easy to follow installation instructions and user guides can be found via the documentation on [Read the Docs](https://cactool.readthedocs.io)
