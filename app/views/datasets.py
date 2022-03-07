@@ -280,6 +280,9 @@ def delete_dataset():
         
         return redirect(url_for("show_datasets"))
 
+def dict_union(dict1, dict2):
+    return {**dict1, **dict2}
+
 @datasets.route("/dataset/export", methods=["POST", "GET"])
 def export_dataset():
     if not current_user.is_authenticated:
@@ -318,15 +321,17 @@ def export_dataset():
 
         for row in dataset.rows:
             writer.writerow(
-                {
-                    entry.column.name: entry.value for entry in row.values
-                }
-                | {
-                    "coder": row.coder.initials() if row.coder is not None else "",
-                    "coded": row.coded,
-                    "skipped": row.skip, 
-                    "post_unavailable": row.post_unavailable
-                }
+                dict_union(
+                    {
+                        entry.column.name: entry.value for entry in row.values
+                    },
+                    {
+                        "coder": row.coder.initials() if row.coder is not None else "",
+                        "coded": row.coded,
+                        "skipped": row.skip, 
+                        "post_unavailable": row.post_unavailable
+                    }
+                )
             )
         file.close()
 
