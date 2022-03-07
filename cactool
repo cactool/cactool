@@ -6,5 +6,5 @@ if [[ $1 = "update" ]] | [[ $1 = "install" ]]; then
     $DIR/scripts/update.sh $DIR
 else
     FLASK_APP=$DIR/app flask db upgrade -d $DIR/migrations
-    gunicorn app:app -b :$(python $DIR/scripts/get-port.py) --chdir $DIR
+    gunicorn app:app -b :$(python3 $DIR/scripts/get-port.py) --chdir $DIR
 fi
