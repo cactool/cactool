@@ -3,13 +3,13 @@ title: Cactool
 message: 'If you use this software, please cite it as below.'
 type: software
 authors:
-  - given-names: Liam
-    family-names: McLoughlin
-    email: liam.mcloughlin@manchester.ac.uk
   - given-names: Sam
     family-names: Ezeh
     email: sam.z.ezeh@gmail.com
     orcid: 'https://orcid.org/0000-0003-1218-6116'
+  - given-names: Liam
+    family-names: McLoughlin
+    email: liam.mcloughlin@manchester.ac.uk
 identifiers:
   - type: doi
     value: 10.5281/zenodo.6070206
