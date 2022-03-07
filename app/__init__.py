@@ -8,6 +8,7 @@ import base64
 
 import os
 import os.path
+import pathlib
 import json
 import secrets
 
@@ -17,17 +18,21 @@ from app.views.projects import projects
 from app.views.datasets import datasets
 
 
-DATABASE_FILE_NAME= "db.sqlite3"
+ROOT = pathlib.Path(__file__).parents[1]
+DEFAULT_CONFIG_FILE_NAME = os.path.join(ROOT, "defaults/config.json")
+CONFIG_FILE_NAME = os.path.join(ROOT, "config.json")
+STATIC_FOLDER_PATH = os.path.join(ROOT, "app/static")
+DATABASE_FILE_NAME = "db.sqlite3"
 
-if not os.path.exists("config.json"):
+if not os.path.exists(CONFIG_FILE_NAME):
     secret_key = secrets.token_urlsafe(64)
-    with open("defaults/config.json") as file:
+    with open(DEFAULT_CONFIG_FILE_NAME) as file:
         config = json.load(file)
         config["secret-key"] = secret_key
-    with open("config.json", "w") as file:
+    with open(CONFIG_FILE_NAME, "w") as file:
         json.dump(config, file, indent=2, sort_keys=True)
 else:
-    with open("config.json") as file:
+    with open(CONFIG_FILE_NAME) as file:
         config = json.load(file)
 
 if not "upload_size_limit" in config:
@@ -37,7 +42,7 @@ if not "max_rows_in_memory" in config:
 if not "signup-code" in config or config["signup-code"] == "":
     config["signup-code"] = None
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=STATIC_FOLDER_PATH)
 
 app.register_blueprint(home)
 app.register_blueprint(authentication)

@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
+
+DIR=$1
+
 echo Pulling latest software from GitHub...
-git pull
+git -C $DIR pull
 echo Updating dependencies...
-PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip install -Ur requirements.txt --quiet
+PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip install -Ur $DIR/requirements.txt --quiet
 echo Upgrading database...
-flask db upgrade
+FLASK_APP=$DIR/app/__init__.py flask db upgrade
 echo
 echo "Successfully updated Cactool"
