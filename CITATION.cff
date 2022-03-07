@@ -1,3 +1,6 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
 title: Cactool
 message: 'If you use this software, please cite it as below.'
@@ -7,10 +10,21 @@ authors:
     family-names: Ezeh
     email: sam.z.ezeh@gmail.com
     orcid: 'https://orcid.org/0000-0003-1218-6116'
+  - given-names: Liam
+    family-names: McLoughlin
+    email: liam.mcloughlin@manchester.ac.uk
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.6070206
+    description: Zenodo DOI
+  - type: url
+    value: 'https://github.com/cactool/cactool'
+    description: Gihub Repository
 repository-code: 'https://github.com/cactool/cactool'
-url: 'https://github.com/cactool/cactool'
-doi: 10.5281/zenodo.6070206
-abstract: A discourse-analysis research tool for coding datasets containing social media data
+url: 'https://cactool.github.io'
+abstract: >-
+  An easy way to collaboratively code social media
+  posts for manual content and discourse analysis
 keywords:
   - software
   - discourse analysis
