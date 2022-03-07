@@ -1,4 +1,4 @@
-<a href="#">![Cactool](https://i.imgur.com/XooF3N8.png)</a>
+<a href="#readme">![Cactool](https://i.imgur.com/XooF3N8.png)</a>
 
 # Cactool
 [![docs](https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat)](https://cactool.readthedocs.io) [![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654) [![stability-beta](https://img.shields.io/badge/stability-beta-33bbff.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#beta)
