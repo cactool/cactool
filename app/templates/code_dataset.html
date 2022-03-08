@@ -37,12 +37,28 @@
             <p class="lead fw-normal text-muted mb-0">Coding dataset</p>
           </div>
           <div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Prompt</th>
+                <th style="width: 10px;"></th>
+                <th scope="col">Response</th>
+              </tr>
+            </thead>
+            <tbody>
             {% for column in dataset.columns %}
-                <div
-                  id="column-{{ column.id }}"
-                  class="text-center">
-                </div>
+                    <tr>
+                    <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.name }}</th>
+                    <th style="width: 10px;"></th>
+                    <th scope="row">
+                      <div
+                      id="column-{{ column.id }}"
+                      class="text-centre"></div>
+                    </th>
+                    </tr> 
             {% endfor %}
+            </tbody>
+            </table>
           </div>
           <br>
           <div class="row gy-1">

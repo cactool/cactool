@@ -187,9 +187,6 @@ function es(string) {
 function input(column_name, value, id) {
             document.getElementById(id).innerHTML = `
                 <div class="input-group">
-                    <div class="input-group-prepend col-6">
-                        <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
-                    </div>
                     <input class="form-control" value='${sanitise(value)}'>
                 </div>
             `
@@ -198,10 +195,6 @@ function input(column_name, value, id) {
 function checkbox(column_name, value, id) {
             document.getElementById(id).innerHTML = `
                 <div class="input-group">
-                    <div class="input-group-prepend col-6">
-                        <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
-                    </div>
-
                     <input id=check-${id} class="btn-check" type=checkbox ${value? 'checked' : ''}>
                     <label for=check-${id} class="btn btn-outline-primary"> Yes </label>
                 </div>
@@ -211,10 +204,6 @@ function checkbox(column_name, value, id) {
 function likert(column_name, value, id) {
     document.getElementById(id).innerHTML = `
         <div class="input-group">
-            <div class="input-group-prepend col-6">
-                <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
-            </div>
-             
             <label for="option1-${id}" class="l15">
                 Didn't like
                 <br>
@@ -263,9 +252,6 @@ function likert(column_name, value, id) {
 function numerical_ordinal(column_name, value, id, number) {
     html = `
         <div class="input-group">
-            <div class="input-group-prepend col-6">
-                <span class="input-group-text col-12"> ${sanitise(column_name)} </span>
-            </div>
     `
     
     for (i = 0; i < number; i++){

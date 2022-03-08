@@ -1,3 +1,11 @@
 .l15 {
     padding-left: 5%;
 }
+
+.text-centre {
+    text-align: center;
+}
+
+input {
+    border-width: 2px !important;
+}
