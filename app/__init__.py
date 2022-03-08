@@ -36,7 +36,7 @@ else:
         config = json.load(file)
 
 if not "upload_size_limit" in config:
-    config["upload_size_limit"] = 16
+    config["upload_size_limit"] = 1024
 if not "max_rows_in_memory" in config:
     config["max_rows_in_memory"] = -1
 if not "signup-code" in config or config["signup-code"] == "":

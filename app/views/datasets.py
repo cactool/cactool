@@ -10,6 +10,7 @@ import sqlite3
 import uuid
 import csv
 import requests
+from sqlalchemy import select
 
 datasets = Blueprint("datasets", __name__)
 
@@ -200,14 +201,12 @@ def next_row():
     if not current_user.can_code(dataset):
         flash("You don't have access to this dataset")
         return redirect(url_for("datasets.view_datasets"))
-    rows = filter(
-        lambda row: not row.coded,
-        dataset.rows
-    )
+    
+    row = DatasetRow.query.filter_by(dataset_id=dataset_id, coded=False).first()
 
-    try:
-        row = next(rows).serialise()
-    except StopIteration:
+    if row:
+        row = row.serialise()
+    else:
         row = {"is_empty": True}
 
     return jsonify(row)
