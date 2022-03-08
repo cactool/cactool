@@ -203,7 +203,7 @@ function checkbox(column_name, value, id) {
 
 function likert(column_name, value, id) {
     document.getElementById(id).innerHTML = `
-        <div class="input-group">
+        <div class="input-group" class="multi-choice">
             <label for="option1-${id}" class="l15">
                 Didn't like
                 <br>
@@ -251,7 +251,7 @@ function likert(column_name, value, id) {
 
 function numerical_ordinal(column_name, value, id, number) {
     html = `
-        <div class="input-group">
+        <div class="input-group multi-choice">
     `
     
     for (i = 0; i < number; i++){
