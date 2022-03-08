@@ -12,7 +12,7 @@ Cactool documentation
 
    install
    configuration
-   security
+   security-measures
    low-memory-machines
    advanced-configuration
 
