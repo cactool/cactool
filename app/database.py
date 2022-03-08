@@ -146,6 +146,12 @@ class Dataset(db.Model):
     def generate_invite_link(self, base_url, ekey):
         return base_url + f"dataset/invite/{self.id}/{self.code(ekey)}"
 
+    @property
+    def num_rows(self):
+        return DatasetRow.query.filter_by(
+            dataset_id=self.id
+        ).count()
+
 
 class DatasetColumn(db.Model):
     id = db.Column(db.String(512), primary_key=True, unique=True)

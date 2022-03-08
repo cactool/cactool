@@ -60,7 +60,6 @@ function update_row(row){
         else {
             input(data.prompt, data.value, id)
         }
-        // document.getElementById("column-" + column_name).innerHTML = value
     }
 }
 
@@ -86,7 +85,17 @@ function submit(){
             || column.type == ONE_TO_THREE
             || column.type == ONE_TO_FIVE
             || column.type == ONE_TO_SEVEN){
-            data.values[column.name] = document.querySelector(`input[name="options-${id}"]:checked`).value;
+            try{
+                data.values[column.name] = document.querySelector(`input[name="options-column-${column.name}"]:checked`).value;
+            }
+            catch(exception){
+                if (exception instanceof TypeError) {
+                    data.values[column.name] = ""
+                }
+                else{
+                    console.log(exception)
+                }
+            }
         }
         else{
             data.values[column.name] = get_value(column.name)
@@ -237,7 +246,17 @@ function likert(column_name, value, id) {
             </label>
         </div>
     `
-    document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
+    try {
+        document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
+    }
+    catch (exception) {
+        if (exception instanceof TypeError){
+            
+        }
+        else{
+            console.log(exception)
+        }
+    }
 
 }
 
@@ -254,13 +273,23 @@ function numerical_ordinal(column_name, value, id, number) {
             <label for="option${i + 1}-${id}" class="l15">
                 ${i + 1} 
                 <br>
-                <input type="radio" name="options-${id}" id="$option${i + 1}-${id}" autocomplete="off" value="${i + 1}">
+                <input type="radio" name="options-${id}" id="option${i + 1}-${id}" autocomplete="off" value="${i + 1}">
             </label>
     `
     }
     html += "</div>"
     document.getElementById(id).innerHTML = html
-    document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
+    try {
+        document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
+    }
+    catch (exception){
+        if (exception instanceof TypeError){
+
+        }
+        else {
+            console.log(exception)
+        }
+    }
 
 }
 
