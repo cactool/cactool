@@ -46,7 +46,7 @@
               </tr>
             </thead>
             <tbody>
-            {% for column in dataset.columns %}
+            {% for column in dataset.ordered_columns %}
                     <tr>
                     <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.name }}</th>
                     <th style="width: 10px;"></th>

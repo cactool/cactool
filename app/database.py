@@ -151,6 +151,10 @@ class Dataset(db.Model):
         return DatasetRow.query.filter_by(
             dataset_id=self.id
         ).count()
+    
+    @property
+    def ordered_columns(self):
+        return sorted(self.columns, key=lambda column: column.type != Type.SOCIAL_MEDIA)
 
 
 class DatasetColumn(db.Model):
