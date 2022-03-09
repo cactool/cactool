@@ -1,3 +1,5 @@
+*.whl
+
 # Configuration files 
 config.json
 
