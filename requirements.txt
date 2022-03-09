@@ -7,3 +7,4 @@ Werkzeug
 gunicorn
 Flask-Migrate
 cryptography
+appdirs
