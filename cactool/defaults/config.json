@@ -1,0 +1,7 @@
+{
+    "secret-key": "",
+    "signup-code": "",
+    "port": 8080,
+    "upload_size_limit": 500,
+    "max_rows_in_memory": -1
+}
