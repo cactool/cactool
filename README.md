@@ -1,7 +1,7 @@
 <a href="#readme">![Cactool](https://i.imgur.com/XooF3N8.png)</a>
 
 # Cactool
-[![PyPI version](https://badge.fury.io/py/Cactool.svg)](https://badge.fury.io/py/Cactool) [![docs](https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat)](https://cactool.readthedocs.io) [![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654) [![stability-beta](https://img.shields.io/badge/stability-beta-33bbff.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#beta)
+[[![PyPI version](https://badge.fury.io/py/Cactool.svg)](https://badge.fury.io/py/Cactool) ![docs](https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat)](https://cactool.readthedocs.io) [![stability-beta](https://img.shields.io/badge/stability-beta-33bbff.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#beta) ![CodeQL](https://github.com/cactool/cactool/workflows/CodeQL/badge.svg) [![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654)
 
 # Introduction
 Cactool is a platform developed for researchers to collaboratively and manually code pre-existing datasets of social media posts for content and discourse analysis. After the initial setup, getting started is easy: import a csv of social media URLs; set your coding variables; and grant access to your coders who can get started right away.
