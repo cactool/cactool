@@ -90,7 +90,10 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 def cactool():
-    subprocess.call([STARTUP_SCRIPT_LOCATION, *sys.argv[1:]], shell=True) 
+    try:
+        subprocess.call([STARTUP_SCRIPT_LOCATION, *sys.argv[1:]], shell=True)
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == "__main__":
     app = create_app()
