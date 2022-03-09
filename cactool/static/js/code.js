@@ -12,6 +12,22 @@ const ORDINAL_LOOKUP = {
     [ONE_TO_SEVEN]: 7
 }
 
+const TWITTER_HOSTS = [
+  "twitter.com",
+  "www.twitter.com",
+]
+
+const INSTAGRAM_HOSTS = [
+  "instagram.com",
+  "www.instagram.com"
+]
+
+const TIKTOK_HOSTS = [
+  "tiktok.com",
+  "www.tiktok.com",
+  "vm.tiktok.com"
+]
+
 function fetch_next_row(dataset_id, callback) {
     fetch(
         "/dataset/nextrow",
@@ -288,13 +304,15 @@ function clear(id){
 }
 
 function social_media_embed(url, id, column_id){
-    hostname = new URL(url).hostname
-    if (hostname.endsWith("twitter.com"))
+    host = new URL(url).host
+    if (TWITTER_HOSTS.includes(host))
         twitter_embed(url, id)
-    else if (hostname.endsWith("tiktok.com"))
+    else if (TIKTOK_HOSTS.includes(host)))
         tiktok_embed(url, id, column_id)
-    else if (hostname.endsWith("instagram.com"))
+    else if (INSTAGRAM_HOSTS.includes(host))
         instagram_embed(url, id)
+    else if (YOUTUBE_HOSTS.includes(host))
+        youtube_embed(url, id, column_id)
 }
 
 function tiktok_embed(_url, id, column_id) {
