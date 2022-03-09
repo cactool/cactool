@@ -17,17 +17,13 @@ Cactool is a platform developed for researchers to collaboratively and manually 
 Easy to follow installation instructions and user guides can be found via the documentation on [Read the Docs](https://cactool.readthedocs.io)
 
 # Installation and usage
-## 1. Download the code
+## 1. Install Cactool
 ```bash
-git clone https://github.com/cactool/cactool/ && cd cactool
+pip install cactool
 ```
-## 2. Install the requirements
+## 2. Start the website
 ```bash
-./cactool install
-```
-## 3. Start the website
-```bash
-./cactool
+cactool
 ```
 # Credits
 The project’s Principle Investigator is [Dr Liam McLoughlin]( https://www.research.manchester.ac.uk/portal/liam.mcloughlin.html), *Lecturer in Politics at the University of Manchester*, and the development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
