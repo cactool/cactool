@@ -33,7 +33,7 @@ The project’s Principle Investigator is [Dr Liam McLoughlin]( https://www.rese
 @software{McLoughlin_Ezeh_2022,
   title = {{Cactool: An easy way to collaboratively code social media posts for manual content and discourse analysis (BETA)}},
   author  = {McLoughlin, Liam and Ezeh, Sam},
-  year  = {2022}
+  year  = {2022},
   doi = {10.5281/zenodo.6070206},
   url = {https://github.com/cactool/cactool},
   license = {MIT}
