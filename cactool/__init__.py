@@ -1,27 +1,30 @@
-from flask import Flask
-from flask_login import LoginManager
-from app.database import db, User
-from flask_migrate import Migrate
-from cryptography.hazmat.primitives.hashes import SHA256
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import base64
-
+import sys
 import os
 import os.path
+import subprocess
 import pathlib
+import base64
 import json
 import secrets
 
-from app.views.authentication import authentication
-from app.views.home import home
-from app.views.projects import projects
-from app.views.datasets import datasets
+from flask import Flask
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from cryptography.hazmat.primitives.hashes import SHA256
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+from .database import db, User
+from .views.authentication import authentication
+from .views.home import home
+from .views.projects import projects
+from .views.datasets import datasets
 
 
 ROOT = pathlib.Path(__file__).parents[1]
-DEFAULT_CONFIG_FILE_NAME = os.path.join(ROOT, "defaults/config.json")
+DEFAULT_CONFIG_FILE_NAME = os.path.join(ROOT, "cactool/defaults/config.json")
 CONFIG_FILE_NAME = os.path.join(ROOT, "config.json")
-STATIC_FOLDER_PATH = os.path.join(ROOT, "app/static")
+STARTUP_SCRIPT_LOCATION = os.path.join(ROOT, "cactool/bin/cactool")
+STATIC_FOLDER_PATH = os.path.join(ROOT, "cactool/static")
 DATABASE_FILE_NAME = "db.sqlite3"
 
 if not os.path.exists(CONFIG_FILE_NAME):
@@ -85,6 +88,9 @@ migrate = Migrate(app, db, compare_type=True)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+def cactool():
+    subprocess.call([STARTUP_SCRIPT_LOCATION, *sys.argv[1:]], shell=True) 
 
 if __name__ == "__main__":
     app = create_app()
