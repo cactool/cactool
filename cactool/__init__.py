@@ -13,7 +13,7 @@ from flask_migrate import Migrate
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from .database import db, Anonymous, User
+from .database import db, AnonymousUser, User
 from .views.authentication import authentication
 from .views.home import home
 from .views.projects import projects
