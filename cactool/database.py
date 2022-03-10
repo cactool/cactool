@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 import csv
 from .types import Type, AccessLevel
 import cryptography.fernet
@@ -49,6 +49,31 @@ project_datasets = db.Table(
     db.Column("project_id", db.ForeignKey("project.id")),
     db.Column("dataset_id", db.ForeignKey("dataset.id"))
 )
+
+class AnonymousUser(AnonymousUserMixin):
+    def viewable_datasets(self):
+        return []
+
+    def editable_projects(self):
+        return []
+
+    def can(self, access_type, thing):
+        return False
+
+    def can_dataset(self, dataset, access_type):
+        return False
+
+    def can_project(self, project, access_type):
+        return False
+
+    def can_edit(self, thing):
+        return False
+
+    def can_export(self, thing):
+        return False
+
+    def initials(self):
+        return "??"
 
 class User(UserMixin, db.Model):
     id = db.Column(db.String(512), unique=True, primary_key=True)

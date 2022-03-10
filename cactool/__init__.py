@@ -13,7 +13,7 @@ from flask_migrate import Migrate
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from .database import db, User
+from .database import db, Anonymous, User
 from .views.authentication import authentication
 from .views.home import home
 from .views.projects import projects
@@ -79,6 +79,7 @@ kdf = PBKDF2HMAC(
 app.encryption_key = base64.urlsafe_b64encode(kdf.derive(app.secret_key.encode()))
 
 login_manager = LoginManager()
+login_manager.anonymous_user = AnonymousUser
 login_manager.login_view = "authentication.login"
 login_manager.init_app(app)
 
