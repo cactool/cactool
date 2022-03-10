@@ -307,7 +307,7 @@ function social_media_embed(url, id, column_id){
     host = new URL(url).host
     if (TWITTER_HOSTS.includes(host))
         twitter_embed(url, id)
-    else if (TIKTOK_HOSTS.includes(host)))
+    else if (TIKTOK_HOSTS.includes(host))
         tiktok_embed(url, id, column_id)
     else if (INSTAGRAM_HOSTS.includes(host))
         instagram_embed(url, id)
