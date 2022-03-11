@@ -1,7 +1,23 @@
 <a href="#readme">![Cactool](https://i.imgur.com/XooF3N8.png)</a>
 
 # Cactool
-[![PyPI version](https://badge.fury.io/py/Cactool.svg)](https://badge.fury.io/py/Cactool) [![docs](https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat)](https://cactool.readthedocs.io) [![stability-beta](https://img.shields.io/badge/stability-beta-33bbff.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#beta) ![CodeQL](https://github.com/cactool/cactool/workflows/CodeQL/badge.svg) [![DOI](https://zenodo.org/badge/447718654.svg)](https://zenodo.org/badge/latestdoi/447718654)
+<p align="center">
+ <a href="https://badge.fury.io/py/Cactool">
+  <img src="https://badge.fury.io/py/Cactool.svg" alt="PyPI version">
+ </a>
+  <a href="https://cactool.readthedocs.io">
+  <img src="https://readthedocs.org/projects/cactool/badge/?version=latest&style=flat" alt="docs">
+ </a>
+  <a href="https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#beta">
+  <img src="https://img.shields.io/badge/stability-beta-33bbff.svg" alt="stability-beta">
+ </a>
+  <a href="">
+  <img src="https://github.com/cactool/cactool/workflows/CodeQL/badge.svg" alt="CodeQL">
+ </a>
+  <a href="https://zenodo.org/badge/latestdoi/447718654">
+  <img src="https://zenodo.org/badge/447718654.svg" alt="DOI">
+ </a>
+</p>
 
 # Introduction
 Cactool is a platform developed for researchers to collaboratively and manually code pre-existing datasets of social media posts for content and discourse analysis. After the initial setup, getting started is easy: import a csv of social media URLs; set your coding variables; and grant access to your coders who can get started right away.
