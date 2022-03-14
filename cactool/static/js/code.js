@@ -84,6 +84,11 @@ function get_value(column_name){
     return document.getElementById(id).getElementsByTagName("input")[0].value
 }
 
+function get_boolean(column_name){
+    id = "column-" + column_name
+    return document.getElementById(id).getElementsByTagName("input")[0].checked
+}
+
 function submit(){
     data = {
         dataset_id: window.dataset_id,
@@ -112,6 +117,9 @@ function submit(){
                     console.log(exception)
                 }
             }
+        }
+        else if (column.type == BOOLEAN){
+            data.values[column.name] = get_boolean(column.name);
         }
         else{
             data.values[column.name] = get_value(column.name)
@@ -296,7 +304,6 @@ function numerical_ordinal(column_name, value, id, number) {
 }
 
 function hidden(_column_name, _value, id) {
-    document.getElementById(id).innerHTML = ``
 }
 
 function clear(id){

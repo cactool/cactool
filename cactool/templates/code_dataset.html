@@ -47,8 +47,9 @@
             </thead>
             <tbody>
             {% for column in dataset.ordered_columns %}
+                {% if column.type.value != "HIDDEN" %}
                     <tr>
-                    <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.name }}</th>
+                    <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.prompt }}</th>
                     <th style="width: 10px;"></th>
                     <th scope="row" class="text-centre;">
                       <div
@@ -56,6 +57,7 @@
                       class="text-centre"></div>
                     </th>
                     </tr> 
+                {% endif %}
             {% endfor %}
             </tbody>
             </table>

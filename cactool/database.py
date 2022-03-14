@@ -69,6 +69,9 @@ class AnonymousUser(AnonymousUserMixin):
     def can_edit(self, thing):
         return False
 
+    def can_code(self, thing):
+        return False
+
     def can_export(self, thing):
         return False
 
