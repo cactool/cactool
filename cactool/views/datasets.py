@@ -83,8 +83,8 @@ def dataset_invite(dataset_id, invite_code):
         if not current_user.can_code(dataset):
             current_user.dataset_rights.append(
                 DatasetAccess(
-                    dataset,
-                    AccessLevel.CODE
+                    dataset_id=dataset.id,
+                    access_level=AccessLevel.CODE
                 )
             )
             return redirect(url_for("datasets.view_dataset", dataset_id=dataset.id))
