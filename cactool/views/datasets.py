@@ -87,7 +87,8 @@ def dataset_invite(dataset_id, invite_code):
                     access_level=AccessLevel.CODE
                 )
             )
-            return redirect(url_for("datasets.view_dataset", dataset_id=dataset.id))
+            db.session.commit()
+            return redirect(url_for("datasets.show_datasets"))
         else:
             flash("You already have access to this dataset")
             return redirect(url_for("datasets.view_dataset", dataset_id=dataset.id))
@@ -103,7 +104,7 @@ def view_dataset(dataset_id):
 
     if not current_user.can_edit(dataset):
         flash("You don't have access to that dataset")
-        redirect(url_for("datasets.show_datasets"))
+        return redirect(url_for("datasets.show_datasets"))
 
     return render_template(
         "view_dataset.html",
