@@ -7,9 +7,11 @@ import base64
 import json
 import secrets
 
+import appdirs
+
 from flask import Flask
 from flask_login import LoginManager
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
@@ -19,13 +21,19 @@ from .views.home import home
 from .views.projects import projects
 from .views.datasets import datasets
 
+import gunicorn.app.base
 
 ROOT = pathlib.Path(__file__).parents[1]
+CONFIG_DIR = appdirs.user_config_dir("cactool")
+MIGRATIONS_DIR = os.path.join(ROOT, "cactool/migrations")
 DEFAULT_CONFIG_FILE_NAME = os.path.join(ROOT, "cactool/defaults/config.json")
-CONFIG_FILE_NAME = os.path.join(ROOT, "config.json")
+CONFIG_FILE_NAME = os.path.join(CONFIG_DIR, "config.json")
 STARTUP_SCRIPT_LOCATION = os.path.join(ROOT, "cactool/bin/cactool")
 STATIC_FOLDER_PATH = os.path.join(ROOT, "cactool/static")
 DATABASE_FILE_NAME = "db.sqlite3"
+
+if not os.path.exists(CONFIG_DIR):
+    os.mkdir(CONFIG_DIR)
 
 if not os.path.exists(CONFIG_FILE_NAME):
     secret_key = secrets.token_urlsafe(64)
@@ -90,12 +98,60 @@ migrate = Migrate(app, db, compare_type=True)
 def load_user(user_id):
     return User.query.get(user_id)
 
-def cactool():
-    try:
-        subprocess.call([STARTUP_SCRIPT_LOCATION, *sys.argv[1:]], shell=True)
-    except KeyboardInterrupt:
-        pass
+class CactoolApplication(gunicorn.app.base.BaseApplication):
+    def __init__(self, app):
+        self.app = app
+        self.options = {
+            "bind": f"0.0.0.0:{get_value('port')}",
+            "workers": 4,
+        }
+        super(CactoolApplication, self).__init__()
 
-if __name__ == "__main__":
-    app = create_app()
-    app.run()
+    def load_config(self):
+        for key, value in self.options.items():
+            self.cfg.set(key, value)
+
+    def load(self):
+        return self.app
+
+def get_value(key):
+    if key == "port":
+        if "PORT" in os.environ:
+            return os.environ["PORT"]
+        elif "port" in config:
+            return config["port"]
+        else:
+            return 8080
+    else:
+        return config[key]
+
+def set_value(key, value):
+    config[key] = value
+    with open(CONFIG_FILE_NAME, "w") as file:
+        json.dump(config, file)
+
+def upgrade_database():
+    with app.app_context():
+        upgrade(MIGRATIONS_DIR)
+
+def cactool():
+    if len(sys.argv) == 1:
+        upgrade_database()
+        cactool_app = CactoolApplication(app) # Start application
+        print(cactool_app.cfg)
+        cactool_app.run()
+    elif len(sys.argv) == 2 and sys.argv[1] == "update":
+        upgrade_database() # Upgrade the database
+    elif len(sys.argv) == 3 and sys.argv[1] == "get":
+        print(get_value(sys.argv[2])) # Get a configuration parameter
+    elif len(sys.argv) == 4 and sys.argv[1] == "set":
+        set_value(sys.argv[2], sys.argv[3]) # Sets a configuration parameter
+    else:
+        print(
+            """\
+usage: cactool COMMAND [ARGS...]
+Commands:
+  cactool                   Starts the server
+  cactool get NAME          Gets a configuration parameter
+  cactool set NAME VALUE    Sets a configuration parameter"""
+        )
