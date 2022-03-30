@@ -138,7 +138,6 @@ def cactool():
     if len(sys.argv) == 1:
         upgrade_database()
         cactool_app = CactoolApplication(app) # Start application
-        print(cactool_app.cfg)
         cactool_app.run()
     elif len(sys.argv) == 2 and sys.argv[1] == "update":
         upgrade_database() # Upgrade the database
