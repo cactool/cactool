@@ -21,7 +21,7 @@ from .views.home import home
 from .views.projects import projects
 from .views.datasets import datasets
 
-import gunicorn.app.base
+import waitress
 
 ROOT = pathlib.Path(__file__).parents[1]
 CONFIG_DIR = appdirs.user_config_dir("cactool")
@@ -98,22 +98,6 @@ migrate = Migrate(app, db, compare_type=True)
 def load_user(user_id):
     return User.query.get(user_id)
 
-class CactoolApplication(gunicorn.app.base.BaseApplication):
-    def __init__(self, app):
-        self.app = app
-        self.options = {
-            "bind": f"0.0.0.0:{get_value('port')}",
-            "workers": 4,
-        }
-        super(CactoolApplication, self).__init__()
-
-    def load_config(self):
-        for key, value in self.options.items():
-            self.cfg.set(key, value)
-
-    def load(self):
-        return self.app
-
 def get_value(key):
     if key == "port":
         if "port" in config:
@@ -143,8 +127,12 @@ Commands:
 def cactool():
     if len(sys.argv) == 1:
         upgrade_database()
-        cactool_app = CactoolApplication(app) # Start application
-        cactool_app.run()
+        bind = f"localhost:{get_value('port')}"
+        print(f"Starting Cactool server instance on http://{bind}")
+        waitress.serve(
+            app,
+            listen = bind
+        ) # Start application
     elif len(sys.argv) == 2 and sys.argv[1] == "update":
         upgrade_database() # Upgrade the database
     elif len(sys.argv) == 3 and sys.argv[1] == "get":

@@ -4,7 +4,7 @@ Flask_Login
 Flask_SQLAlchemy
 passlib
 Werkzeug
-gunicorn
+waitress
 Flask-Migrate
 cryptography
 appdirs
