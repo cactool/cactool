@@ -116,9 +116,7 @@ class CactoolApplication(gunicorn.app.base.BaseApplication):
 
 def get_value(key):
     if key == "port":
-        if "PORT" in os.environ:
-            return os.environ["PORT"]
-        elif "port" in config:
+        if "port" in config:
             return config["port"]
         else:
             return 8080
@@ -134,6 +132,14 @@ def upgrade_database():
     with app.app_context():
         upgrade(MIGRATIONS_DIR)
 
+USAGE_STRING = """\
+usage: cactool COMMAND [ARGS...]
+Commands:
+  cactool                   Starts the server
+  cactool get NAME          Gets a configuration parameter
+  cactool set NAME VALUE    Sets a configuration parameter\
+"""
+
 def cactool():
     if len(sys.argv) == 1:
         upgrade_database()
@@ -146,11 +152,4 @@ def cactool():
     elif len(sys.argv) == 4 and sys.argv[1] == "set":
         set_value(sys.argv[2], sys.argv[3]) # Sets a configuration parameter
     else:
-        print(
-            """\
-usage: cactool COMMAND [ARGS...]
-Commands:
-  cactool                   Starts the server
-  cactool get NAME          Gets a configuration parameter
-  cactool set NAME VALUE    Sets a configuration parameter"""
-        )
+        print(USAGE_STRING)
