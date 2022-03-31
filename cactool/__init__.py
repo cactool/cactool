@@ -33,7 +33,7 @@ STATIC_FOLDER_PATH = os.path.join(ROOT, "cactool/static")
 DATABASE_FILE_NAME = "db.sqlite3"
 
 if not os.path.exists(CONFIG_DIR):
-    os.mkdir(CONFIG_DIR)
+    os.makedirs(CONFIG_DIR)
 
 if not os.path.exists(CONFIG_FILE_NAME):
     secret_key = secrets.token_urlsafe(64)
