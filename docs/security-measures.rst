@@ -7,11 +7,9 @@ To prevent external unkown users from creating accounts on the Cactool instance 
 
 By default, if no signup code is entered or the signup code provided is empty, no code will be required while creating an account on the server.
 
-.. code-block:: json
+.. code-block:: bash
 
-  {
-    "signup-code": "ENTER YOUR SIGNUP CODE HERE"
-  }
+  cactool set signup-code "ENTER YOUR SIGNUP CODE HERE"
 
 Limiting file upload size
 ---------------------------------------
@@ -19,14 +17,11 @@ Strict file size upload limits can be set to prevent any service loss from any l
 
 By default, the upload limit is 16 megabytes and if neccessary, the very strict default limit can be increased with no problem.
 
-The example configuration below sets the file upload limit to 8 megabytes.
+The example command below sets the file upload limit to 8 megabytes.
 
-.. code-block:: json
+.. code-block:: bash
 
-  {
-    "upload_size_limit": 8
-  }
-
+  cactool set upload-limit 8
 
 
 Using HTTPS

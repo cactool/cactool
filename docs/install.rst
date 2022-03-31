@@ -4,28 +4,16 @@ Installation and Usage
 
 Install instructions
 -----------------------
-First download Cactool by retrieving the source code from GitHub
+First install the latest version of Cactool using pip
 
 .. code-block:: bash
 
-  git clone https://github.com/cactool/cactool
-
-Enter the Cactool directory
-
-.. code-block:: bash
-
-   cd cactool
-
-Then install the requirements
-
-.. code-block:: bash
-
-   ./cactool install
+    pip install -U cactool
 
 Running Cactool
 ----------------
-After performing these steps, you can start the Cactool server at any time by simply running :code:`./cactool` 
+After performing these steps, you can start the Cactool server at any time by simply running :code:`cactool`. If that doesn't work, you may have to run Cactool by using :code:`python -m cactool`
 
 Updating Cactool
 -----------------
-To update Cactool, simply run :code:`./cactool update`
+To update Cactool, simply run :code:`pip install -U cactool`

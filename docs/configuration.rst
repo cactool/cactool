@@ -1,18 +1,20 @@
 Basic configuration
 ===================================
 
-The config.json file
+Setting parameters
 ----------------------
-The :code:`config.jsosn` file allows for customisation of the Cactool web server and is automatically generated the first time the Cactool starts.
+Cactool allows for the customisation of various parameters.
 
-Manually writing out configurations for the config file isn't required as Cactool automatically sets reasonable defaults as values for each of the fields.
+As an example, you could configure Cactool to run on port number 8080 by executing the following
 
-As an example, you could use to configuration file to specify that Cactool should runs on port number 8080
+.. code-block:: bash
 
-.. code-block:: json
+  cactool set port 8080
 
-  {
-    "port": 8080 
-  }
+On some systems, this may be
 
-More information is given in the :ref:`Configuration <advanced-configuration>` section.
+.. code-block:: bash
+
+   python -m set port 8080
+
+More information is given in the :doc:`Configuration <advanced-configuration>` section.

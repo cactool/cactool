@@ -46,10 +46,10 @@ else:
     with open(CONFIG_FILE_NAME) as file:
         config = json.load(file)
 
-if not "upload_size_limit" in config:
-    config["upload_size_limit"] = 1024
-if not "max_rows_in_memory" in config:
-    config["max_rows_in_memory"] = -1
+if not "upload-limit" in config:
+    config["upload-limit"] = 1024
+if not "max-rows" in config:
+    config["max-rows"] = -1
 if not "signup-code" in config or config["signup-code"] == "":
     config["signup-code"] = None
 
@@ -72,8 +72,8 @@ DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAX_CONTENT_LENGTH"] = config["upload_size_limit"] * 1024**2
-app.config["max_rows_in_memory"] = config["max_rows_in_memory"]
+app.config["MAX_CONTENT_LENGTH"] = int(config["upload-limit"]) * 1024**2
+app.config["max_rows_in_memory"] = int(config["max-rows"])
 app.config["signup-code"] = config["signup-code"]
 app.secret_key = config["secret-key"]
 
@@ -107,10 +107,17 @@ def get_value(key):
     else:
         return config[key]
 
-def set_value(key, value):
-    config[key] = value
+def write_config():
     with open(CONFIG_FILE_NAME, "w") as file:
         json.dump(config, file)
+
+def set_value(key, value):
+    config[key] = value
+    write_config()
+
+def unset_value(key):
+    del config[key]
+    write_config()
 
 def upgrade_database():
     with app.app_context():
@@ -121,6 +128,7 @@ usage: cactool COMMAND [ARGS...]
 Commands:
   cactool                   Starts the server
   cactool get NAME          Gets a configuration parameter
+  cactool unset NAME        Unsets a configuration parameter
   cactool set NAME VALUE    Sets a configuration parameter\
 """
 
@@ -128,7 +136,7 @@ def cactool():
     if len(sys.argv) == 1:
         upgrade_database()
         bind = f"localhost:{get_value('port')}"
-        print(f"Starting Cactool server instance on http://{bind}")
+        print(f"Starting Cactool server instance at http://{bind}")
         waitress.serve(
             app,
             listen = bind
@@ -137,6 +145,8 @@ def cactool():
         upgrade_database() # Upgrade the database
     elif len(sys.argv) == 3 and sys.argv[1] == "get":
         print(get_value(sys.argv[2])) # Get a configuration parameter
+    elif len(sys.argv) == 3 and sys.argv[1] == "unset":
+        unset_value(sys.argv[2]) # Unsets a configuration parameter
     elif len(sys.argv) == 4 and sys.argv[1] == "set":
         set_value(sys.argv[2], sys.argv[3]) # Sets a configuration parameter
     else:

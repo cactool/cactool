@@ -6,6 +6,8 @@
 Cactool documentation
 ===================================
 
+Welcome to the documentation for Cactool. Cactool is currently in beta and functionality is changing rapidly and some issues can be solved by updating. Any problems can be reported to the issue-tracker which can be found at the following address: https://github.com/cactool/cactool/issues
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
