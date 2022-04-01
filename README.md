@@ -14,8 +14,8 @@
   <a href="">
   <img src="https://github.com/cactool/cactool/workflows/CodeQL/badge.svg" alt="CodeQL">
  </a>
-  <a href="https://zenodo.org/badge/latestdoi/447718654">
-  <img src="https://zenodo.org/badge/447718654.svg" alt="DOI">
+ <a href="https://doi.org/10.5281/zenodo.6070205">
+   <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.6070205.svg" alt="DOI">
  </a>
 </p>
 
