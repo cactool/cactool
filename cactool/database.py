@@ -29,8 +29,6 @@ class DatasetAccess(db.Model, AccessContainer):
     dataset_id = db.Column(db.ForeignKey("dataset.id"), primary_key=True)
     access_level = db.Column(db.Enum(AccessLevel))
     
-    dataset = db.relationship("Dataset")
-    
     @property
     def container_id(self):
         return self.dataset_id
@@ -158,6 +156,8 @@ class Dataset(db.Model):
     rows = db.relationship("DatasetRow", cascade="all, delete-orphan")
 
     projects = db.relationship("Project", secondary=project_datasets)
+
+    granted_access = db.relationship("DatasetAccess", cascade="all, delete-orphan")
     
     def emit_csv(self) -> str:
         writer = csv.DictWriter()

@@ -185,6 +185,7 @@ def update_dataset():
 
 @datasets.route("/datasets", methods=["GET"])
 def show_datasets():
+    print(current_user.viewable_datasets())
     return render_template("show_datasets.html", datasets=current_user.viewable_datasets())
 
 @datasets.route("/dataset/<dataset_id>/nomore", methods=["GET"])
@@ -270,15 +271,16 @@ def delete_dataset():
         return render_template("delete_dataset.html", dataset=dataset)
     else:
         if not dataset:
-            return redirect(url_for("datasets.show_dataset"))
+            return redirect(url_for("datasets.show_datasets"))
         if not current_user.can_edit(dataset):
             flash("You don't have access to this dataset")
             return redirect(url_for("datasets.show_datasets"))
+
         dataset = Dataset.query.get(dataset_id)
         db.session.delete(dataset)
         db.session.commit()
         
-        return redirect(url_for("show_datasets"))
+        return redirect(url_for("datasets.show_datasets"))
 
 def dict_union(dict1, dict2):
     return {**dict1, **dict2}

@@ -91,7 +91,7 @@
             <input type=submit form="types" href="/dataset/update" class="btn btn-outline-dark" value="Update dataset"/>
           </div>
           <br>
-          <form hidden id="delete" method="POST" action="/dataset/delete/">
+          <form hidden id="delete" method="POST" action="/dataset/delete">
             <input name="dataset_id" value="{{dataset.id}}" hidden/>
             <input name="confirm" value="false" hidden/>
           </form>

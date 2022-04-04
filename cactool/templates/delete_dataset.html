@@ -24,7 +24,7 @@
       <!-- Navigation-->
       {% include 'navigation.html' %} {% include 'flash.html' %}
       <!-- Page Content-->
-      <form method="POST" action="/dataset/delete/" id="confirm" hidden>
+      <form method="POST" action="/dataset/delete" id="confirm" hidden>
         <input hidden value="{{dataset.id}}" name="dataset_id">
         <input hidden value="true" name="confirm">
       </form>
