@@ -185,7 +185,6 @@ def update_dataset():
 
 @datasets.route("/datasets", methods=["GET"])
 def show_datasets():
-    print(current_user.viewable_datasets())
     return render_template("show_datasets.html", datasets=current_user.viewable_datasets())
 
 @datasets.route("/dataset/<dataset_id>/nomore", methods=["GET"])
