@@ -15,6 +15,6 @@ On some systems, this may be
 
 .. code-block:: bash
 
-   python -m set port 8080
+   python -m cactool set port 8080
 
 More information is given in the :doc:`Configuration <advanced-configuration>` section.
