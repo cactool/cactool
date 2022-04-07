@@ -62,3 +62,7 @@ McLoughlin, L., & Ezeh, S. (2022). Cactool: An easy way to collaboratively code 
 
 # Images
 ![projects](https://user-images.githubusercontent.com/18627392/149658748-f480a750-2a05-4aad-83bd-c30cdbe86891.png)
+
+# Outputs
+If you've used or cited Cactool in your research, please let us know and we will highlight your paper below. It also helps us understand who and how it's being used!
+- The development of Cactool has also resulted in features being added to the Python programming language 3.11. ["bpo-14265: Adds fully qualified test name to unittest output (GH-32138)"](https://github.com/python/cpython/commit/755be9b1505af591b9f2ee424a6525b6c2b65ce9)
