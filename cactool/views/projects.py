@@ -7,6 +7,7 @@ import uuid
 
 projects = Blueprint("projects", __name__)
 
+
 @projects.route("/project/<project_id>")
 def view_project(project_id):
     project = Project.query.get(project_id)
@@ -15,6 +16,7 @@ def view_project(project_id):
     else:
         flash("The selected project doesn't exist")
         return redirect(url_for("home.dashboard"))
+
 
 @projects.route("/dataset/add/<project_id>", methods=["POST", "GET"])
 def add_dataset(project_id):
@@ -31,7 +33,7 @@ def add_dataset(project_id):
     if not project:
         flash("The selected project doesn't exist")
         return render_template("add_dataset.html")
-    
+
     if not current_user.can_edit(project) or not current_user.can_edit(dataset):
         flash("Deprecated endpoint")
         return "Deprecated endpoint"
@@ -40,6 +42,7 @@ def add_dataset(project_id):
     db.session.commit()
 
     return redirect(url_for("projects.view_project", project_id=project_id))
+
 
 @projects.route("/project/create", methods=["POST", "GET"])
 def create_project():
@@ -62,17 +65,14 @@ def create_project():
     project = Project(
         id=uuid.uuid4().hex,
         name=name,
-        description=description if description else f"Uploaded {date_string()}"
+        description=description if description else f"Uploaded {date_string()}",
     )
 
     user.project_rights.append(
         ProjectAccess(
-            user_id = user.id,
-            project_id = project.id,
-            access_level = AccessLevel.ADMIN
+            user_id=user.id, project_id=project.id, access_level=AccessLevel.ADMIN
         )
     )
-
 
     db.session.add(project)
     db.session.commit()

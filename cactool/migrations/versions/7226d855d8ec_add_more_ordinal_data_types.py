@@ -10,42 +10,41 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7226d855d8ec'
-down_revision = 'd1b66364eeb3'
+revision = "7226d855d8ec"
+down_revision = "d1b66364eeb3"
 branch_labels = None
 depends_on = None
 
 old_data_types = sa.Enum(
-    'STRING',
-    'NUMBER',
-    'LIST',
-    'BOOLEAN',
-    'SOCIAL_MEDIA',
-    'HIDDEN',
-    'LIKERT',
-    name='type'
+    "STRING",
+    "NUMBER",
+    "LIST",
+    "BOOLEAN",
+    "SOCIAL_MEDIA",
+    "HIDDEN",
+    "LIKERT",
+    name="type",
 )
 
 new_data_types = sa.Enum(
-    'STRING',
-    'NUMBER',
-    'LIST',
-    'BOOLEAN',
-    'SOCIAL_MEDIA',
-    'HIDDEN',
-    'LIKERT',
-    'ONE_TO_THREE',
-    'ONE_TO_FIVE',
-    'ONE_TO_SEVEN',
-    name='type'
+    "STRING",
+    "NUMBER",
+    "LIST",
+    "BOOLEAN",
+    "SOCIAL_MEDIA",
+    "HIDDEN",
+    "LIKERT",
+    "ONE_TO_THREE",
+    "ONE_TO_FIVE",
+    "ONE_TO_SEVEN",
+    name="type",
 )
+
 
 def upgrade():
     with op.batch_alter_table("dataset_column") as batch_op:
         batch_op.alter_column(
-            "type",
-            existing_type=old_data_types,
-            type_=new_data_types
+            "type", existing_type=old_data_types, type_=new_data_types
         )
 
 

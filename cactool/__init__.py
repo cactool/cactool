@@ -72,17 +72,12 @@ DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAX_CONTENT_LENGTH"] = int(config["upload-limit"]) * 1024**2
+app.config["MAX_CONTENT_LENGTH"] = int(config["upload-limit"]) * 1024 ** 2
 app.config["max_rows_in_memory"] = int(config["max-rows"])
 app.config["signup-code"] = config["signup-code"]
 app.secret_key = config["secret-key"]
 
-kdf = PBKDF2HMAC(
-    algorithm=SHA256,
-    length=32,
-    salt=b"",
-    iterations=390000
-)
+kdf = PBKDF2HMAC(algorithm=SHA256, length=32, salt=b"", iterations=390000)
 
 app.encryption_key = base64.urlsafe_b64encode(kdf.derive(app.secret_key.encode()))
 
@@ -94,9 +89,11 @@ login_manager.init_app(app)
 db.init_app(app)
 migrate = Migrate(app, db, compare_type=True)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
 
 def get_value(key):
     if key == "port":
@@ -107,21 +104,26 @@ def get_value(key):
     else:
         return config[key]
 
+
 def write_config():
     with open(CONFIG_FILE_NAME, "w") as file:
         json.dump(config, file)
+
 
 def set_value(key, value):
     config[key] = value
     write_config()
 
+
 def unset_value(key):
     del config[key]
     write_config()
 
+
 def upgrade_database():
     with app.app_context():
         upgrade(MIGRATIONS_DIR)
+
 
 USAGE_STRING = """\
 usage: cactool COMMAND [ARGS...]
@@ -132,22 +134,20 @@ Commands:
   cactool set NAME VALUE    Sets a configuration parameter\
 """
 
+
 def cactool():
     if len(sys.argv) == 1:
         upgrade_database()
         bind = f"localhost:{get_value('port')}"
         print(f"Starting Cactool server instance at http://{bind}")
-        waitress.serve(
-            app,
-            listen = bind
-        ) # Start application
+        waitress.serve(app, listen=bind)  # Start application
     elif len(sys.argv) == 2 and sys.argv[1] == "update":
-        upgrade_database() # Upgrade the database
+        upgrade_database()  # Upgrade the database
     elif len(sys.argv) == 3 and sys.argv[1] == "get":
-        print(get_value(sys.argv[2])) # Get a configuration parameter
+        print(get_value(sys.argv[2]))  # Get a configuration parameter
     elif len(sys.argv) == 3 and sys.argv[1] == "unset":
-        unset_value(sys.argv[2]) # Unsets a configuration parameter
+        unset_value(sys.argv[2])  # Unsets a configuration parameter
     elif len(sys.argv) == 4 and sys.argv[1] == "set":
-        set_value(sys.argv[2], sys.argv[3]) # Sets a configuration parameter
+        set_value(sys.argv[2], sys.argv[3])  # Sets a configuration parameter
     else:
         print(USAGE_STRING)
