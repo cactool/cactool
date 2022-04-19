@@ -138,7 +138,7 @@ Commands:
 def cactool():
     if len(sys.argv) == 1:
         upgrade_database()
-        bind = f"localhost:{get_value('port')}"
+        bind = f"0.0.0.0:{get_value('port')}"
         print(f"Starting Cactool server instance at http://{bind}")
         waitress.serve(app, listen=bind)  # Start application
     elif len(sys.argv) == 2 and sys.argv[1] == "update":
