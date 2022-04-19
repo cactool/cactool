@@ -37,6 +37,8 @@ class DatasetAccess(db.Model, AccessContainer):
     def container_id(self):
         return self.dataset_id
 
+    dataset = db.relationship("Dataset")
+
 
 class ProjectAccess(db.Model, AccessContainer):
     user_id = db.Column(db.ForeignKey("user.id"), primary_key=True)
