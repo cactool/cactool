@@ -49,7 +49,10 @@ def generate_row_entries(dataset_id, rows):
 
 def read_dataset(file, database_location, description=None):
     conn = sqlite3.connect(database_location)
-    conn.execute("pragma journal_mode=wal")
+    conn.execute("pragma journal_mode = wal")
+    conn.execute("pragma synchronous = normal")
+    conn.execute("pragma cache_size = -102400")
+
     reader = csv.reader(file.read().decode().splitlines())
 
     dataset = Dataset(
