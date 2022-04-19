@@ -64,22 +64,30 @@ def read_dataset(file, database_location, description=None):
         column_ids.append(dscid)
 
     chunk_size = current_app.config["max_rows_in_memory"]
+
+    row_entries = []
+    row_value_entries = []
+
     for row_number, row in enumerate(reader):
         values = row
 
-        conn.execute(
-            "INSERT INTO dataset_row (dataset_id, row_number, coded) VALUES (?, ?, ?)",
-            (dataset.id, row_number, False),
-        )
+        row_entries.append((dataset.id, row_number, False))
 
         for column_id, value in zip(column_ids, values):
-            conn.execute(
-                "INSERT INTO dataset_row_value (dataset_id, dataset_row_number, column_id, value) VALUES (?, ?, ?, ?)",
-                (dataset.id, row_number, column_id, value),
-            )
+            row_value_entries.append((dataset.id, row_number, column_id, value))
 
         if chunk_size != -1 and row_number % chunk_size:
             conn.commit()
+
+    conn.executemany(
+        "INSERT INTO dataset_row (dataset_id, row_number, coded) VALUES (?, ?, ?)",
+        row_entries,
+    )
+
+    conn.executemany(
+        "INSERT INTO dataset_row_value (dataset_id, dataset_row_number, column_id, value) VALUES (?, ?, ?, ?)",
+        row_value_entries,
+    )
 
     conn.commit()
 
@@ -165,7 +173,6 @@ def import_dataset(project_id):
     if not dataset:
         flash("The uploaded file was malformed")
         return redirect(url_for("datasets.show_datasets"))
-
 
     current_user.dataset_rights.append(
         DatasetAccess(
