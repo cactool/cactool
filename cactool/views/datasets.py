@@ -24,6 +24,7 @@ from ..dates import date_string
 from werkzeug.utils import secure_filename
 import tempfile
 import os
+import itertools
 import sqlite3
 import uuid
 import csv
@@ -31,6 +32,19 @@ import requests
 from sqlalchemy import select
 
 datasets = Blueprint("datasets", __name__)
+
+
+def process_row(row_data):
+    (dataset_id, column_ids), (row_number, values) = row_data
+    entries = []
+    for column_id, value in zip(column_ids, values):
+        entries.append((dataset_id, row_number, column_id, value))
+
+    return entries
+
+
+def generate_row_entries(dataset_id, rows):
+    return [(dataset_id, row_number, False) for row_number in range(rows)]
 
 
 def read_dataset(file, database_location, description=None):
@@ -63,25 +77,20 @@ def read_dataset(file, database_location, description=None):
 
         column_ids.append(dscid)
 
-    chunk_size = current_app.config["max_rows_in_memory"]
+    row_value_entries = tuple(
+        itertools.chain.from_iterable(
+            map(
+                process_row,
+                zip(itertools.repeat((dataset.id, column_ids)), enumerate(reader)),
+            )
+        )
+    )
 
-    row_entries = []
-    row_value_entries = []
-
-    for row_number, row in enumerate(reader):
-        values = row
-
-        row_entries.append((dataset.id, row_number, False))
-
-        for column_id, value in zip(column_ids, values):
-            row_value_entries.append((dataset.id, row_number, column_id, value))
-
-        if chunk_size != -1 and row_number % chunk_size:
-            conn.commit()
+    total_rows = len(row_value_entries) // len(column_ids)
 
     conn.executemany(
         "INSERT INTO dataset_row (dataset_id, row_number, coded) VALUES (?, ?, ?)",
-        row_entries,
+        generate_row_entries(dataset.id, total_rows),
     )
 
     conn.executemany(
