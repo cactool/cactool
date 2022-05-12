@@ -28,6 +28,14 @@ const TIKTOK_HOSTS = [
   "vm.tiktok.com"
 ]
 
+const YOUTUBE_HOSTS = [
+  "youtube.com",
+  "www.youtube.com",
+  "m.youtube.com",
+  "youtu.be"
+]
+
+
 function fetch_next_row(dataset_id, callback) {
     fetch(
         "/dataset/nextrow",
@@ -320,6 +328,22 @@ function social_media_embed(url, id, column_id){
         instagram_embed(url, id)
     else if (YOUTUBE_HOSTS.includes(host))
         youtube_embed(url, id, column_id)
+}
+
+function youtube_embed(_url, id, column_id){
+    fetch(
+        `/dataset/code/youtube/${window.dataset_id}/${window.row_number}/${column_id}`,
+        {
+            method: "GET"
+        }
+    )
+    .then(response => response.json())
+    .then(
+        function(data){
+            div = document.createElement("div")
+            div.innerHTML = data["html"]
+            document.getElementById(id).appendChild(div)
+        }
 }
 
 function tiktok_embed(_url, id, column_id) {

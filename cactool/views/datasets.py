@@ -289,6 +289,25 @@ def code_dataset(dataset_id):
     db.session.commit()
     return next_row()
 
+@datasets.route(
+    "/dataset/code/youtube/<dataset_id>/<row_number>/<column_id>", methods=["GET"]
+)
+def render_youtube(dataset_id, row_number, column_id):
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset or not current_user.can_code(dataset):
+        flash("You don't have access to that dataset")
+        return redirect(url_for("show_datasets"))
+    row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
+
+    url = row_value.value
+    domain = requests.utils.urlparse(url)
+
+    response = requests.get(
+        f"https://www.youtube.com/oembed?url={requests.utils.quote(url)}"
+    )
+
+    return jsonify(response.json())
+
 
 @datasets.route(
     "/dataset/code/tiktok/<dataset_id>/<row_number>/<column_id>", methods=["GET"]
