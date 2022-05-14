@@ -330,6 +330,23 @@ function social_media_embed(url, id, column_id){
         youtube_embed(url, id, column_id)
 }
 
+function instagram_embed(_url, id, column_id){
+    fetch(
+        `/dataset/code/instagram/${window.dataset_id}/${window.row_number}/${column_id}`,
+        {
+            method: "GET"
+        }
+    )
+    .then(response => response.json())
+    .then(
+        function(data){
+            div = document.createElement("div")
+            div.innerHTML = data["html"]
+            document.getElementById(id).appendChild(div)
+        }
+}
+
+
 function youtube_embed(_url, id, column_id){
     fetch(
         `/dataset/code/youtube/${window.dataset_id}/${window.row_number}/${column_id}`,
