@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+import uuid
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user
-from ..database import db, Project, Dataset, ProjectAccess
+
+from ..database import Dataset, Project, ProjectAccess, db
 from ..dates import date_string
 from ..types import AccessLevel
-import uuid
 
 projects = Blueprint("projects", __name__)
 

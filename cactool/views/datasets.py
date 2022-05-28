@@ -1,35 +1,21 @@
-from flask import (
-    Blueprint,
-    render_template,
-    url_for,
-    redirect,
-    request,
-    flash,
-    current_app,
-    jsonify,
-    send_file,
-)
-from flask_login import current_user
-from ..database import (
-    db,
-    Project,
-    Dataset,
-    DatasetRow,
-    DatasetRowValue,
-    DatasetAccess,
-    AccessLevel,
-)
-from ..types import Type
-from ..dates import date_string
-from werkzeug.utils import secure_filename
-import tempfile
-import os
-import itertools
-import sqlite3
-import uuid
 import csv
+import itertools
+import os
+import sqlite3
+import tempfile
+import uuid
+
 import requests
+from flask import (Blueprint, current_app, flash, jsonify, redirect,
+                   render_template, request, send_file, url_for)
+from flask_login import current_user
 from sqlalchemy import select
+from werkzeug.utils import secure_filename
+
+from ..database import (AccessLevel, Dataset, DatasetAccess, DatasetRow,
+                        DatasetRowValue, Project, db)
+from ..dates import date_string
+from ..types import Type
 
 datasets = Blueprint("datasets", __name__)
 
@@ -289,6 +275,7 @@ def code_dataset(dataset_id):
     db.session.commit()
     return next_row()
 
+
 @datasets.route(
     "/dataset/code/instagram/<dataset_id>/<row_number>/<column_id>", methods=["GET"]
 )
@@ -301,7 +288,6 @@ def render_instagram(dataset_id, row_number, column_id):
     row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
 
     return jsonify({"html": render_template("instagram_embed", template_folder="bin")})
-
 
 
 @datasets.route(

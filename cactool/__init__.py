@@ -1,27 +1,25 @@
-import sys
-import os
-import os.path
-import subprocess
-import pathlib
 import base64
 import json
+import os
+import os.path
+import pathlib
 import secrets
+import subprocess
+import sys
 
 import appdirs
-
+import waitress
+from cryptography.hazmat.primitives.hashes import SHA256
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate, upgrade
-from cryptography.hazmat.primitives.hashes import SHA256
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from .database import db, AnonymousUser, User
+from .database import AnonymousUser, User, db
 from .views.authentication import authentication
+from .views.datasets import datasets
 from .views.home import home
 from .views.projects import projects
-from .views.datasets import datasets
-
-import waitress
 
 ROOT = pathlib.Path(__file__).parents[1]
 CONFIG_DIR = appdirs.user_config_dir("cactool")
@@ -72,7 +70,7 @@ DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAX_CONTENT_LENGTH"] = int(config["upload-limit"]) * 1024 ** 2
+app.config["MAX_CONTENT_LENGTH"] = int(config["upload-limit"]) * 1024**2
 app.config["max_rows_in_memory"] = int(config["max-rows"])
 app.config["signup-code"] = config["signup-code"]
 app.secret_key = config["secret-key"]
