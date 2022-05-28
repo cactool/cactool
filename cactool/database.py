@@ -1,8 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, AnonymousUserMixin
 import csv
-from .types import Type, AccessLevel
+
 import cryptography.fernet
+from flask_login import AnonymousUserMixin, UserMixin
+from flask_sqlalchemy import SQLAlchemy
+
+from .types import AccessLevel, Type
 
 db = SQLAlchemy()
 
@@ -177,6 +179,10 @@ class Dataset(db.Model):
     @property
     def num_rows(self):
         return DatasetRow.query.filter_by(dataset_id=self.id).count()
+
+    @property
+    def num_coded(self):
+        return DatasetRow.query.filter_by(dataset_id=self.id, coded=True).count()
 
     @property
     def ordered_columns(self):

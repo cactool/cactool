@@ -344,6 +344,7 @@ function instagram_embed(_url, id, column_id){
             div.innerHTML = data["html"]
             document.getElementById(id).appendChild(div)
         }
+    )
 }
 
 
@@ -361,6 +362,7 @@ function youtube_embed(_url, id, column_id){
             div.innerHTML = data["html"]
             document.getElementById(id).appendChild(div)
         }
+    )
 }
 
 function tiktok_embed(_url, id, column_id) {

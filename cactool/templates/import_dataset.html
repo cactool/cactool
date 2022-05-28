@@ -26,7 +26,7 @@
                     </div>
                     <div class="row gx-5">
                         <div>
-                            <form onsubmit="document.getElementById('load').hidden = false;" action="/dataset/import/{{ project_id }}" method="POST" enctype="multipart/form-data">
+                            <form id="form" onsubmit="document.getElementById('load').hidden = false;" action="/dataset/import/{{ project_id }}" method="POST" enctype="multipart/form-data">
                                 <input type="file" name="file" accept=".csv" class="form-control"/>
                                 <input name="description" placeholder="Dataset description" class="form-control" />
                             </form>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div id="load" class="spinner-border" hidden role="status">
-                  <span class="sr-only">Loading...</span>
+                  <span class="sr-only"></span>
                 </div>
             </section>
                     </main>
