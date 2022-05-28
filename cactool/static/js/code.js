@@ -325,26 +325,17 @@ function social_media_embed(url, id, column_id){
     else if (TIKTOK_HOSTS.includes(host))
         tiktok_embed(url, id, column_id)
     else if (INSTAGRAM_HOSTS.includes(host))
-        instagram_embed(url, id)
+        instagram_embed(url, id, column_id)
     else if (YOUTUBE_HOSTS.includes(host))
         youtube_embed(url, id, column_id)
 }
 
 function instagram_embed(_url, id, column_id){
-    fetch(
-        `/dataset/code/instagram/${window.dataset_id}/${window.row_number}/${column_id}`,
-        {
-            method: "GET"
-        }
-    )
-    .then(response => response.json())
-    .then(
-        function(data){
-            div = document.createElement("div")
-            div.innerHTML = data["html"]
-            document.getElementById(id).appendChild(div)
-        }
-    )
+    iframe = document.createElement("iframe")
+    iframe.setAttribute("src", `/dataset/code/instagram/${window.dataset_id}/${window.row_number}/${column_id}`)
+    iframe.style.width = "100%"
+    iframe.style.height = "100vh"
+    document.getElementById(id).appendChild(iframe)
 }
 
 

@@ -287,7 +287,7 @@ def render_instagram(dataset_id, row_number, column_id):
 
     row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
 
-    return jsonify({"html": render_template("instagram_embed", template_folder="bin")})
+    return render_template("instagram_embed.html", url=row_value.value)
 
 
 @datasets.route(
