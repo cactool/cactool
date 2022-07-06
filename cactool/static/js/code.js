@@ -5,6 +5,7 @@ const LIKERT = "LIKERT"
 const ONE_TO_SEVEN = "ONE_TO_SEVEN"
 const ONE_TO_FIVE = "ONE_TO_FIVE"
 const ONE_TO_THREE = "ONE_TO_THREE"
+const DISPLAY = "DISPLAY"
 
 const ORDINAL_LOOKUP = {
     [ONE_TO_THREE]: 3,
@@ -80,6 +81,9 @@ function update_row(row){
             || data.type == ONE_TO_SEVEN
         ) {
             numerical_ordinal(data.prompt, data.value, id, ORDINAL_LOOKUP[data.type])
+        }
+        else if (data.type == DISPLAY) {
+            display(data.prompt, data.value, id)
         }
         else {
             input(data.prompt, data.value, id)
@@ -220,6 +224,14 @@ function input(column_name, value, id) {
             document.getElementById(id).innerHTML = `
                 <div class="input-group">
                     <input class="form-control" value='${sanitise(value)}'>
+                </div>
+            `
+}
+
+function display(column_name, value, id) {
+            document.getElementById(id).innerHTML = `
+                <div>
+                    <p class="information">${sanitise(value)}</p>
                 </div>
             `
 }
