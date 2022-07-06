@@ -14,3 +14,9 @@
 input {
     border-width: 2px !important;
 }
+
+.information {
+    font-family: monospace !important;
+    font-weight: normal !important;
+    text-align: left !important;
+}

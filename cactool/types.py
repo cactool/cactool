@@ -13,7 +13,7 @@ class Type(enum.Enum):
     ONE_TO_SEVEN = "ONE_TO_SEVEN"
     ONE_TO_FIVE = "ONE_TO_FIVE"
     ONE_TO_THREE = "ONE_TO_THREE"
-    SHOW = "SHOW"
+    DISPLAY = "DISPLAY"
 
     def serialise(self):
         return self.value
