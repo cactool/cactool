@@ -62,6 +62,11 @@ McLoughlin, L., & Ezeh, S. (2022). Cactool: An easy way to collaboratively code 
 
 # Images
 ![projects](https://user-images.githubusercontent.com/18627392/149658748-f480a750-2a05-4aad-83bd-c30cdbe86891.png)
+![Importing from CSV and setting the coding questions made easy](https://user-images.githubusercontent.com/11173283/191357140-8c1c3133-f860-49e0-9af2-2c959f4f0957.png)
+![Coding & Exporting of data](https://user-images.githubusercontent.com/11173283/191357266-ecbf30aa-3fd9-40b1-928d-e701db3c02fa.png)
+![Multiple data types](https://user-images.githubusercontent.com/11173283/191357356-f5364fcb-cfa4-471b-bca0-53268b5a8f8b.png)
+
+
 
 # Outputs
 If you've used or cited Cactool in your research, please let us know and we will highlight your paper below. It also helps us understand who and how it's being used!
