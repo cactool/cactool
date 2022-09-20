@@ -14,10 +14,7 @@
   <a href="">
   <img src="https://github.com/cactool/cactool/workflows/CodeQL/badge.svg" alt="CodeQL">
  </a>
- <a href="https://doi.org/10.5281/zenodo.6070205">
-   <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.6070205.svg" alt="DOI">
- </a>
-</p>
+ </p>
 
 # Introduction
 Cactool is a platform developed for researchers to collaboratively and manually code pre-existing datasets of social media posts for content and discourse analysis. After the initial setup, getting started is easy: import a csv of social media URLs; set your coding variables; and grant access to your coders who can get started right away.
