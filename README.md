@@ -39,7 +39,7 @@ pip install cactool
 cactool
 ```
 # Credits
-The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.com), *Lecturer in Media & Communication at the University of Liverpool*, and the development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
+The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.com), *Lecturer in Media & Communication at the University of Liverpool*, and development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
 ## Citations
 ### Bibtex
 ```bibtex
