@@ -1,9 +1,11 @@
+==================================
 Installation and Usage
 ===================================
 
-
 Install instructions
------------------------
+=====================
+Using pip
+---------------------------
 First install the latest version of Cactool using pip
 
 .. code-block:: bash
@@ -17,3 +19,16 @@ After performing these steps, you can start the Cactool server at any time by si
 Updating Cactool
 -----------------
 To update Cactool, simply run :code:`pip install -U cactool`
+
+Using docker
+-------------------------
+Begin by cloning the Cactool GitHub repository.
+
+.. code-block:: bash
+   git clone https://github.com/cactool/cactol
+
+Then start the Cactool server using :code:`docker-compose up`
+
+.. code-block:: bash
+    cd cactool
+    docker-compose up -d

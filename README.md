@@ -30,14 +30,32 @@ Cactool is a platform developed for researchers to collaboratively and manually 
 Easy to follow installation instructions and user guides can be found via the documentation on [Read the Docs](https://cactool.readthedocs.io)
 
 # Installation and usage
-## 1. Install Cactool
+## Directly
+### 1. Install Cactool
 ```bash
 pip install cactool
 ```
-## 2. Start the website
+### 2. Start the website
 ```bash
 cactool
 ```
+The server will be running on port 8080
+## Using docker
+### 1. Clone the repository
+```bash
+git clone https://github.com/cactool/cactool
+```
+### 2. Enter the cactool directory
+```
+cd cactool
+```
+### 3. Run `docker-compose`
+Make sure the Docker daemon is running then run
+```bash
+docker-compose up -d
+```
+An instance should be accessible on port 80.
+
 # Credits
 The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.com), *Lecturer in Media & Communication at the University of Liverpool*, and development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
 ## Citations
