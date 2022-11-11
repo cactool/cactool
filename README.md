@@ -40,7 +40,7 @@ pip install cactool
 cactool
 ```
 The server will be running on port 8080
-## Using docker
+## Using Docker
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/cactool/cactool
