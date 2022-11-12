@@ -1,7 +1,8 @@
 {
-    "secret-key": "",
-    "signup-code": "",
+    "signup-code": false,
     "port": 8080,
-    "upload-limit": 500,
-    "max-rows": -1
+    "upload-limit": 1024,
+    "request-email": true,
+    "require-email": false,
+    "email-domains": []
 }

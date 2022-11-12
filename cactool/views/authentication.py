@@ -1,11 +1,20 @@
 import secrets
 
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for)
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
 
 from ..database import User, db
+
+import email.utils
 
 authentication = Blueprint("authentication", __name__)
 
@@ -56,19 +65,46 @@ def signup():
             "signup.html", use_code=current_app.config["signup-code"] is not None
         )
     if request.method == "POST":
-        if (code := current_app.config["signup-code"]) is not None:
+        code = current_app.config["signup-code"]
+        if code:
             if request.form.get("signup-code") != code:
                 flash("The signup code entered was not correct")
                 return render_template("signup.html")
+
         username = request.form.get("username")
         password = request.form.get("password")
         firstname = request.form.get("firstname")
         surname = request.form.get("surname")
+        email = request.form.get("email")
+
+        require_email = current_app.config["require-email"]
+        email_domains = current_app.config["email-domains"]
+        if require_email:
+            if email is None or not email:
+                flash("You must provide an email")
+                return render_template("signup.html")
+            _name, address = email.utils.parseaddr(email)
+            if not address:
+                flash("The email provided was not valid")
+                return render_template("signup.html")
+
+            authorised = any(email.endswith(f"@{domain}") for domain in email_domains)
+            if email_domains and not authorised:
+                flash(
+                    "The provided email is not authorised to create an account on this site"
+                )
+                return render_template("signup.html")
 
         existing_user = User.query.filter_by(username=username).first()
+        existing_email = User.query.filter_by(email=email).first()
 
         if existing_user:
             flash("A user with this username already exists")
+            return render_template("signup.html")
+
+        if existing_email:
+            flash("A user with the provided email already exists")
+            return render_template("signup.html")
 
         elif username and password and firstname and surname:
             if not password_strength(password):
@@ -80,6 +116,7 @@ def signup():
                 password=hashed_password,
                 firstname=firstname,
                 surname=surname,
+                email=email,
                 id=secrets.token_hex(8),
             )
             db.session.add(user)
