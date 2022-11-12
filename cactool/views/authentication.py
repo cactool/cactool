@@ -25,8 +25,10 @@ def password_strength(password):
 
 @authentication.route("/setup-2fa", methods=["POST", "GET"])
 def setup_2fa():
+    if not session["2fa-username"]:
+        return redirect(url_for("authentication.login"))
     generated_secret = User.random_otp_secret()
-    otp_url = User.otp_secret_to_url(generated_secret)
+    otp_url = User.otp_secret_to_url(generated_secret, username=session["2fa-username"])
     qrcode_image = qrcode.make(
         otp_url, image_factory=qrcode.image.svg.SvgImage
     ).to_string()

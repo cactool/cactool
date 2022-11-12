@@ -163,8 +163,8 @@ class User(UserMixin, db.Model):
     @staticmethod
     def otp_secret_to_url(secret, username=None):
         if username:
-            return f"otpauth://totp/Cactool?secret={secret}"
-        return f"otpauth://totp/Cactool?secret={secret}&issuer={username}"
+            return f"otpauth://totp/Cactool:{username}?secret={secret}&issuer=Cactool"
+        return f"otpauth://totp/Cactool?secret={secret}"
 
     @property
     def has_2fa(self):
