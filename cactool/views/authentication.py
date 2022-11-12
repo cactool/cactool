@@ -62,7 +62,7 @@ def signup():
             "Passwords must have 8 or more characters and must contain a number and a letter"
         )
         return render_template(
-            "signup.html", use_code=current_app.config["signup-code"] is not None
+            "signup.html", use_code=current_app.config["signup-code"]
         )
     if request.method == "POST":
         code = current_app.config["signup-code"]
