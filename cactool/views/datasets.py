@@ -6,30 +6,14 @@ import tempfile
 import uuid
 
 import requests
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    send_file,
-    url_for,
-)
+from flask import (Blueprint, current_app, flash, jsonify, redirect,
+                   render_template, request, send_file, url_for)
 from flask_login import current_user
 from sqlalchemy import select
 from werkzeug.utils import secure_filename
 
-from ..database import (
-    AccessLevel,
-    Dataset,
-    DatasetAccess,
-    DatasetRow,
-    DatasetRowValue,
-    Project,
-    db,
-)
+from ..database import (AccessLevel, Dataset, DatasetAccess, DatasetRow,
+                        DatasetRowValue, Project, db)
 from ..dates import date_string
 from ..types import Type
 

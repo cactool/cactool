@@ -1,23 +1,14 @@
 import email.utils
 import secrets
 
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+import qrcode
+import qrcode.image.svg
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, session, url_for)
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
 
 from ..database import User, db
-
-import qrcode
-import qrcode.image.svg
 
 authentication = Blueprint("authentication", __name__)
 
@@ -36,10 +27,12 @@ def password_strength(password):
 def setup_2fa():
     generated_secret = User.random_otp_secret()
     otp_url = User.otp_secret_to_url(generated_secret)
-    qrcode_image = qrcode.make(otp_url, image_factory=qrcode.image.svg.SvgImage).to_string()
+    qrcode_image = qrcode.make(
+        otp_url, image_factory=qrcode.image.svg.SvgImage
+    ).to_string()
     if request.method == "GET":
         return render_template("setup_2fa.html", qrcode=qrcode_image.decode())
-    
+
 
 @authentication.route("/login", methods=["POST", "GET"])
 def login():
