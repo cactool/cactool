@@ -71,6 +71,7 @@ app.config["MAX_CONTENT_LENGTH"] = config["upload-limit"] * 1024**2
 
 app.config["request-email"] = config["request-email"]
 app.config["require-email"] = config["require-email"]
+app.config["require-2fa"] = config["require-2fa"]
 app.config["email-domains"] = config["email-domains"]
 app.config["signup-code"] = config["signup-code"]
 app.secret_key = config["secret-key"]

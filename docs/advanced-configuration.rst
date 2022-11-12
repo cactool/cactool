@@ -34,3 +34,7 @@ These can be set by running :code:`cactool set NAME VALUE` and retreived via :co
   * - email-domains
     - A list of Strings
     - A list containing email domains that can be used to sign up (e.g. :code:`["liverpool.ac.uk"]`). If this list is empty then any email is permitted to sign up.
+
+  * - require-2fa
+    - Boolean
+    - Whether user accounts require two-factor authentication

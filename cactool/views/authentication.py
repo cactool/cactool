@@ -1,3 +1,4 @@
+import email.utils
 import secrets
 
 from flask import (
@@ -7,6 +8,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import login_user, logout_user
@@ -14,7 +16,8 @@ from passlib.hash import pbkdf2_sha256
 
 from ..database import User, db
 
-import email.utils
+import qrcode
+import qrcode.image.svg
 
 authentication = Blueprint("authentication", __name__)
 
@@ -29,6 +32,15 @@ def password_strength(password):
     return False
 
 
+@authentication.route("/setup-2fa", methods=["POST", "GET"])
+def setup_2fa():
+    generated_secret = User.random_otp_secret()
+    otp_url = User.otp_secret_to_url(generated_secret)
+    qrcode_image = qrcode.make(otp_url, image_factory=qrcode.image.svg.SvgImage).to_string()
+    if request.method == "GET":
+        return render_template("setup_2fa.html", qrcode=qrcode_image.decode())
+    
+
 @authentication.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "GET":
@@ -41,8 +53,15 @@ def login():
         if not user:
             flash("No user with that username exists")
         elif pbkdf2_sha256.verify(password, user.password):
-            login_user(user, remember=True)
-            flash("Logged in successfully")
+            if current_app.config["require-2fa"] and not user.has_2fa:
+                session["2fa-username"] = username
+                return redirect(url_for("authentication.setup_2fa"))
+            if user.has_2fa:
+                session["2fa-username"] = username
+                return redirect(url_for("authentication.verify_2fa"))
+            else:
+                login_user(user, remember=True)
+                flash("Logged in successfully")
         else:
             flash("You enterred the wrong password for this account")
 
