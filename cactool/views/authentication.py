@@ -1,6 +1,7 @@
 import email.utils
 import secrets
 
+import pyotp
 import qrcode
 import qrcode.image.svg
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -27,13 +28,29 @@ def password_strength(password):
 def setup_2fa():
     if not session["2fa-username"]:
         return redirect(url_for("authentication.login"))
-    generated_secret = User.random_otp_secret()
-    otp_url = User.otp_secret_to_url(generated_secret, username=session["2fa-username"])
+
+    if request.method == "POST":
+        username = session["2fa-username"]
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            session.pop("2fa-username", None)
+            session.pop("2fa-url", None)
+            return redirect(url_for("authentication.login"))
+
+        otp = request.form.get("otp")
+        totp = pyotp.TOTP(session["2fa-secret"])
+
+        if totp.verify(otp):
+            user.otp_secret = session["2fa-secret"]
+            login_user(user, remember=True)
+            return redirect(url_for("home.dashboard"))
+
+        flash("Incorrect 2FA code entered")
+
     qrcode_image = qrcode.make(
-        otp_url, image_factory=qrcode.image.svg.SvgImage
+        session["2fa-url"], image_factory=qrcode.image.svg.SvgImage
     ).to_string()
-    if request.method == "GET":
-        return render_template("setup_2fa.html", qrcode=qrcode_image.decode())
+    return render_template("setup_2fa.html", qrcode=qrcode_image.decode())
 
 
 @authentication.route("/login", methods=["POST", "GET"])
@@ -49,7 +66,12 @@ def login():
             flash("No user with that username exists")
         elif pbkdf2_sha256.verify(password, user.password):
             if current_app.config["require-2fa"] and not user.has_2fa:
+                otp_secret = User.random_otp_secret()
                 session["2fa-username"] = username
+                session["2fa-secret"] = otp_secret
+                session["2fa-url"] = User.otp_secret_to_url(
+                    otp_secret, username=username
+                )
                 return redirect(url_for("authentication.setup_2fa"))
             if user.has_2fa:
                 session["2fa-username"] = username
@@ -93,6 +115,7 @@ def signup():
 
         require_email = current_app.config["require-email"]
         email_domains = current_app.config["email-domains"]
+
         if require_email:
             if email is None or not email:
                 flash("You must provide an email")

@@ -18,12 +18,15 @@
     <body class="d-flex flex-column h-100">
         <main class="flex-shrink-0">
           {% include 'navigation.html' %}
+          {% include 'flash.html' %}
                         <section class="py-5" id="features">
                 <div class="container px-5 my-5">
                     <div class="row gx-5">
                         <div class="mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">Scan this QR code to enable 2FA</h2></div>
                         {{ qrcode | safe}}
-                        <input type="submit" class="btn btn-primary btn-lg px-4 me-sm-3" value="Confirm"/>
+                        <input class="form-control" placeholder="Code" name=otp form=otp></input>
+                        <input type="submit" class="btn btn-primary btn-lg px-4 me-sm-3" value="Confirm" form=otp>/
+                        <form method=POST id=otp></form>
                     </div>
                 </div>
             </section>
