@@ -11,7 +11,7 @@ import appdirs
 import waitress
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import Flask
+from flask import Flask, g
 from flask_login import LoginManager
 from flask_migrate import Migrate, upgrade
 
@@ -73,6 +73,7 @@ app.config["request-email"] = config["request-email"]
 app.config["require-email"] = config["require-email"]
 app.config["email-domains"] = config["email-domains"]
 app.config["signup-code"] = config["signup-code"]
+app.config["instance-name"] = config["instance-name"]
 app.secret_key = config["secret-key"]
 
 kdf = PBKDF2HMAC(algorithm=SHA256, length=32, salt=b"", iterations=390000)

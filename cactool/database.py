@@ -1,10 +1,10 @@
+import base64
 import csv
+import secrets
 
 import cryptography.fernet
 from flask_login import AnonymousUserMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
-import secrets
-import base64
 
 from .types import AccessLevel, Type
 
