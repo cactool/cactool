@@ -1,20 +1,12 @@
+import email.utils
 import secrets
 
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, url_for)
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
 
 from ..database import User, db
-
-import email.utils
 
 authentication = Blueprint("authentication", __name__)
 

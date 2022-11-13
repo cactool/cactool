@@ -16,8 +16,8 @@ These can be set by running :code:`cactool set NAME VALUE` and retreived via :co
     - The port the server should host itself on
 
   * - signup-code
-    - String or :code:`false`
-    - The code needed to create an account on the cactool instance. If :code:`false`, no signup code is required
+    - String
+    - The code needed to create an account on the cactool instance. If empty, no signup code is required
 
   * - upload-limit
     - Integer
@@ -34,3 +34,7 @@ These can be set by running :code:`cactool set NAME VALUE` and retreived via :co
   * - email-domains
     - A list of Strings
     - A list containing email domains that can be used to sign up (e.g. :code:`["liverpool.ac.uk"]`). If this list is empty then any email is permitted to sign up.
+
+  * - instance-name
+    - String
+    - The name of the instance (e.g. The Univesity of Liverpool)
