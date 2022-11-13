@@ -1,9 +1,10 @@
 {
-    "signup-code": false,
+    "signup-code": "",
     "port": 8080,
     "upload-limit": 1024,
     "request-email": true,
     "require-email": false,
     "require-2fa": false,
-    "email-domains": []
+    "email-domains": [],
+    "instance-name": ""
 }
