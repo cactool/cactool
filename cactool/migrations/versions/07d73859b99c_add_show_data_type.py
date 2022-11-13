@@ -1,16 +1,17 @@
-"""Add more ordinal data types
+"""Add "Show" data type
 
-Revision ID: 7226d855d8ec
-Revises: d1b66364eeb3
-Create Date: 2022-02-27 16:24:17.410544
+Revision ID: 07d73859b99c
+Revises: 7226d855d8ec
+Create Date: 2022-07-06 19:16:21.156928
 
 """
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = "7226d855d8ec"
-down_revision = "d1b66364eeb3"
+revision = "07d73859b99c"
+down_revision = "7226d855d8ec"
 branch_labels = None
 depends_on = None
 
@@ -22,6 +23,9 @@ old_data_types = sa.Enum(
     "SOCIAL_MEDIA",
     "HIDDEN",
     "LIKERT",
+    "ONE_TO_THREE",
+    "ONE_TO_FIVE",
+    "ONE_TO_SEVEN",
     name="type",
 )
 
@@ -36,6 +40,7 @@ new_data_types = sa.Enum(
     "ONE_TO_THREE",
     "ONE_TO_FIVE",
     "ONE_TO_SEVEN",
+    "DISPLAY",
     name="type",
 )
 

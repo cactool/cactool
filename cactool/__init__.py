@@ -11,7 +11,7 @@ import appdirs
 import waitress
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import Flask
+from flask import Flask, g
 from flask_login import LoginManager
 from flask_migrate import Migrate, upgrade
 
@@ -33,23 +33,20 @@ DATABASE_FILE_NAME = "db.sqlite3"
 if not os.path.exists(CONFIG_DIR):
     os.makedirs(CONFIG_DIR)
 
+with open(DEFAULT_CONFIG_FILE_NAME) as file:
+    default_config = json.load(file)
+
 if not os.path.exists(CONFIG_FILE_NAME):
     secret_key = secrets.token_urlsafe(64)
-    with open(DEFAULT_CONFIG_FILE_NAME) as file:
-        config = json.load(file)
-        config["secret-key"] = secret_key
+    config = default_config.copy()
+    config["secret-key"] = secret_key
     with open(CONFIG_FILE_NAME, "w") as file:
         json.dump(config, file, indent=2, sort_keys=True)
-else:
-    with open(CONFIG_FILE_NAME) as file:
-        config = json.load(file)
 
-if not "upload-limit" in config:
-    config["upload-limit"] = 1024
-if not "max-rows" in config:
-    config["max-rows"] = -1
-if not "signup-code" in config or config["signup-code"] == "":
-    config["signup-code"] = None
+with open(CONFIG_FILE_NAME) as file:
+    config = json.load(file)
+
+config = {**default_config, **config}
 
 app = Flask(__name__, static_folder=STATIC_FOLDER_PATH)
 
@@ -70,9 +67,13 @@ DATABASE_URI = "sqlite:///" + DATABASE_LOCATION
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAX_CONTENT_LENGTH"] = int(config["upload-limit"]) * 1024**2
-app.config["max_rows_in_memory"] = int(config["max-rows"])
+app.config["MAX_CONTENT_LENGTH"] = config["upload-limit"] * 1024**2
+
+app.config["request-email"] = config["request-email"]
+app.config["require-email"] = config["require-email"]
+app.config["email-domains"] = config["email-domains"]
 app.config["signup-code"] = config["signup-code"]
+app.config["instance-name"] = config["instance-name"]
 app.secret_key = config["secret-key"]
 
 kdf = PBKDF2HMAC(algorithm=SHA256, length=32, salt=b"", iterations=390000)
@@ -85,7 +86,7 @@ login_manager.login_view = "authentication.login"
 login_manager.init_app(app)
 
 db.init_app(app)
-migrate = Migrate(app, db, compare_type=True)
+migrate = Migrate(app, db, compare_type=True, render_as_batch=True)
 
 
 @login_manager.user_loader

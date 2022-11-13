@@ -18,3 +18,9 @@ input {
 .hover {
     border-bottom: 1px dotted black;
 }
+
+.information {
+    font-family: monospace !important;
+    font-weight: normal !important;
+    text-align: left !important;
+}
