@@ -1,0 +1,62 @@
+body {
+  font-family: Roboto;
+}
+
+.main-content {
+
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+.login-container {
+  border-radius: 20px 20px 20px 20px;
+  background-color: white;
+
+}
+
+@media screen and (orientation: portrait) {
+  .login-container {
+    width: 60vw;
+    height: 65vw;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .login-container {
+    width: 60vh;
+    height: 65vh;
+  }
+}
+
+h1 {
+  text-align: center;
+  background-color: #21202e;
+  color: white;
+  padding: 5px;
+  border-radius: 20px 20px 0 0;
+}
+
+.login-content {
+  padding: 20px;
+}
+
+.login-form {
+  padding-left: 100px;
+  padding-right: 100px;
+  margin-top: 20px;
+}
+
+h3 {
+  text-align: center;
+}
+
+a {
+  color: black;
+}
+
+ul {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+}
