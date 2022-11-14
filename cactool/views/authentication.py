@@ -4,8 +4,16 @@ import secrets
 import pyotp
 import qrcode
 import qrcode.image.svg
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, session, url_for)
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
 
@@ -53,6 +61,20 @@ def setup_2fa():
     return render_template("setup_2fa.html", qrcode=qrcode_image.decode())
 
 
+@authentication.route("/verify-2fa", methods=["POST", "GET"])
+def verify_2fa():
+    if not session["2fa-username"]:
+        return redirect(url_for("authentication.login"))
+    if request.method == "POST":
+        otp = request.form.get("otp")
+        totp = pyotp.TOTP(session["2fa-secret"])
+        if totp.verify(otp):
+            login_user(user, remember=True)
+            return redirect(url_for("home.dashboard"))
+        flash("Incorrect 2FA code")
+    return render_template("verify_2fa.html")
+
+
 @authentication.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "GET":
@@ -75,6 +97,7 @@ def login():
                 return redirect(url_for("authentication.setup_2fa"))
             if user.has_2fa:
                 session["2fa-username"] = username
+                session["2fa-secret"] = user.otp_secret
                 return redirect(url_for("authentication.verify_2fa"))
             else:
                 login_user(user, remember=True)
