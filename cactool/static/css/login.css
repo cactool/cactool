@@ -4,10 +4,16 @@ body {
 }
 
 .main-content {
-
   display: flex;
   justify-content: center;
+}
+
+.main-content.login {
   margin-top: 15vh;
+}
+
+.main-content.signup {
+  margin-top: 10px;
 }
 
 @media screen and (max-height: 850px) {
@@ -40,14 +46,14 @@ body {
 
 @media screen and (orientation: portrait) {
   .signup-container{
-    width: max(60vw, 500px);
+    width: max(60vw, 800px);
     height: max(65vw, 840px);
   }
 }
 
 @media screen and (orientation: landscape) {
   .signup-container {
-    width: max(60vh, 600px);
+    width: max(60vh, 800px);
     height: max(65vh, 860px);
   }
 }
