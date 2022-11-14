@@ -15,10 +15,6 @@ input {
     border-width: 2px !important;
 }
 
-.hover {
-    border-bottom: 1px dotted black;
-}
-
 .information {
     font-family: monospace !important;
     font-weight: normal !important;
