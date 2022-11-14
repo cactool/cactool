@@ -6,26 +6,31 @@ body {
 
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 15vh;
+}
+
+@media screen and (max-height: 850px) {
+    .main-content {
+        margin-top: 0;
+    }
 }
 
 .login-container {
-  border-radius: 20px 20px 20px 20px;
   background-color: white;
 
 }
 
 @media screen and (orientation: portrait) {
   .login-container {
-    width: 60vw;
-    height: 65vw;
+    width: max(60vw, 500px);
+    height: max(65vw, 540px);
   }
 }
 
 @media screen and (orientation: landscape) {
   .login-container {
-    width: 60vh;
-    height: 65vh;
+    width: max(60vh, 600px);
+    height: max(65vh, 560px);
   }
 }
 
@@ -34,7 +39,6 @@ h1 {
   background-color: #21202e;
   color: white;
   padding: 5px;
-  border-radius: 20px 20px 0 0;
 }
 
 .login-content {
@@ -55,8 +59,9 @@ a {
   color: black;
 }
 
-ul {
+.login-links {
   display: flex;
   justify-content: space-around;
   margin-top: 30px;
+  list-style-type: none;
 }
