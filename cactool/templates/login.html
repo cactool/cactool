@@ -6,43 +6,38 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Cactool - Login</title>
-        <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico" />
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="/static/css/styles.css" rel="stylesheet" />
+        <link href="/static/css/bootstrap-icons.css" rel="stylesheet" />
+        <link href="/static/css/bootstrap.css" rel="stylesheet" />
+        <link href="/static/css/login.css" rel=stylesheet />
     </head>
-    <body class="d-flex flex-column h-100">
-        <main class="flex-shrink-0">
-            {% include 'navigation.html' %}
-            {% include 'flash.html' %}
-            <form action="/login" method="post">
-            <section class="py-5" id="features">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5">
-                        <div class="col-lg-4 mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">Log in</h2></div>
-                        <div class="col-lg-8">
-                            <div class="row gx-5 row-cols-1 row-cols-md-2">
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                                    <h2 class="h5">Username</h2>
-                                    <input name=username class="mb-0"/>
-                                </div>
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
-                                    <h2 class="h5">Password</h2>
-                                    <input name=password type=password class="mb-0"/>
-                                </div>
-                            </div>
-                            <input type="submit" class="btn btn-primary btn-lg px-4 me-sm-3" value="Log in"/>
-                        </div>
-                    </div>
+    <body>
+        {% include 'navigation.html' %}
+        {% include 'flash.html' %}
+        <div class="main-content login">
+            <div class=login-container>
+                <h1>Log in</h1>
+                <div class=login-content>
+                    Please log in to access Cactool. If you do not have an account, you can <a href=#>request one.</a>
+                    <br><br>
+                    You can install your own Cactool instance. See the <a href=#>installation page in the documentation.</a>
+                    <form action="/login" method="post" class=login-form>
+                        <h3>Username</h3>
+                        <input name=username  class=form-control />
+                        <br>
+                        <h3>Password</h3>
+                        <input name=password type=password class=form-control />
+                        <br>
+                        <input type="submit" class="btn btn-dark form-control" value="Log in"/>
+                    </form>
                 </div>
-            </section>
-            </form>
-        </main>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+                <div class=login-links>
+                    <a href="#">Request access</a>
+                    <a href="#">Recover password</a>
+                    <a href="#">Data policy</a>
+                </ul>
+            </div>
+        </div>
+        <script src="/static/js/bootstrap.js"></script>
     </body>
 </html>
