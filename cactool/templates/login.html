@@ -11,7 +11,7 @@
         <link href="/static/css/bootstrap.css" rel="stylesheet" />
         <link href="/static/css/login.css" rel=stylesheet />
     </head>
-    <body style="background-color: #f5f5f5;">
+    <body>
         {% include 'navigation.html' %}
         {% include 'flash.html' %}
         <div class=main-content>
@@ -22,10 +22,10 @@
                     <br><br>
                     You can install your own Cactool instance. See the <a href=#>installation page in the documentation.</a>
                     <form action="/login" method="post" class=login-form>
-                        <h3>Username</h2>
+                        <h3>Username</h3>
                         <input name=username  class=form-control />
                         <br>
-                        <h3>Password</h2>
+                        <h3>Password</h3>
                         <input name=password type=password class=form-control />
                         <br>
                         <input type="submit" class="btn btn-dark form-control" value="Log in"/>

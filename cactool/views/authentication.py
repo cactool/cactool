@@ -57,11 +57,8 @@ def logout():
 @authentication.route("/signup", methods=["POST", "GET"])
 def signup():
     if request.method == "GET":
-        flash(
-            "Passwords must have 8 or more characters and must contain a number and a letter"
-        )
         return render_template(
-            "signup.html", use_code=current_app.config["signup-code"]
+            "signup.html"
         )
     if request.method == "POST":
         code = current_app.config["signup-code"]

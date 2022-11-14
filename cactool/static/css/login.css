@@ -1,5 +1,6 @@
 body {
   font-family: Roboto;
+  background-color: #f5f5f5;
 }
 
 .main-content {
@@ -13,9 +14,12 @@ body {
     .main-content {
         margin-top: 0;
     }
+    body {
+        background-color: white;
+    }
 }
 
-.login-container {
+.login-container, .signup-container {
   background-color: white;
 
 }
@@ -34,6 +38,20 @@ body {
   }
 }
 
+@media screen and (orientation: portrait) {
+  .signup-container{
+    width: max(60vw, 500px);
+    height: max(65vw, 840px);
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .signup-container {
+    width: max(60vh, 600px);
+    height: max(65vh, 860px);
+  }
+}
+
 h1 {
   text-align: center;
   background-color: #21202e;
@@ -49,10 +67,15 @@ h1 {
   padding-left: 100px;
   padding-right: 100px;
   margin-top: 20px;
+  width: 100%;
 }
 
-h3 {
+h2, h3 {
   text-align: center;
+}
+
+h2 {
+    font-size: 15px;
 }
 
 a {
