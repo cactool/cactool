@@ -1,8 +1,19 @@
 import email.utils
 import secrets
 
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for)
+import pyotp
+import qrcode
+import qrcode.image.svg
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
 
@@ -21,6 +32,54 @@ def password_strength(password):
     return False
 
 
+@authentication.route("/setup-2fa", methods=["POST", "GET"])
+def setup_2fa():
+    if not session["2fa-username"]:
+        return redirect(url_for("authentication.login"))
+
+    if request.method == "POST":
+        username = session["2fa-username"]
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            session.pop("2fa-username", None)
+            session.pop("2fa-url", None)
+            return redirect(url_for("authentication.login"))
+
+        otp = request.form.get("otp")
+        totp = pyotp.TOTP(session["2fa-secret"])
+
+        if totp.verify(otp):
+            user.otp_secret = session["2fa-secret"]
+            db.session.commit()
+            login_user(user, remember=True)
+            return redirect(url_for("home.dashboard"))
+
+        flash("Incorrect 2FA code entered")
+
+    qrcode_image = qrcode.make(
+        session["2fa-url"], image_factory=qrcode.image.svg.SvgImage
+    ).to_string()
+    return render_template("setup_2fa.html", qrcode=qrcode_image.decode())
+
+
+@authentication.route("/verify-2fa", methods=["POST", "GET"])
+def verify_2fa():
+    if not session["2fa-username"]:
+        return redirect(url_for("authentication.login"))
+
+    user = User.query.filter_by(username=session["2fa-username"]).first()
+    if not user:
+        return redirect(url_for("authentication.login"))
+    if request.method == "POST":
+        otp = request.form.get("otp")
+        totp = pyotp.TOTP(session["2fa-secret"])
+        if totp.verify(otp):
+            login_user(user, remember=True)
+            return redirect(url_for("home.dashboard"))
+        flash("Incorrect 2FA code")
+    return render_template("verify_2fa.html")
+
+
 @authentication.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "GET":
@@ -33,8 +92,21 @@ def login():
         if not user:
             flash("No user with that username exists")
         elif pbkdf2_sha256.verify(password, user.password):
-            login_user(user, remember=True)
-            flash("Logged in successfully")
+            if current_app.config["require-2fa"] and not user.has_2fa:
+                otp_secret = User.random_otp_secret()
+                session["2fa-username"] = username
+                session["2fa-secret"] = otp_secret
+                session["2fa-url"] = User.otp_secret_to_url(
+                    otp_secret, username=username
+                )
+                return redirect(url_for("authentication.setup_2fa"))
+            if user.has_2fa:
+                session["2fa-username"] = username
+                session["2fa-secret"] = user.otp_secret
+                return redirect(url_for("authentication.verify_2fa"))
+            else:
+                login_user(user, remember=True)
+                flash("Logged in successfully")
         else:
             flash("You enterred the wrong password for this account")
 
@@ -71,6 +143,7 @@ def signup():
 
         require_email = current_app.config["require-email"]
         email_domains = current_app.config["email-domains"]
+
         if require_email:
             if email is None or not email:
                 flash("You must provide an email")
