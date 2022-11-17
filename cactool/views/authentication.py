@@ -122,9 +122,7 @@ def logout():
 @authentication.route("/signup", methods=["POST", "GET"])
 def signup():
     if request.method == "GET":
-        return render_template(
-            "signup.html"
-        )
+        return render_template("signup.html")
     if request.method == "POST":
         code = current_app.config["signup-code"]
         if code:
