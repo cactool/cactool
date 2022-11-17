@@ -96,13 +96,7 @@ def load_user(user_id):
 
 
 def get_value(key):
-    if key == "port":
-        if "port" in config:
-            return config["port"]
-        else:
-            return 8080
-    else:
-        return config[key]
+    return config[key]
 
 
 def write_config():

@@ -1,1 +1,0 @@
-web: pip install . && cactool
