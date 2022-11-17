@@ -4,6 +4,7 @@
     "upload-limit": 1024,
     "request-email": true,
     "require-email": false,
+    "require-2fa": false,
     "email-domains": [],
     "instance-name": ""
 }

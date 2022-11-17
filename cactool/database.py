@@ -153,17 +153,31 @@ class User(UserMixin, db.Model):
         return self.firstname[0].upper() + self.surname[0].upper()
 
     def regenerate_otp_secret(self):
+        self.otp_secret = User.random_otp_secret()
+
+    @staticmethod
+    def random_otp_secret():
         byte_sequence = secrets.token_bytes(40)
-        self.otp_secret = base64.b32encode(byte_sequence).decode()
+        return base64.b32encode(byte_sequence).decode()
+
+    @staticmethod
+    def otp_secret_to_url(secret, username=None):
+        if username:
+            return f"otpauth://totp/Cactool:{username}?secret={secret}&issuer=Cactool"
+        return f"otpauth://totp/Cactool?secret={secret}"
+
+    @property
+    def has_2fa(self):
+        return self.otp_secret is not None
 
     def disable_2fa(self):
         self.otp_secret = None
 
     @property
-    def otp_url(self):
+    def otp_secret_url(self):
         if not self.otp_secret:
             return None
-        return f"otpauth://totp/Cactool?secret={self.otp_secret}&issuer={self.username}"
+        return User.otp_secret_to_url(self.otp_secret, username=self.username)
 
 
 class Dataset(db.Model):
