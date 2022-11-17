@@ -50,6 +50,7 @@ def setup_2fa():
 
         if totp.verify(otp):
             user.otp_secret = session["2fa-secret"]
+            db.session.commit()
             login_user(user, remember=True)
             return redirect(url_for("home.dashboard"))
 
@@ -64,6 +65,10 @@ def setup_2fa():
 @authentication.route("/verify-2fa", methods=["POST", "GET"])
 def verify_2fa():
     if not session["2fa-username"]:
+        return redirect(url_for("authentication.login"))
+
+    user = User.query.filter_by(username=session["2fa-username"]).first()
+    if not user:
         return redirect(url_for("authentication.login"))
     if request.method == "POST":
         otp = request.form.get("otp")
