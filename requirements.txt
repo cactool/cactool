@@ -9,3 +9,4 @@ Flask-Migrate
 cryptography
 appdirs
 qrcode
+pyotp
