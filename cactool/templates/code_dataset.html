@@ -36,6 +36,12 @@
             <h1 class="fw-bolder">{{ dataset.name }}</h1>
             <p class="lead fw-normal text-muted mb-0">Coding dataset</p>
           </div>
+          <div class="text-center">
+              <div class="fw-bolder">Go to row</div>
+              <div class="input-group centered-flex">
+                <input id=row-number class="form-control small-number" inputmode=numeric min=0>
+                <a onclick="go_to_row()" class="btn btn-outline-dark">Go</a>
+              </div>
           <div>
           <table class="table">
             <thead>

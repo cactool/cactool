@@ -20,3 +20,11 @@ input {
     font-weight: normal !important;
     text-align: left !important;
 }
+
+.small-number {
+    flex: 0 0 10% !important;
+}
+
+.centered-flex {
+    justify-content: center;
+}

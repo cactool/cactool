@@ -260,6 +260,29 @@ def next_row():
     return jsonify(row)
 
 
+@datasets.route("/dataset/row", methods=["POST"])
+def read_row():
+    dataset_id = request.json["dataset_id"]
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        flash("The selected dataset doesn't exist")
+        return redirect(url_for("datasets.view_datasets"))
+    if not current_user.can_code(dataset):
+        flash("You don't have access to this dataset")
+        return redirect(url_for("datasets.view_datasets"))
+
+    row_number = request.json["row_number"]
+
+    row = DatasetRow.query.filter_by(dataset_id=dataset_id, row_number=row_number).first()
+
+    if row:
+        row = row.serialise()
+    else:
+        row = {"is_empty": True}
+
+    return jsonify(row)
+
+
 @datasets.route("/dataset/code/<dataset_id>", methods=["GET", "POST"])
 def code_dataset(dataset_id):
     dataset = Dataset.query.get(dataset_id)

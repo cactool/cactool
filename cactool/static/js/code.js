@@ -37,7 +37,7 @@ const YOUTUBE_HOSTS = [
 ]
 
 
-function fetch_next_row(dataset_id, callback) {
+function next_row() {
     fetch(
         "/dataset/nextrow",
         {
@@ -47,11 +47,29 @@ function fetch_next_row(dataset_id, callback) {
             },
             body: JSON.stringify(
                 {
-                    dataset_id: dataset_id,
+                    dataset_id: window.dataset_id,
                 }
             )
         }
-    ).then(response => response.json()).then(callback)
+    ).then(response => response.json()).then(update_row)
+}
+
+function fetch_row(row_number) {
+    fetch(
+        `/dataset/row`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(
+                {
+                    dataset_id: window.dataset_id,
+                    row_number: row_number,
+                }
+            )
+        }
+    ).then(response => response.json()).then(update_row)
 }
 
 function update_row(row){
@@ -149,6 +167,12 @@ function submit(){
             body: JSON.stringify(data)
         }
     ).then(next_row)
+}
+
+function go_to_row() {
+    const input_field = document.getElementById("row-number");
+    console.log(input_field);
+    fetch_row(input_field.value)
 }
 
 function skip(){
@@ -396,16 +420,7 @@ function twitter_embed(url, id) {
         )
 }
 
-function update_next_row(dataset_id){
-    fetch_next_row(dataset_id, update_row)
-}
-
-function next_row(){
-    update_next_row(window.dataset_id)
-}
-
 function initialise(dataset_id, columns, types) {
-    update_next_row(dataset_id)
     window.dataset_id = dataset_id
     window.column_names = columns
     window.column_types = types
@@ -417,4 +432,5 @@ function initialise(dataset_id, columns, types) {
             }
         } 
     )
+    next_row()
 }
