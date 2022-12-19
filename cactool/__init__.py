@@ -20,6 +20,7 @@ from .views.authentication import authentication
 from .views.datasets import datasets
 from .views.home import home
 from .views.projects import projects
+from .views.site import site, page_not_found, server_error
 
 ROOT = pathlib.Path(__file__).parents[1]
 CONFIG_DIR = appdirs.user_config_dir("cactool")
@@ -54,6 +55,9 @@ app.register_blueprint(home)
 app.register_blueprint(authentication)
 app.register_blueprint(projects)
 app.register_blueprint(datasets)
+app.register_blueprint(site)
+app.register_error_handler(404, page_not_found)
+app.register_error_handler(500, server_error)
 
 if not os.path.isdir(app.instance_path):
     try:
