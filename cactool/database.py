@@ -1,5 +1,6 @@
 import base64
 import csv
+import operator
 import secrets
 
 import cryptography.fernet
@@ -213,11 +214,36 @@ class Dataset(db.Model):
 
     @property
     def num_coded(self):
-        return DatasetRow.query.filter_by(dataset_id=self.id, coded=True).count()
+        return DatasetRow.query.filter_by(
+            dataset_id=self.id, coded=True, skip=False
+        ).count()
+
+    @property
+    def num_skipped(self):
+        return DatasetRow.query.filter_by(dataset_id=self.id, skip=True).count()
+
+    @property
+    def num_unavailable(self):
+        return DatasetRow.query.filter_by(
+            dataset_id=self.id, post_unavailable=True
+        ).count()
+
+    @property
+    def code_status_description(self):
+        messages = [f"{self.num_coded} coded"]
+
+        num_skipped = self.num_skipped
+        num_unavailable = self.num_unavailable
+        if num_skipped:
+            messages.append(f"{num_skipped} skipped")
+        if num_unavailable:
+            messages.append(f"{num_unavailable} unavailable")
+
+        return ", ".join(messages)
 
     @property
     def ordered_columns(self):
-        return sorted(self.columns, key=lambda column: column.type != Type.SOCIAL_MEDIA)
+        return sorted(self.columns, key=lambda column: column.order or 999)
 
 
 class DatasetColumn(db.Model):
@@ -226,6 +252,7 @@ class DatasetColumn(db.Model):
     type = db.Column(db.Enum(Type))
     dataset_id = db.Column(db.ForeignKey(Dataset.id))
     prompt = db.Column(db.String(512))
+    order = db.Column(db.Integer, default=999)
 
     dataset = db.relationship(Dataset, foreign_keys="DatasetColumn.dataset_id")
 
@@ -261,7 +288,9 @@ class DatasetRow(db.Model):
                     "value": entry.value,
                     "type": entry.column.type.serialise(),
                 }
-                for entry in self.values
+                for entry in sorted(
+                    self.values, key=lambda value: value.column.order or 0
+                )
             },
         }
 

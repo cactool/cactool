@@ -74,10 +74,17 @@ def read_dataset(file, database_location, description=None):
         return False
 
     column_ids = []
-    for column in columns:
+    for index, column in enumerate(columns):
         conn.execute(
-            "INSERT INTO dataset_column (id, type, name, prompt, dataset_id) VALUES (?,?,?,?,?)",
-            (dscid := uuid.uuid4().hex, Type.STRING.value, column, column, dataset.id),
+            "INSERT INTO dataset_column (id, type, name, prompt, dataset_id, order) VALUES (?,?,?,?,?,?)",
+            (
+                dscid := uuid.uuid4().hex,
+                Type.STRING.value,
+                column,
+                column,
+                dataset.id,
+                index + 1,
+            ),
         )
 
         column_ids.append(dscid)
@@ -208,19 +215,26 @@ def update_dataset():
 
     if not dataset:
         flash("The selected dataset doesn't exist")
-        redirect(url_for("datasets.show_datasets"))
+        return redirect(url_for("datasets.show_datasets"))
 
     if not current_user.can_edit(dataset):
         flash("You do not have access to this dataset")
-        redirect(url_for("datasets.show_datasets"))
+        return redirect(url_for("datasets.show_datasets"))
 
     for column in dataset.columns:
         datatype = request.form.get(column.name + "-type")
         prompt = request.form.get(column.name + "-prompt")
+        order = request.form.get(column.name + "-order")
         if datatype:
             column.type = datatype
         if prompt or column.type == Type.HIDDEN:
             column.prompt = prompt
+        if order and order.isdecimal():
+            column.order = int(order)
+
+    for index, column in enumerate(dataset.ordered_columns):
+        column.order = index + 1
+
     db.session.commit()
 
     return redirect(url_for("datasets.view_dataset", dataset_id=dataset_id))
@@ -250,7 +264,9 @@ def next_row():
         flash("You don't have access to this dataset")
         return redirect(url_for("datasets.view_datasets"))
 
-    row = DatasetRow.query.filter_by(dataset_id=dataset_id, coded=False).first()
+    row = DatasetRow.query.filter_by(
+        dataset_id=dataset_id, coded=False, skip=False, post_unavailable=False
+    ).first()
 
     if row:
         row = row.serialise()
@@ -273,7 +289,9 @@ def read_row():
 
     row_number = request.json["row_number"]
 
-    row = DatasetRow.query.filter_by(dataset_id=dataset_id, row_number=row_number).first()
+    row = DatasetRow.query.filter_by(
+        dataset_id=dataset_id, row_number=row_number
+    ).first()
 
     if row:
         row = row.serialise()
@@ -297,21 +315,26 @@ def code_dataset(dataset_id):
     data = request.json
     row_number = data["row_number"]
     row = DatasetRow.query.get((dataset_id, row_number))
+
+    row.skip = False
+    row.post_unavailable = False
+    row.coder = current_user
+
     if data.get("skip"):
         row.skip = True
-        row.post_unavailable = False
-    elif data.get("post_unavailable"):
+        db.session.commit()
+
+    if data.get("post_unavailable"):
         row.post_unavailable = True
-        row.skip = False
-    else:
-        row.skip = False
-        row.post_unavailable = False
-        for (column_id, value) in data["values"].items():
-            row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
-            row_value.value = value
+        db.session.commit()
+
+    for (column_id, value) in data["values"].items():
+        row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
+        row_value.value = value
+
     row.coded = True
-    row.coder = current_user
     db.session.commit()
+
     return next_row()
 
 

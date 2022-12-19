@@ -10,21 +10,16 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>{{ dataset.name }}</title>
-    <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="/satic/assets/favicon.ico" />
-    <!-- Bootstrap icons-->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
       rel="stylesheet"
     />
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/static/css/styles.css" rel="stylesheet" />
   </head>
   <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
-      <!-- Navigation-->
       {% include 'navigation.html' %} {% include 'flash.html' %}
-      <!-- Page Content-->
       <section class="py-5">
         <div class="container px-5 my-5">
           <div class="text-center mb-5">
@@ -32,8 +27,6 @@
             <p class="lead fw-normal text-muted mb-0">Viewing dataset</p>
           </div>
           <div class="row gx-5">
-            <!-- FAQ Accordion 1-->
-            <!-- <h2 class="fw-bolder mb-3">Account &amp; Billing</h2> -->
             <div class="accordion mb-5" id="accordionExample">
               {{ show_dataset(dataset, current_user) }}
             </div>
@@ -60,13 +53,14 @@
                       <th scope="col">Column Name</th>
                       <th scope="col">Question Type</th>
                       <th scope="col">Prompt</th>
+                      <th scope="col">Order</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for column in dataset.columns %}
+                    {% for column in dataset.ordered_columns %}
                     <tr>
-                    <th scope="row">{{ column.name }}</th>
-                    <th scope="row">
+                    <td scope="row">{{ column.name }}</td>
+                    <td scope="row">
                       <select name="{{ column.name }}-type" class="form-select" aria-label="Default select example">
                         <option>Select Data Type</option>
                         <option {{ 'selected' if column.type.value == SOCIAL_MEDIA else '' }} value="SOCIAL_MEDIA">Social Media URL</option>
@@ -79,8 +73,13 @@
                         <option {{ 'selected' if column.type.value == ONE_TO_SEVEN else ''}} value="ONE_TO_SEVEN">Scale from 1 to 7</option>
                         <option {{ 'selected' if column.type.value == DISPLAY else ''}} value="DISPLAY">Display as uneditable text</option>
                       </select>
-                    </th>
-                    <th scope="row"><input value="{{ column.prompt }}" class="form-control" name="{{ column.name }}-prompt"/></th>
+                    </td>
+                    <td scope="row">
+                        <input value="{{ column.prompt }}" class="form-control" name="{{ column.name }}-prompt"/>
+                    </td>
+                    <td>
+                        <input value="{{ column.order or 0 }}" class="form-control" name="{{ column.name }}-order"/>
+                    </td>
                     </tr> 
                     {% endfor %}
                   </tbody>
