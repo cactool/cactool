@@ -5,68 +5,95 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Cactool - signup</title>
-        <!-- Favicon-->
+        <title>Cactool - Sign up</title>
         <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico" />
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="/static/css/styles.css" rel="stylesheet" />
+        <link href="/static/css/bootstrap-icons.css" rel="stylesheet" />
+        <link href="/static/css/bootstrap.css" rel="stylesheet" />
+        <link href="/static/css/login.css" rel=stylesheet />
     </head>
-    <body class="d-flex flex-column h-100">
-        <main class="flex-shrink-0">
-            {% include 'navigation.html' %}
-            {% include 'flash.html' %}
-            <form action="/signup" method="post">
-            <section class="py-5" id="features">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5">
-                        <div class="col-lg-4 mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">Sign up</h2></div>
-                        <div class="col-lg-8">
-                            <div class="row gx-5 row-cols-1 row-cols-md-2">
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                                    <h2 class="h5">Username</h2>
-                                    <input name=username class="mb-0"/>
-                                </div>
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
-                                    <h2 class="h5">Password</h2>
-                                    <input name=password type=password class="mb-0"/>
-                                </div>
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                                    <h2 class="h5">First name</h2>
-                                    <input name=firstname class="mb-0"/>
-                                </div>
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
-                                    <h2 class="h5">Surname</h2>
-                                    <input name=surname class="mb-0"/>
-                                </div>
-
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
-                                    <h2 class="h5">email</h2>
-                                    <input name=email type=email class="mb-0"/>
-                                </div>
-
-                                {% if use_code %}
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                                    <h2 class="h5">Signup code</h2>
-                                    <input name="signup-code" class="mb-0"/>
-                                </div>
-                                {% endif %}
-                            </div>
-                            <input type="submit" class="btn btn-primary btn-lg px-4 me-sm-3" value="Sign up"/>
-                        </div>
-                    </div>
+    {% macro tooltip(text) %}
+        <a
+          data-bs-toggle=tooltip
+          data-bs-title="{{ text }}">
+            <i class="bi bi-question-square"></i>
+        </a>
+    {% endmacro %}
+    <body>
+        {% include 'navigation.html' %}
+        {% include 'flash.html' %}
+        <div class="main-content signup">
+            <div class=signup-container>
+                <h1>Sign up</h1>
+                <div class=login-content>
+                    <p>Please enter your information in order to sign up to this Cactool instance.</p>
+                    <p>Passwords must have 8 or more characters and must contain a number and a letter.</p>
+                    <form action="/signup" method="post" class=login-form>
+                        <h3>First name</h3>
+                        <input name=firstname  class=form-control />
+                        <br>
+                        <h3>Surname</h3>
+                        <input name=surname  class=form-control />
+                        <br>
+                        {% if config['request-email']  %}
+                                <h3>
+                                    Email
+                                    {% if config['email-domains'] %}
+                                        {{
+                                          tooltip(
+                                            "This instance accepts emails with the following domains: "
+                                            + ', '.join(config['email-domains'])
+                                          )
+                                        }}
+                                    {% endif %}
+                                </h3>
+                            {% if config['require-email'] %}
+                                <input name=email type=email  class=form-control />
+                            {% else  %}
+                                <h2>optional</h3>
+                                <input name=email class=form-control />
+                            {% endif %}
+                        {% endif %}
+                        <br>
+                        <h3>
+                            Password
+                            {{
+                              tooltip(
+                                "Passwords must have 8 or more
+                                chracters and must contain a number
+                                and a letter"
+                              )
+                            }}
+                        </h3>
+                        <input name=password type=password class=form-control />
+                        <br>
+                        {% if config['signup-code'] %}
+                            <h3>
+                                Sign up code
+                                {{
+                                  tooltip(
+                                    "This instance requires a code to sign up.
+                                    Please contact the system administrator."
+                                  )
+                                }}
+                            </h3>
+                            <input class=form-control />
+                            <br>
+                        {% endif %}
+                        <input type="submit" class="btn btn-dark form-control" value="Sign up"/>
+                    </form>
                 </div>
-            </section>
-            </form>
-        </main>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+                <div class=login-links>
+                    <a href="#">Request access</a>
+                    <a href="#">Recover password</a>
+                    <a href="#">Data policy</a>
+                </ul>
+            </div>
+        </div>
+        <script src="/static/js/bootstrap.js"></script>
+        <script>
+           [...document.querySelectorAll("[data-bs-toggle=tooltip]")].map(
+                (element) => new bootstrap.Tooltip(element)
+           )
+        </script>
     </body>
 </html>
