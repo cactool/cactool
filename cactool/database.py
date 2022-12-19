@@ -263,11 +263,11 @@ class DatasetRow(db.Model):
     dataset_id = db.Column(db.String(512), db.ForeignKey(Dataset.id), primary_key=True)
     row_number = db.Column(db.Integer, primary_key=True)
 
-    coded = db.Column(db.Boolean())
+    coded = db.Column(db.Boolean(), default=False)
     coder_id = db.Column(db.ForeignKey(User.id), nullable=True)
 
-    skip = db.Column(db.Boolean())
-    post_unavailable = db.Column(db.Boolean())
+    skip = db.Column(db.Boolean(), default=False)
+    post_unavailable = db.Column(db.Boolean(), default=False)
 
     values = db.relationship("DatasetRowValue", lazy=True, cascade="all, delete-orphan")
     dataset = db.relationship(Dataset, foreign_keys="DatasetRow.dataset_id")

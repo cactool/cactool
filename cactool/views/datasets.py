@@ -45,10 +45,6 @@ def process_row(row_data):
     return entries
 
 
-def generate_row_entries(dataset_id, rows):
-    return [(dataset_id, row_number, False) for row_number in range(rows)]
-
-
 def read_dataset(file, database_location, description=None):
     conn = sqlite3.connect(database_location)
     conn.execute("pragma journal_mode = wal")
@@ -76,9 +72,18 @@ def read_dataset(file, database_location, description=None):
     column_ids = []
     for index, column in enumerate(columns):
         conn.execute(
-            "INSERT INTO dataset_column (id, type, name, prompt, dataset_id, order) VALUES (?,?,?,?,?,?)",
+            """
+            INSERT INTO dataset_column (
+                id, type, name,
+                prompt, dataset_id, `order`
+            )
+            VALUES (
+                ?, ?, ?,
+                ?, ?, ?
+            )
+            """,
             (
-                dscid := uuid.uuid4().hex,
+                column_id := uuid.uuid4().hex,
                 Type.STRING.value,
                 column,
                 column,
@@ -87,7 +92,7 @@ def read_dataset(file, database_location, description=None):
             ),
         )
 
-        column_ids.append(dscid)
+        column_ids.append(column_id)
 
     row_value_entries = tuple(
         itertools.chain.from_iterable(
@@ -101,8 +106,20 @@ def read_dataset(file, database_location, description=None):
     total_rows = len(row_value_entries) // len(column_ids)
 
     conn.executemany(
-        "INSERT INTO dataset_row (dataset_id, row_number, coded) VALUES (?, ?, ?)",
-        generate_row_entries(dataset.id, total_rows),
+        """
+        INSERT INTO dataset_row (
+            dataset_id, row_number,
+            coded, skip, post_unavailable
+        )
+        VALUES (
+            ?, ?,
+            ?, ?, ?
+        )
+        """,
+        [
+            (dataset.id, row_number, False, False, False)
+            for row_number in range(total_rows)
+        ],
     )
 
     conn.executemany(
@@ -338,9 +355,7 @@ def code_dataset(dataset_id):
     return next_row()
 
 
-@datasets.route(
-    "/dataset/code/instagram/<dataset_id>/<row_number>/<column_id>"
-)
+@datasets.route("/dataset/code/instagram/<dataset_id>/<row_number>/<column_id>")
 def render_instagram(dataset_id, row_number, column_id):
     dataset = Dataset.query.get(dataset_id)
     if not dataset or not current_user.can_code(dataset):
@@ -350,6 +365,7 @@ def render_instagram(dataset_id, row_number, column_id):
     row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
 
     return render_template("instagram_embed.html", url=row_value.value)
+
 
 @datasets.route("/dataset/code/oembed/<dataset_id>/<row_number>/<column_id>")
 def render_oembed(dataset_id, row_number, column_id):
@@ -362,11 +378,10 @@ def render_oembed(dataset_id, row_number, column_id):
     url = row_value.value
     domain = requests.utils.urlparse(url).netloc
 
-    response = requests.get(
-        f"https://{domain}/oembed?url={requests.utils.quote(url)}"
-    )
+    response = requests.get(f"https://{domain}/oembed?url={requests.utils.quote(url)}")
 
     return jsonify(response.json())
+
 
 @datasets.route("/dataset/delete", methods=["POST"])
 def delete_dataset():
