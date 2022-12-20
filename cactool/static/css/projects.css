@@ -1,0 +1,5 @@
+.create-project-form {
+    width: min(80vw, 500px);
+    margin-left: calc((100vw - min(80vw, 500px)) / 2);
+    margin-top: 5vh;
+}

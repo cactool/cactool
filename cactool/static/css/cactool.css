@@ -22,7 +22,7 @@ input {
 }
 
 .small-number {
-    flex: 0 0 10% !important;
+    flex: 0 0 min(20%, 50px) !important;
 }
 
 .centered-flex {

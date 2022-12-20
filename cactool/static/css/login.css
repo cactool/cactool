@@ -46,7 +46,7 @@ body {
 
 @media screen and (orientation: portrait) {
   .signup-container{
-    width: max(60vw, 800px);
+    width: max(60vw, 600px);
     height: max(65vw, 840px);
   }
 }

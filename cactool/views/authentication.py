@@ -186,5 +186,6 @@ def signup():
 
         else:
             flash("Some fields were left blank")
+            return render_template("signup.html")
 
         return redirect(url_for("authentication.login"))

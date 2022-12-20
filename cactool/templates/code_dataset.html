@@ -9,15 +9,9 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Code dataset {{ dataset.name }}</title>
-    <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico" />
-    <!-- Bootstrap icons-->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="/static/css/styles.css" rel="stylesheet" />
+    <link href="/static/css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/static/css/bootstrap.css" rel="stylesheet" /> 
     <link href="/static/css/cactool.css" rel="stylesheet" />
     <script src="/static/js/twitter.js"></script>
     <script src="/static/js/code.js"></script>
@@ -70,14 +64,13 @@
           </div>
           <br>
           <div class="row gy-1">
-            <a onclick="submit()" class="btn btn-primary">Submit</a>
-            <a onclick="skip()" class="btn btn-warning">Skip</a>
-            <a onclick="post_unavailable()" class="btn btn-danger">The post doesn't show</a>
+            <a onclick="submit()" class="btn btn-dark">Submit</a>
+            <a onclick="skip()" class="btn btn-outline-dark">Skip</a>
+            <a onclick="post_unavailable()" class="btn btn-outline-secondary">The post doesn't show</a>
           </div>
         </div>
       </section>
     </main>
-    <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
