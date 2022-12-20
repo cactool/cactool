@@ -25,7 +25,7 @@
       {% include 'navigation.html' %} {% include 'flash.html' %}
       <!-- Page Content-->
       <section class="py-5">
-        <div class="container px-5 my-5">
+        <div class="container">
           <div class="text-center mb-5">
             <h1 class="fw-bolder">{{ dataset.name }}</h1>
             <p class="lead fw-normal text-muted mb-0">Coding dataset</p>
@@ -41,7 +41,6 @@
             <thead>
               <tr>
                 <th scope="col">Prompt</th>
-                <th style="width: 10px;"></th>
                 <th scope="col" style="text-align: center;">Data</th>
               </tr>
             </thead>
@@ -50,7 +49,6 @@
                 {% if column.type.value != "HIDDEN" %}
                     <tr>
                     <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.prompt }}</th>
-                    <th style="width: 10px;"></th>
                     <th scope="row" class="text-centre;">
                       <div
                       id="column-{{ column.id }}"
@@ -62,9 +60,8 @@
             </tbody>
             </table>
           </div>
-          <br>
-          <div class="row gy-1">
-            <a onclick="submit()" class="btn btn-dark">Submit</a>
+          <div class="row">
+            <a onclick="submit()" class="btn btn-dark form-control">Submit</a>
             <a onclick="skip()" class="btn btn-outline-dark">Skip</a>
             <a onclick="post_unavailable()" class="btn btn-outline-secondary">The post doesn't show</a>
           </div>
