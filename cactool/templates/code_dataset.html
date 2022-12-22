@@ -35,16 +35,34 @@
                 <a onclick="go_to_row()" class="btn btn-outline-dark">Go</a>
               </div>
           <div>
-          <table class="table">
+          {% for column in dataset.ordered_columns %}
+              {% if column.type.value == "SOCIAL_MEDIA" %}
+                 <table class="table">
+                    <thead>
+                      <tr>
+                          <th scope="col" style="text-align: center;">{{ column.prompt }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-centre;">
+                              <div id="column-{{ column.id }}" class="text-centre"></div>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+              {% endif %}
+          {% endfor %}
+            <table class="table">
             <thead>
               <tr>
                 <th scope="col">Prompt</th>
-                <th scope="col" style="text-align: center;">Data</th>
+                <th scope="col" style="text-align: center;">Response</th>
               </tr>
             </thead>
             <tbody>
             {% for column in dataset.ordered_columns %}
-                {% if column.type.value != "HIDDEN" %}
+                {% if column.type.value not in ["HIDDEN", "SOCIAL_MEDIA"] %}
                     <tr>
                     <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.prompt }}</th>
                     <th scope="row" class="text-centre;">
