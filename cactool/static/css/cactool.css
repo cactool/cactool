@@ -32,3 +32,10 @@ input {
 iframe {
     max-width: 100% !important;
 }
+
+@media (min-width: 1440px) {
+    .code-window {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}

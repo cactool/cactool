@@ -34,56 +34,58 @@
                 <input id=row-number class="form-control small-number" inputmode=numeric min=0>
                 <a onclick="go_to_row()" class="btn btn-outline-dark">Go</a>
               </div>
-          <div>
-          {% for column in dataset.ordered_columns %}
-              {% if column.type.value == "SOCIAL_MEDIA" %}
-                 <table class="table">
-                    <thead>
-                      <tr>
-                          <th scope="col" style="text-align: center;">{{ column.prompt }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+          <div class="code-window">
+              <div class="social-window">
+                  {% for column in dataset.ordered_columns %}
+                      {% if column.type.value == "SOCIAL_MEDIA" %}
+                         <table class="table">
+                            <thead>
+                              <tr>
+                                  <th scope="col" style="text-align: center;">{{ column.prompt }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="text-centre;">
+                                      <div id="column-{{ column.id }}" class="text-centre"></div>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                      {% endif %}
+                  {% endfor %}
+              </div>
+              <div class="response-window">
+                <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Prompt</th>
+                    <th scope="col" style="text-align: center;">Response</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for column in dataset.ordered_columns %}
+                    {% if column.type.value not in ["HIDDEN", "SOCIAL_MEDIA"] %}
                         <tr>
-                            <th scope="row" class="text-centre;">
-                              <div id="column-{{ column.id }}" class="text-centre"></div>
-                            </th>
-                        </tr>
-                    </tbody>
+                        <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.prompt }}</th>
+                        <th scope="row" class="text-centre;">
+                          <div
+                          id="column-{{ column.id }}"
+                          class="text-centre"></div>
+                        </th>
+                        </tr> 
+                    {% endif %}
+                {% endfor %}
+                </tbody>
                 </table>
-              {% endif %}
-          {% endfor %}
-            <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Prompt</th>
-                <th scope="col" style="text-align: center;">Response</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for column in dataset.ordered_columns %}
-                {% if column.type.value not in ["HIDDEN", "SOCIAL_MEDIA"] %}
-                    <tr>
-                    <th scope="row" style="width: 0; whitespace: no-wrap">{{ column.prompt }}</th>
-                    <th scope="row" class="text-centre;">
-                      <div
-                      id="column-{{ column.id }}"
-                      class="text-centre"></div>
-                    </th>
-                    </tr> 
-                {% endif %}
-            {% endfor %}
-            </tbody>
-            </table>
-          </div>
-          <div>
-            <div>
-              <a onclick="submit()" class="btn btn-dark">Submit</a>
-              <a onclick="skip()" class="btn btn-outline-dark">Skip</a>
-              <a onclick="post_unavailable()" class="btn btn-outline-secondary">The post doesn't show</a>
-            </div>
-          </div>
+              </div>
         </div>
+        <div>
+          <a onclick="submit()" class="btn btn-dark">Submit</a>
+          <a onclick="skip()" class="btn btn-outline-dark">Skip</a>
+          <a onclick="post_unavailable()" class="btn btn-outline-secondary">The post doesn't show</a>
+        </div>
+
       </section>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
