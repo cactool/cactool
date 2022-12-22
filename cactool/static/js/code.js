@@ -65,6 +65,7 @@ function update_row(row){
         return;
     }
     window.row_number = row.row_number
+    document.getElementById("row-name").innerText = row.row_number + 1;
     var columns = row.columns
     for (const [column_id, data] of Object.entries(columns)){ 
         id = "column-" + column_id

@@ -21,14 +21,12 @@
     class="d-flex flex-column h-100"
     onload="initialise('{{ dataset.id }}', {{  dataset.columns | map(attribute='id')  | list | safe }}, {{ dataset.columns | map(attribute='type.value') | list | safe }})">
     <main class="flex-shrink-0">
-      <!-- Navigation-->
       {% include 'navigation.html' %} {% include 'flash.html' %}
-      <!-- Page Content-->
-      <section class="py-5">
-        <div class="container">
+      <section class="py-5" style="display: flex; justify-content: center;">
+        <div class="code-container">
           <div class="text-center mb-5">
             <h1 class="fw-bolder">{{ dataset.name }}</h1>
-            <p class="lead fw-normal text-muted mb-0">Coding dataset</p>
+            <p class="lead fw-normal text-muted mb-0">Row <span id="row-name"></span></p>
           </div>
           <div class="text-center">
               <div class="fw-bolder">Go to row</div>
@@ -60,10 +58,12 @@
             </tbody>
             </table>
           </div>
-          <div class="row">
-            <a onclick="submit()" class="btn btn-dark form-control">Submit</a>
-            <a onclick="skip()" class="btn btn-outline-dark">Skip</a>
-            <a onclick="post_unavailable()" class="btn btn-outline-secondary">The post doesn't show</a>
+          <div>
+            <div>
+              <a onclick="submit()" class="btn btn-dark">Submit</a>
+              <a onclick="skip()" class="btn btn-outline-dark">Skip</a>
+              <a onclick="post_unavailable()" class="btn btn-outline-secondary">The post doesn't show</a>
+            </div>
           </div>
         </div>
       </section>

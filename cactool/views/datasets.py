@@ -378,7 +378,8 @@ def render_oembed(dataset_id, row_number, column_id):
     url = row_value.value
     domain = requests.utils.urlparse(url).netloc
 
-    response = requests.get(f"https://{domain}/oembed?url={requests.utils.quote(url)}")
+    print(f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452")
+    response = requests.get(f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452")
 
     return jsonify(response.json())
 

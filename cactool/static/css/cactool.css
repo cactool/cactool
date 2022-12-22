@@ -28,3 +28,7 @@ input {
 .centered-flex {
     justify-content: center;
 }
+
+iframe {
+    max-width: 100% !important;
+}
