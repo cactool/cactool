@@ -168,6 +168,7 @@ function skip(){
         dataset_id: window.dataset_id,
         row_number: window.row_number,
         skip: true,
+        values: {},
     } 
     
     fetch(
@@ -187,6 +188,7 @@ function post_unavailable(){
         dataset_id: window.dataset_id,
         row_number: window.row_number,
         post_unavailable: true,
+        values: {},
     } 
     
     fetch(

@@ -343,19 +343,20 @@ def code_dataset(dataset_id):
 
     if data.get("skip"):
         row.skip = True
-        db.session.commit()
 
     if data.get("post_unavailable"):
         row.post_unavailable = True
-        db.session.commit()
 
-    for (column_id, value) in data["values"].items():
+    values = []
+    if "values" in data:
+        values = data["values"].items()
+
+    for (column_id, value) in values:
         row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
         row_value.value = value
+        row.coded = True
 
-    row.coded = True
     db.session.commit()
-
     return next_row()
 
 
@@ -382,8 +383,12 @@ def render_oembed(dataset_id, row_number, column_id):
     url = row_value.value
     domain = requests.utils.urlparse(url).netloc
 
-    print(f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452")
-    response = requests.get(f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452")
+    print(
+        f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452"
+    )
+    response = requests.get(
+        f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452"
+    )
 
     return jsonify(response.json())
 

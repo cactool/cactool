@@ -12,12 +12,12 @@ def page_not_found(error):
 def server_error(error):
     return render_template("error.html"), 500
 
+
 @site.route("/faq")
 def faq():
     return render_template("faq.html")
 
+
 @site.route("/contact")
 def contact():
     return render_template("contact.html")
-
-
