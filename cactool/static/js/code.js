@@ -376,7 +376,7 @@ function oembed(_url, id, column_id){
         function(data){
             div = document.createElement("div")
             div.innerHTML = data["html"]
-            document.getElementById(id).appendChild(div)
+            document.getElementById(id).replaceChildren(div)
         }
     )
 }

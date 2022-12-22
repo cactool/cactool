@@ -305,6 +305,10 @@ def read_row():
         return redirect(url_for("datasets.view_datasets"))
 
     row_number = request.json["row_number"]
+    if row_number.isdigit():
+        row_number = int(row_number) - 1
+    else:
+        return {"is_empty": True}
 
     row = DatasetRow.query.filter_by(
         dataset_id=dataset_id, row_number=row_number
