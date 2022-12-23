@@ -20,7 +20,7 @@ from .views.authentication import authentication
 from .views.datasets import datasets
 from .views.home import home
 from .views.projects import projects
-from .views.site import site, page_not_found, server_error
+from .views.site import page_not_found, server_error, site
 
 ROOT = pathlib.Path(__file__).parents[1]
 CONFIG_DIR = appdirs.user_config_dir("cactool")
@@ -30,6 +30,31 @@ CONFIG_FILE_NAME = os.path.join(CONFIG_DIR, "config.json")
 STARTUP_SCRIPT_LOCATION = os.path.join(ROOT, "cactool/bin/cactool")
 STATIC_FOLDER_PATH = os.path.join(ROOT, "cactool/static")
 DATABASE_FILE_NAME = "db.sqlite3"
+
+
+def get_value(key):
+    return config[key]
+
+
+def write_config(config):
+    with open(CONFIG_FILE_NAME, "w") as file:
+        json.dump(config, file, indent=2, sort_keys=True)
+
+
+def set_value(config, key, value):
+    config[key] = value
+    write_config(config)
+
+
+def unset_value(config, key):
+    del config[key]
+    write_config(config)
+
+
+def upgrade_database():
+    with app.app_context():
+        upgrade(MIGRATIONS_DIR)
+
 
 if not os.path.exists(CONFIG_DIR):
     os.makedirs(CONFIG_DIR)
@@ -41,13 +66,13 @@ if not os.path.exists(CONFIG_FILE_NAME):
     secret_key = secrets.token_urlsafe(64)
     config = default_config.copy()
     config["secret-key"] = secret_key
-    with open(CONFIG_FILE_NAME, "w") as file:
-        json.dump(config, file, indent=2, sort_keys=True)
+    write_config(config)
 
 with open(CONFIG_FILE_NAME) as file:
     config = json.load(file)
 
 config = {**default_config, **config}
+write_config(config)
 
 app = Flask(__name__, static_folder=STATIC_FOLDER_PATH)
 
@@ -73,12 +98,8 @@ app.config["DATABASE_LOCATION"] = DATABASE_LOCATION
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["MAX_CONTENT_LENGTH"] = config["upload-limit"] * 1024**2
 
-app.config["request-email"] = config["request-email"]
-app.config["require-email"] = config["require-email"]
-app.config["require-2fa"] = config["require-2fa"]
-app.config["email-domains"] = config["email-domains"]
-app.config["signup-code"] = config["signup-code"]
-app.config["instance-name"] = config["instance-name"]
+app.config.update(config)
+
 app.secret_key = config["secret-key"]
 
 kdf = PBKDF2HMAC(algorithm=SHA256, length=32, salt=b"", iterations=390000)
@@ -97,30 +118,6 @@ migrate = Migrate(app, db, compare_type=True, render_as_batch=True)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
-
-
-def get_value(key):
-    return config[key]
-
-
-def write_config():
-    with open(CONFIG_FILE_NAME, "w") as file:
-        json.dump(config, file)
-
-
-def set_value(key, value):
-    config[key] = value
-    write_config()
-
-
-def unset_value(key):
-    del config[key]
-    write_config()
-
-
-def upgrade_database():
-    with app.app_context():
-        upgrade(MIGRATIONS_DIR)
 
 
 USAGE_STRING = """\
@@ -142,10 +139,10 @@ def cactool():
     elif len(sys.argv) == 2 and sys.argv[1] == "update":
         upgrade_database()  # Upgrade the database
     elif len(sys.argv) == 3 and sys.argv[1] == "get":
-        print(get_value(sys.argv[2]))  # Get a configuration parameter
+        print(get_value(config, sys.argv[2]))  # Get a configuration parameter
     elif len(sys.argv) == 3 and sys.argv[1] == "unset":
-        unset_value(sys.argv[2])  # Unsets a configuration parameter
+        unset_value(config, sys.argv[2])  # Unsets a configuration parameter
     elif len(sys.argv) == 4 and sys.argv[1] == "set":
-        set_value(sys.argv[2], sys.argv[3])  # Sets a configuration parameter
+        set_value(config, sys.argv[2], sys.argv[3])  # Sets a configuration parameter
     else:
         print(USAGE_STRING)

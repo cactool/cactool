@@ -1,5 +1,7 @@
 import email.utils
 import secrets
+import smtplib
+import ssl
 
 import pyotp
 import qrcode
@@ -20,6 +22,24 @@ from passlib.hash import pbkdf2_sha256
 from ..database import User, db
 
 authentication = Blueprint("authentication", __name__)
+
+
+def send_email(email, message):
+    details = current_app.config["mail-server"]
+    context = ssl.create_default_context()
+    host = details["host"]
+    port = details["port"]
+    username = details["port"]
+    password = details["port"]
+    sender_email = details["email"]
+
+    if not (host and port and username and password and sender_email):
+        raise Exception("Unable to send e-mail: server details not present")
+
+    server = smtplib.SMTP(details["host"], details["port"])
+    sever.starttls()
+    server.login(username, password)
+    server.sendmail(sender_email, email, message)
 
 
 def password_strength(password):
@@ -138,6 +158,7 @@ def signup():
 
         require_email = current_app.config["require-email"]
         email_domains = current_app.config["email-domains"]
+        verify_emails = current_app.config["verify-emails"]
 
         if require_email:
             if email is None or not email:
@@ -162,9 +183,12 @@ def signup():
             flash("A user with this username already exists")
             return render_template("signup.html")
 
-        if existing_email:
+        if email and existing_email:
             flash("A user with the provided email already exists")
             return render_template("signup.html")
+
+        if email and verify_emails:
+            send_email(email, "Welcome to cactool")
 
         elif username and password and firstname and surname:
             if not password_strength(password):
