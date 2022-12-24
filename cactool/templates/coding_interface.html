@@ -1,0 +1,72 @@
+<template id="text-input">
+    <div class="input-group">
+        <input class="form-control">
+    </div>
+</template>
+
+<template id="display">
+    <p class=information></p>
+</template>
+
+<!-- TODO: Update submit hooks -->
+<!-- TODO: Add click hooks -->
+<!-- TODO: Add initialisation hooks -->
+<template id="yes-no">
+    <div class="btn-group">
+        <label class="btn btn-outline-primary">
+            Yes
+            <input type="radio" value="yes" style="display: none">
+        </label>
+        <label class="btn btn-outline-primary">
+            No
+            <input type="radio" value="no" style="display: none;">
+        </label>
+    </div>
+</template>
+
+<template id="numerical-ordinal">
+    <div class="input-group multi-choice">
+    </div>
+</template>
+
+<template id="ordinal-select">
+    <label class="l15">
+        <span></span>
+        <br>
+        <input type="radio">
+        </label>
+</template>
+
+<template id="likert">
+    <div class="input-group multi-choice">
+        <label class="l15">
+            Didn't like
+            <br>
+            <input type="radio" autocomplete="off" value="1">
+        </label>
+
+        <label class="l15">
+            Tolerable
+            <br>
+            <input type="radio" autocomplete="off" value="2">
+        </label>
+
+        <label class="l15">
+            Liked
+            <br>
+            <input type="radio" autocomplete="off" value="3">
+        </label>
+
+        <label class="l15">
+            Liked a lot
+            <br>
+            <input type="radio" autocomplete="off" value="4">
+        </label>
+
+        <label class="l15">
+            Loved
+            <br>
+            <input type="radio" autocomplete="off" value="5">
+        </label>
+    </div>
+</template>

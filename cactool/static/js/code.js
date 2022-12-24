@@ -124,17 +124,8 @@ function submit(){
             || column.type == ONE_TO_THREE
             || column.type == ONE_TO_FIVE
             || column.type == ONE_TO_SEVEN){
-            try{
-                data.values[column.name] = document.querySelector(`input[name="options-column-${column.name}"]:checked`).value;
-            }
-            catch(exception){
-                if (exception instanceof TypeError) {
-                    data.values[column.name] = ""
-                }
-                else{
-                    console.log(exception)
-                }
-            }
+            const selected = document.querySelector(`input[name="options-${column.name}"]:checked`);
+            data.values[column.name] = selected ? selected.value : "";
         }
         else if (column.type == BOOLEAN){
             data.values[column.name] = get_boolean(column.name);
@@ -203,145 +194,64 @@ function post_unavailable(){
     ).then(next_row)
 }
 
-function sanitise(string) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        "/": '&#x2F;',
-    };
-    const regex = /[&<>"'/]/ig;
-    return string.replace(
-        regex,
-        match => map[match]
-    );
-}
-
-function es(string) {
-    const map = {
-        '\\': '\\\\',
-        '"': '\\"',
-        "'": '\\\';',
-        '\n': '',
-        '\r': ''
-    };
-    const regex = /[\\"'\n\r]/ig;
-    return string.replace(
-        regex,
-        match => map[match]
-    );
-}
 
 function input(column_name, value, id) {
-            document.getElementById(id).innerHTML = `
-                <div class="input-group">
-                    <input class="form-control" value='${sanitise(value)}'>
-                </div>
-            `
+    const template = document.getElementById("text-input");
+    const field = template.content.cloneNode(true);
+    field.querySelector("input").value = value;
+    document.getElementById(id).replaceChildren(field);
 }
 
 function display(column_name, value, id) {
-            document.getElementById(id).innerHTML = `
-                <div>
-                    <p class="information">${sanitise(value)}</p>
-                </div>
-            `
+    const template = document.getElementById("display");
+    const field = template.content.cloneNode(true);
+    field.querySelector("p").innerText = value;
+    document.getElementById(id).replaceChildren(field);
 }
 
 function checkbox(column_name, value, id) {
-            document.getElementById(id).innerHTML = `
-                <div class="input-group">
-                    <input id=check-${id} class="btn-check" type=checkbox ${value? 'checked' : ''}>
-                    <label for=check-${id} class="btn btn-outline-primary"> Yes </label>
-                </div>
-            `
+    const template = document.getElementById("yes-no");
+    const field = template.content.cloneNode(true);
+    [...field.querySelectorAll("input")].map(responseField => { responseField.name = id})
+    document.getElementById(id).replaceChildren(field);
 }
 
 function likert(column_name, value, id) {
-    document.getElementById(id).innerHTML = `
-        <div class="input-group multi-choice">
-            <label for="option1-${id}" class="l15">
-                Didn't like
-                <br>
-                <input type="radio" name="options-${id}" id="$option1-${id}" autocomplete="off" value="1">
-            </label>
-
-            <label class="l15" for="option2-${id}">
-                Tolerable
-                <br>
-                <input type="radio" name="options-${id}" id="option2-${id}" autocomplete="off" value="2">
-            </label>
-
-            <label for="option3-${id}" class="l15">
-                Liked
-                <br>
-                <input type="radio" name="options-${id}" id="option3-${id}" autocomplete="off" value="3">
-            </label>
-
-            <label for="option4-${id}" class="l15">
-                Liked a lot
-                <br>
-                <input type="radio" name="options-${id}" id="option4-${id}" autocomplete="off" value="4">
-            </label>
-        
-            <label for="option5-${id}" class="l15">
-                Loved
-                <br>
-                <input type="radio" name="options-${id}" id="option5-${id}" autocomplete="off" value="5">
-            </label>
-        </div>
-    `
-    try {
-        document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
-    }
-    catch (exception) {
-        if (exception instanceof TypeError){
-            
+    const template = document.getElement("likert");
+    const field = template.content.cloneNode(true);
+    [...field.querySelectorAll("input")].map(element => {
+        element.name = "options-" + id;
+        element.id = "option" + element.value + "-" + id;
+        if (element.value == value) {
+            element.checked = true;
         }
-        else{
-            console.log(exception)
-        }
-    }
-
+    });
+    document.getElementById(id).replaceChildren(field);
 }
 
 function numerical_ordinal(column_name, value, id, number) {
-    html = `
-        <div class="input-group multi-choice">
-    `
-    
-    for (i = 0; i < number; i++){
-        html += `
-            <label for="option${i + 1}-${id}" class="l15">
-                ${i + 1} 
-                <br>
-                <input type="radio" name="options-${id}" id="option${i + 1}-${id}" autocomplete="off" value="${i + 1}">
-            </label>
-    `
-    }
-    html += "</div>"
-    document.getElementById(id).innerHTML = html
-    try {
-        document.querySelector(`input[name="options-${id}"][value="${es(value)}"]`).checked = true;
-    }
-    catch (exception){
-        if (exception instanceof TypeError){
+    const fieldTemplate = document.getElementById("numerical-ordinal");
+    const selectTemplate = document.getElementById("ordinal-select");
 
+    const field = fieldTemplate.content.cloneNode(true);
+    for (let index = 0; index < number; index++) {
+        const select = selectTemplate.content.cloneNode(true);
+        const label = select.querySelector("span");
+        const radio = select.querySelector("input");
+
+        label.innerText = index + 1;
+        radio.name = "options-" + column_name;
+        radio.id = "option" + (index + 1) + "-" + column_name;
+        if (index + 1 == value) {
+            radio.checked = true;
         }
-        else {
-            console.log(exception)
-        }
+        field.appendChild(select);
     }
 
+    document.getElementById(id).replaceChildren(field);
 }
 
 function hidden(_column_name, _value, id) {
-}
-
-function clear(id){
-    document.getElementById(id).innerHTML = "";
 }
 
 function social_media_embed(url, id, column_id){
@@ -384,14 +294,14 @@ function oembed(_url, id, column_id){
 }
 
 function twitter_embed(url, id) {
-        clear(id)
-        twttr.widgets.createTweet(
-            url.split("/").at(-1),
-            document.getElementById(id),
-            {
-                align: "center"
-            }
-        )
+    document.getElementById(id).replaceChildren();
+    twttr.widgets.createTweet(
+        url.split("/").at(-1),
+        document.getElementById(id),
+        {
+            align: "center"
+        }
+    )
 }
 
 function initialise(dataset_id, columns, types) {
