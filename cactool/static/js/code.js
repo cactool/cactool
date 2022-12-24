@@ -270,9 +270,9 @@ function social_media_embed(url, id, column_id){
 function instagram_embed(_url, id, column_id){
     iframe = document.createElement("iframe")
     iframe.setAttribute("src", `/dataset/code/instagram/${window.dataset_id}/${window.row_number}/${column_id}`)
-    iframe.style.width = "100%"
+    iframe.style.width = "70vw"
     iframe.style.height = "100vh"
-    document.getElementById(id).appendChild(iframe)
+    document.getElementById(id).replaceChildren(iframe)
 }
 
 
