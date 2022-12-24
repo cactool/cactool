@@ -87,6 +87,7 @@ class AnonymousUser(AnonymousUserMixin):
     def can_export(self, thing):
         return False
 
+    @property
     def initials(self):
         return "??"
 
@@ -150,6 +151,7 @@ class User(UserMixin, db.Model):
     def get_id(self):
         return self.id
 
+    @property
     def initials(self):
         return self.firstname[0].upper() + self.surname[0].upper()
 

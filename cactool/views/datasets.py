@@ -417,8 +417,11 @@ def delete_dataset():
         return redirect(url_for("datasets.show_datasets"))
 
 
-def dict_union(dict1, dict2):
-    return {**dict1, **dict2}
+def dict_union(*dictionaries):
+    result = {}
+    for dictionary in dictionaries:
+        result.update(dictionary)
+    return result
 
 
 @datasets.route("/dataset/export", methods=["POST", "GET"])
@@ -450,17 +453,38 @@ def export_dataset():
         writer = csv.DictWriter(
             file,
             fieldnames=list(map(lambda column: column.name, dataset.columns))
-            + ["coded", "coder", "post_unavailable", "skipped"],
+            + [
+                "coded",
+                "post_unavailable",
+                "skipped",
+                "coder_username",
+                "coder_firstname",
+                "coder_surname",
+                "coder_initials",
+            ],
         )
 
         writer.writeheader()
 
         for row in dataset.rows:
+            coder_initials = ""
+            coder_username = ""
+            coder_first_name = ""
+            coder_surname = ""
+            if row.coder is not None:
+                coder_initials = row.coder.initials
+                coder_username = row.coder.username
+                coder_firstname = row.coder.firstname
+                coder_surname = row.coder.surname
+
             writer.writerow(
                 dict_union(
                     {entry.column.name: entry.value for entry in row.values},
                     {
-                        "coder": row.coder.initials() if row.coder is not None else "",
+                        "coder_initials": coder_initials,
+                        "coder_username": coder_username,
+                        "coder_firstname": coder_firstname,
+                        "coder_surname": coder_surname,
                         "coded": row.coded,
                         "skipped": row.skip,
                         "post_unavailable": row.post_unavailable,
