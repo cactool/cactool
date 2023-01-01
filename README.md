@@ -81,7 +81,7 @@ cactool
 The server will be running on port 80
 
 ## Custom Builds
-There are some additional configuration settings available. For example those aimed at low-memory machines (for example users installing Cactool on a Raspberry Pi), or server users with a public facing instance (such as custom ports, limiting file size uploads, and limiting user-signups. Please read the documents for more.
+There are some additional configuration settings available. For example those aimed at low-memory machines (such as installing Cactool on a Raspberry Pi), or server users with a public facing instance (such as custom ports, limiting file size uploads, and limiting user-signups. Please read the documents for more.
 
 # Credits
 The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.com), *Lecturer in Media & Communication at the University of Liverpool*, and development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
