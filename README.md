@@ -88,7 +88,8 @@ The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.co
 
 ## Funding
 Cactool Development was funded by the University of Liverpool’s Research Development and Initiative Fund (RDIF).
-![UniofLiverpoolLogo](https://user-images.githubusercontent.com/11173283/210171713-d7be5e07-7235-4fe9-83c7-7a8fc65eac80.png)
+![UoL - Logo - CMYK](https://user-images.githubusercontent.com/11173283/210178161-3070e2df-68a8-4128-8b1b-43453571c85b.png)
+
 
 
 
