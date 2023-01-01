@@ -17,20 +17,59 @@
  </p>
 
 # Introduction
-Cactool is a platform developed for researchers to collaboratively and manually code pre-existing datasets of social media posts for content and discourse analysis. After the initial setup, getting started is easy: import a csv of social media URLs; set your coding variables; and grant access to your coders who can get started right away.
- 
-- **No more coding via spreadsheets** Coding is undertaken via your browser (tested working on Chrome, Firefox, Edge, & Safari) with posts visible as they would be on the social media platform. This allows your coders to evaluate social media content in their native format.
-- **Simple Import and Export** Take your pre-existing social media URLs from software such as [4Cat](https://github.com/digitalmethodsinitiative/4cat), [NodeXL]( https://www.smrfoundation.org/nodexl/), or API Scrapers such as [Tweepy]( https://www.tweepy.org/) and import them as a CSV list. When done, you can export your data via CSV to whatever analysis software you desire.
-- **Works for multiple social media platforms** Cactool currently works with URLs from Twitter, Instagram, YouTube, & TikTok.
-- **Manage Multiple Datasets** Want to split your project by source/themes? You can manage multiple concurrent datasets at the same time.
-- **Built for collaboration** Cactool comes pre-packaged with user management; codes attributed are attributed to each coder for coder reliability calculation (such as [ReCal](http://dfreelon.org/utils/recalfront/)). Multiple people can be coding at the same time without sharing documents. No need to worry about version control or splitting up data.
-- **Code on the Go** Cactool is mobile friendly and can be accessed remotely (we recommend using a VPN to connect, see our tutorial for why). This provides researchers interested in social media content and spaciality new avenues of research.
- 
+Cactool (or Content Analysis Coding Tool) is a platform which allows researchers to collaboratively code pre-existing social media datasets in their native format for manual content and discourse analysis.
+
+Using Cactool is easy, after the initial installation, you can create users, import your data, set your coding variables, and get started! This allows coders, especially those working in groups, to analyse social media data quicker, more accessibly, and more accurately by viewing posts in context.
+
+# Features
+
+- **No more coding via spreadsheets:** Coding via your browser (tested working on Chrome, Firefox, Edge, & Safari) with posts visible as they would be on the social media platform. This allows your coders to evaluate social media content in their native format.
+- **Simple Import and Export:** Take your pre-existing social media URLs from software such as [4Cat](https://github.com/digitalmethodsinitiative/4cat), [NodeXL](https://www.smrfoundation.org/nodexl/), or API Scrapers such as [Tweepy](https://www.tweepy.org/) and import them as a CSV list. When done, you can export your data via CSV to whatever analysis software you desire.
+- **Importing of image/text data:** Have data from secondary source with no URLs? No Problem.
+- **Manage Multiple Datasets:** Want to split your project by source/themes? You can manage multiple concurrent datasets at the same time.
+- **Built for collaboration:** Cactool comes pre-packaged with user management; codes attributed are attributed to each coder for coder reliability calculation (such as [ReCal](http://dfreelon.org/utils/recalfront/)). Multiple people can be coding at the same time without sharing documents. No need to worry about version control or splitting up data.
+- **Code on the Go:** Cactool is mobile friendly and can be accessed remotely (we recommend using a VPN to connect, see our tutorial for why). This provides researchers interested in social media content and spaciality new avenues of research.
+
+## Platform Compatability
+
+Cactool works for across multiple-social media platforms. The following data types are currently supported:
+- Twitter
+- YouTube
+- TikTok
+- Instagram
+- Mastodon (via OEmbed)
+- Image Data (Photos/screenshots)
+- Text Strings
+- & Some* compatibility with other OEmbed platforms
+
+
 # Documentation
 Easy to follow installation instructions and user guides can be found via the documentation on [Read the Docs](https://cactool.readthedocs.io)
 
 # Installation and usage
-## Directly
+You can install Cactool on your local machine or on a server through [Docker](https://www.docker.com/) or directly using [PIP (package manager)](https://pip.pypa.io/en/stable/). Running Cactool through a server is useful if you want to have multiple coders, or want to code through your mobile while situated away from your main computer. 
+
+Cactool also has some custom build configurations
+
+## Docker
+### 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop), and start it. 
+Note that on Windows, you may need to ensure that WSL (Windows Subsystem for Linux) integration is enabled in Docker. You can find this in the Docker setting in Settings -> Resources-> WSL Integration -> Enable integration with required distros.
+### 2. Clone the repository
+```bash
+git clone https://github.com/cactool/cactool
+```
+### 3. Enter the cactool directory
+```
+cd cactool
+```
+### 4. Run `docker-compose`
+Make sure the Docker daemon is running then run
+```bash
+docker-compose up -d
+```
+An instance should be accessible on port 80
+
+## Directly (with Pip)
 ### 1. Install Cactool
 ```bash
 pip install cactool
@@ -39,25 +78,20 @@ pip install cactool
 ```bash
 cactool
 ```
-The server will be running on port 8080
-## Using Docker
-### 1. Clone the repository
-```bash
-git clone https://github.com/cactool/cactool
-```
-### 2. Enter the cactool directory
-```
-cd cactool
-```
-### 3. Run `docker-compose`
-Make sure the Docker daemon is running then run
-```bash
-docker-compose up -d
-```
-An instance should be accessible on port 80.
+The server will be running on port 80
+
+## Custom Builds
+There are some additional configuration settings available. For example those aimed at low-memory machines (for example users installing Cactool on a Raspberry Pi), or server users with a public facing instance (such as custom ports, limiting file size uploads, and limiting user-signups. Please read the documents for more.
 
 # Credits
 The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.com), *Lecturer in Media & Communication at the University of Liverpool*, and development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
+
+## Funding
+Cactool Development was funded by the University of Liverpool’s Research Development and Initiative Fund (RDIF).
+![UniofLiverpoolLogo](https://user-images.githubusercontent.com/11173283/210171713-d7be5e07-7235-4fe9-83c7-7a8fc65eac80.png)
+
+
+
 ## Citations
 ### Bibtex
 ```bibtex
