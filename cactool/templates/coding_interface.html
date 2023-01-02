@@ -8,18 +8,27 @@
     <p class=information></p>
 </template>
 
-<!-- TODO: Update submit hooks -->
-<!-- TODO: Add click hooks -->
-<!-- TODO: Add initialisation hooks -->
+<script>
+    updateRadio = (element) => {
+        [...element.parentElement.parentElement.querySelectorAll("label")].forEach(
+            element => {
+                element.classList.remove("btn-primary")
+                element.classList.add("btn-outline-primary")
+            }
+        );
+        element.parentElement.classList.add("btn-primary");
+        element.parentElement.classList.remove("btn-outline-primary");
+    }
+</script>
 <template id="yes-no">
     <div class="btn-group">
         <label class="btn btn-outline-primary">
             Yes
-            <input type="radio" value="yes" style="display: none">
+            <input type="radio" value="yes" style="display: none;" onclick="updateRadio(this)">
         </label>
         <label class="btn btn-outline-primary">
             No
-            <input type="radio" value="no" style="display: none;">
+            <input type="radio" value="no" style="display: none;" onclick="updateRadio(this)">
         </label>
     </div>
 </template>

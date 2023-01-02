@@ -73,7 +73,7 @@ function update_row(row){
             social_media_embed(data.value, id, column_id)
         }
         else if (data.type == BOOLEAN) {
-            checkbox(data.prompt, data.value === "true", id)
+            checkbox(data.prompt, data.value, id)
         }
         else if (data.type == HIDDEN) {
             hidden(data.prompt, data.value, id)
@@ -104,7 +104,7 @@ function get_value(column_name){
 
 function get_boolean(column_name){
     id = "column-" + column_name
-    return document.getElementById(id).getElementsByTagName("input")[0].checked
+    return document.getElementById(id).querySelector("input:checked").value
 }
 
 function submit(){
@@ -115,7 +115,6 @@ function submit(){
     } 
     
     for (column of window.columns) {
-        console.log(column.type)
         if(column.type === SOCIAL_MEDIA || column.type === HIDDEN){
             continue
         }
@@ -150,7 +149,6 @@ function submit(){
 
 function go_to_row() {
     const input_field = document.getElementById("row-number");
-    console.log(input_field);
     fetch_row(input_field.value)
 }
 
@@ -159,7 +157,6 @@ function skip(){
         dataset_id: window.dataset_id,
         row_number: window.row_number,
         skip: true,
-        values: {},
     } 
     
     fetch(
@@ -179,7 +176,6 @@ function post_unavailable(){
         dataset_id: window.dataset_id,
         row_number: window.row_number,
         post_unavailable: true,
-        values: {},
     } 
     
     fetch(
@@ -212,7 +208,12 @@ function display(column_name, value, id) {
 function checkbox(column_name, value, id) {
     const template = document.getElementById("yes-no");
     const field = template.content.cloneNode(true);
-    [...field.querySelectorAll("input")].map(responseField => { responseField.name = id})
+    [...field.querySelectorAll("input")].forEach(responseField => {
+        responseField.name = id;
+        if (responseField.value == value) {
+            updateRadio(responseField);
+        }
+    });
     document.getElementById(id).replaceChildren(field);
 }
 

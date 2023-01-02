@@ -350,11 +350,12 @@ def code_dataset(dataset_id):
     values = []
     if "values" in data:
         values = data["values"].items()
+        row.coded = True
 
     for (column_id, value) in values:
         row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
         row_value.value = value
-        row.coded = True
+        print(column_id, value, row_value.value)
 
     db.session.commit()
     return next_row()
