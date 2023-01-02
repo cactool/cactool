@@ -355,7 +355,6 @@ def code_dataset(dataset_id):
     for (column_id, value) in values:
         row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
         row_value.value = value
-        print(column_id, value, row_value.value)
 
     db.session.commit()
     return next_row()
