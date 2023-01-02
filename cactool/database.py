@@ -33,6 +33,12 @@ class AccessContainer:
         raise NotImplementedError()
 
 
+class UserEmailVerification(db.Model):
+    verification_code = db.Column(db.String(16), primary_key=True)
+    user_id = db.Column(db.ForeignKey("user.id"))
+    timestamp = db.Column(db.Integer())
+
+
 class DatasetAccess(db.Model, AccessContainer):
     user_id = db.Column(db.ForeignKey("user.id"), primary_key=True)
     dataset_id = db.Column(db.ForeignKey("dataset.id"), primary_key=True)
@@ -101,9 +107,11 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(1024))
     firstname = db.Column(db.String(50))
     surname = db.Column(db.String(50))
+    unverified = db.Column(db.Boolean(), default=False)
 
     dataset_rights = db.relationship(DatasetAccess)
     project_rights = db.relationship(ProjectAccess)
+    email_verification = db.relationship(UserEmailVerification)
 
     def viewable_datasets(self):
         datasets = []

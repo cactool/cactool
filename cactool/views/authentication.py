@@ -2,6 +2,7 @@ import email.utils
 import secrets
 import smtplib
 import ssl
+import time
 
 import pyotp
 import qrcode
@@ -19,7 +20,7 @@ from flask import (
 from flask_login import login_user, logout_user
 from passlib.hash import pbkdf2_sha256
 
-from ..database import User, db
+from ..database import User, UserEmailVerification, db
 
 authentication = Blueprint("authentication", __name__)
 
@@ -37,7 +38,7 @@ def send_email(email, message):
         raise Exception("Unable to send e-mail: server details not present")
 
     server = smtplib.SMTP(details["host"], details["port"])
-    sever.starttls()
+    server.starttls()
     server.login(username, password)
     server.sendmail(sender_email, email, message)
 
@@ -125,6 +126,9 @@ def login():
                 session["2fa-secret"] = user.otp_secret
                 return redirect(url_for("authentication.verify_2fa"))
             else:
+                if user.unverified:
+                    # TODO
+                    return "Your e-mail has not yet been verified"
                 login_user(user, remember=True)
                 flash("Logged in successfully")
         else:
@@ -158,7 +162,7 @@ def signup():
 
         require_email = current_app.config["require-email"]
         email_domains = current_app.config["email-domains"]
-        verify_emails = current_app.config["verify-emails"]
+        should_verify_emails = current_app.config["verify-emails"]
 
         if require_email:
             if email is None or not email:
@@ -187,29 +191,42 @@ def signup():
             flash("A user with the provided email already exists")
             return render_template("signup.html")
 
-        if email and verify_emails:
-            send_email(email, "Welcome to cactool")
-
-        elif username and password and firstname and surname:
-            if not password_strength(password):
-                flash("Your password isn't strong enough")
-                return render_template("signup.html")
-            hashed_password = pbkdf2_sha256.hash(password)
-            user = User(
-                username=username,
-                password=hashed_password,
-                firstname=firstname,
-                surname=surname,
-                email=email,
-                id=secrets.token_hex(8),
-            )
-            db.session.add(user)
-            db.session.commit()
-
-            flash("Successfully created an account")
-
-        else:
+        if not (username and password and firstname and surname):
             flash("Some fields were left blank")
             return render_template("signup.html")
+
+        if not password_strength(password):
+            flash("Your password isn't strong enough")
+            return render_template("signup.html")
+
+        hashed_password = pbkdf2_sha256.hash(password)
+        user = User(
+            username=username,
+            password=hashed_password,
+            firstname=firstname,
+            surname=surname,
+            email=email,
+            unverified=should_verify_emails,
+            id=secrets.token_hex(8),
+        )
+
+        if email and should_verify_emails:
+            verification_code = secrets.token_hex(8)
+            send_email(
+                email,
+                f"Welcome to cactool! Your verification code is {verification_code}",
+            )
+            user.email_verification = [
+                UserEmailVerification(
+                    verification_code=verification_code,
+                    user_id=user.id,
+                    timestamp=round(time.time() + 60 * 60 * 24 * 14),
+                )
+            ]
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash("Successfully created an account")
 
         return redirect(url_for("authentication.login"))
