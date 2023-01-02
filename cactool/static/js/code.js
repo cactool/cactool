@@ -260,6 +260,7 @@ function social_media_embed(url, id, column_id){
         host = new URL(url).host
     }
     catch {
+        return;
         /*TODO: Error message*/
     }
     if (TWITTER_HOSTS.includes(host)) {
