@@ -6,6 +6,7 @@ import tempfile
 import uuid
 
 import requests
+from bs4 import BeautifulSoup
 from flask import (
     Blueprint,
     current_app,
@@ -380,17 +381,29 @@ def render_oembed(dataset_id, row_number, column_id):
         return redirect(url_for("show_datasets"))
     row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
 
-    url = row_value.value
-    domain = requests.utils.urlparse(url).netloc
+    social_media_url = row_value.value
+    domain = requests.utils.urlparse(social_media_url).netloc
 
-    print(
-        f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452"
+    response = requests.get(social_media_url)
+    page = BeautifulSoup(response.content)
+
+    oembed_url = f"https://{domain}/oembed?url={requests.utils.quote(social_media_url)}"
+
+    oembed_link_element = page.html.head.select_one(
+        "link[type='application/json+oembed']"
     )
-    response = requests.get(
-        f"https://{domain}/oembed?url={requests.utils.quote(url)}&maxwidth=800&maxheight=452"
+    oembed_link_element = oembed_link_element or page.html.head.select_one(
+        "link[type='json+oembed']"
     )
 
-    return jsonify(response.json())
+    if oembed_link_element:
+        oembed_url = oembed_link_element.get("href")
+
+    try:
+        response = requests.get(oembed_url + "&maxwidth=800&maxheight=800")
+        return jsonify(response.json())
+    except:
+        {"html": "Unable to load page"}
 
 
 @datasets.route("/dataset/delete", methods=["POST"])

@@ -103,8 +103,8 @@ function get_value(column_name){
 }
 
 function get_boolean(column_name){
-    id = "column-" + column_name
-    return document.getElementById(id).querySelector("input:checked").value
+    const field = document.getElementById("column-" + column_name).querySelector("input:checked");
+    return field ? field.value : "";
 }
 
 function submit(){
@@ -256,7 +256,12 @@ function hidden(_column_name, _value, id) {
 }
 
 function social_media_embed(url, id, column_id){
-    host = new URL(url).host
+    try {
+        host = new URL(url).host
+    }
+    catch {
+        /*TODO: Error message*/
+    }
     if (TWITTER_HOSTS.includes(host)) {
         twitter_embed(url, id);
     }

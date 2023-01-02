@@ -10,3 +10,4 @@ cryptography
 appdirs
 qrcode
 pyotp
+beautifulsoup4
