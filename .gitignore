@@ -2,6 +2,7 @@
 
 # Configuration files 
 config.json
+docker-config
 
 # Database
 db.sqlite3
