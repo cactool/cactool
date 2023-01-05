@@ -78,7 +78,7 @@ pip install cactool
 ```bash
 cactool
 ```
-The server will be running on port 80
+The server will be running on port 80 and configuration files can be found in the generated `docker-config` folder.
 
 ## Custom Builds
 There are some additional configuration settings available. For example those aimed at low-memory machines (such as installing Cactool on a Raspberry Pi), or server users with a public facing instance (such as custom ports, limiting file size uploads, and limiting user-signups. Please read the documents for more.
