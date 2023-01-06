@@ -23,6 +23,9 @@ const INSTAGRAM_HOSTS = [
   "www.instagram.com"
 ]
 
+const TIKTOK_HOSTS = [
+    "tiktok.com"
+]
 
 function next_row() {
     fetch(
@@ -86,7 +89,7 @@ function update_row(row){
             || data.type == ONE_TO_FIVE
             || data.type == ONE_TO_SEVEN
         ) {
-            numerical_ordinal(data.prompt, data.value, id, ORDINAL_LOOKUP[data.type])
+            numerical_ordinal(column_id, data.value, id, ORDINAL_LOOKUP[data.type])
         }
         else if (data.type == DISPLAY) {
             display(data.prompt, data.value, id)
@@ -243,7 +246,8 @@ function numerical_ordinal(column_name, value, id, number) {
         label.innerText = index + 1;
         radio.name = "options-" + column_name;
         radio.id = "option" + (index + 1) + "-" + column_name;
-        if (index + 1 == value) {
+        radio.value = index + 1;
+        if (radio.value == value) {
             radio.checked = true;
         }
         field.appendChild(select);
@@ -257,24 +261,23 @@ function hidden(_column_name, _value, id) {
 
 function social_media_embed(url, id, column_id){
     try {
-        host = new URL(url).host
+        host = new URL(url).host;
     }
     catch {
-        return;
-        /*TODO: Error message*/
+        display_error(id, `Unable to load URL: ${url}`);
     }
     if (TWITTER_HOSTS.includes(host)) {
         twitter_embed(url, id);
     }
     else if (INSTAGRAM_HOSTS.includes(host)) {
-        instagram_embed(url, id, column_id);
+        instagram_embed(id, column_id);
     }
     else {
-        oembed(url, id, column_id);
+        oembed(id, column_id);
     }
 }
 
-function instagram_embed(_url, id, column_id){
+function instagram_embed(id, column_id){
     iframe = document.createElement("iframe")
     iframe.setAttribute("src", `/dataset/code/instagram/${window.dataset_id}/${window.row_number}/${column_id}`)
     iframe.style.width = "70vw"
@@ -282,8 +285,17 @@ function instagram_embed(_url, id, column_id){
     document.getElementById(id).replaceChildren(iframe)
 }
 
+function tiktok_embed(id, column_id) {
 
-function oembed(_url, id, column_id){
+}
+
+function display_error(id, error_message) {
+    span = document.createElement("pre");
+    span.innerText = error_message;
+    document.getElementById(id).replaceChildren(span);
+}
+
+function oembed(id, column_id){
     fetch(
         `/dataset/code/oembed/${window.dataset_id}/${window.row_number}/${column_id}`,
         {
