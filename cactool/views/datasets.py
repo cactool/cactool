@@ -403,7 +403,7 @@ def render_oembed(dataset_id, row_number, column_id):
         response = requests.get(oembed_url + "&maxwidth=800&maxheight=800")
         return jsonify(response.json())
     except:
-        {"html": "Unable to load page"}
+        return {"html": "Unable to load post"}
 
 
 @datasets.route("/dataset/delete", methods=["POST"])

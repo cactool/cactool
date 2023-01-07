@@ -36,6 +36,13 @@ iframe {
 @media (min-width: 1440px) {
     .code-window {
         display: grid;
+    }
+
+    .code-window.with-social-media {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .code-window.without-social-media {
+        grid-template-columns: 0fr 1fr;
     }
 }

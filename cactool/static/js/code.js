@@ -264,7 +264,9 @@ function social_media_embed(url, id, column_id){
         host = new URL(url).host;
     }
     catch {
-        display_error(id, `Unable to load URL: ${url}`);
+        console.log("url", url);
+        display_error(id, `Unable to parse URL: ${url}`);
+        return;
     }
     if (TWITTER_HOSTS.includes(host)) {
         twitter_embed(url, id);

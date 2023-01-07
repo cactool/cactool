@@ -34,7 +34,14 @@
                 <input id=row-number class="form-control small-number" inputmode=numeric min=0>
                 <a onclick="go_to_row()" class="btn btn-outline-dark">Go</a>
               </div>
-          <div class="code-window">
+              <div class="
+                  code-window
+                  {% if dataset.has_social_media %}
+                    with-social-media
+                  {% else %}
+                    without-social-media
+                  {% endif %}
+              ">
               <div class="social-window">
                   {% for column in dataset.ordered_columns %}
                       {% if column.type.value == "SOCIAL_MEDIA" %}

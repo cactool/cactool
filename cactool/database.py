@@ -252,6 +252,10 @@ class Dataset(db.Model):
         return ", ".join(messages)
 
     @property
+    def has_social_media(self):
+        return any(column.type == Type.SOCIAL_MEDIA for column in self.columns)
+
+    @property
     def ordered_columns(self):
         return sorted(self.columns, key=lambda column: column.order or 999)
 
