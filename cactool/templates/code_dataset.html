@@ -44,7 +44,7 @@
               ">
               <div class="social-window">
                   {% for column in dataset.ordered_columns %}
-                      {% if column.type.value == "SOCIAL_MEDIA" %}
+                      {% if column.type.is_social_media %}
                          <table class="table">
                             <thead>
                               <tr>

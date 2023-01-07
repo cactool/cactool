@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from flask import (
     Blueprint,
+    Response,
     current_app,
     flash,
     jsonify,
@@ -383,9 +384,18 @@ def render_tiktok(dataset_id, row_number, column_id):
     row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id)).value
     url = requests.utils.urlparse(row_value)
     video_id = url.path.split("/")[-1]
-    print("Video id", video_id)
 
     return render_template("tiktok_embed.html", video_id=video_id)
+
+
+@datasets.route("/dataset/code/image/<dataset_id>/<row_number>/<column_id>")
+def render_image(dataset_id, row_number, column_id):
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset or not current_user.can_code(dataset):
+        flash("You don't have access to that dataset")
+        return redirect(url_for("show_datasets"))
+
+    return Response("", mimetype="image/svg+xml")
 
 
 @datasets.route("/dataset/code/oembed/<dataset_id>/<row_number>/<column_id>")

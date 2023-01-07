@@ -253,7 +253,9 @@ class Dataset(db.Model):
 
     @property
     def has_social_media(self):
-        return any(column.type == Type.SOCIAL_MEDIA for column in self.columns)
+        return any(
+            column.type in [Type.SOCIAL_MEDIA, Type.IMAGE] for column in self.columns
+        )
 
     @property
     def ordered_columns(self):

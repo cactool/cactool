@@ -6,6 +6,7 @@ const ONE_TO_SEVEN = "ONE_TO_SEVEN"
 const ONE_TO_FIVE = "ONE_TO_FIVE"
 const ONE_TO_THREE = "ONE_TO_THREE"
 const DISPLAY = "DISPLAY"
+const IMAGE = "IMAGE"
 
 const ORDINAL_LOOKUP = {
     [ONE_TO_THREE]: 3,
@@ -94,6 +95,9 @@ function update_row(row){
         }
         else if (data.type == DISPLAY) {
             display(data.prompt, data.value, id)
+        }
+        else if (data.type == IMAGE) {
+            display_image(id, column_id)
         }
         else {
             input(data.prompt, data.value, id)
@@ -299,7 +303,13 @@ function tiktok_embed(id, column_id) {
     iframe.style.width = "70vw"
     iframe.style.height = "100vh"
     document.getElementById(id).replaceChildren(iframe)
+}
 
+function display_image(id, column_id) {
+    console.log("displaying image")
+    image = document.createElement("img")
+    image.setAttribute("src", `/dataset/code/image/${window.dataset_id}/${window.row_number}/${column_id}.svg`)
+    document.getElementById(id).replaceChildren(image)
 }
 
 function display_error(id, error_message) {

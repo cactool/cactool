@@ -22,6 +22,10 @@ class Type(enum.Enum):
     def export():
         return {entry.name: entry.value for entry in Type}
 
+    @property
+    def is_social_media(self):
+        return self in [Type.SOCIAL_MEDIA, Type.IMAGE]
+
 
 @functools.total_ordering
 class AccessLevel(enum.Enum):
