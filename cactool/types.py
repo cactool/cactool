@@ -14,6 +14,7 @@ class Type(enum.Enum):
     ONE_TO_FIVE = "ONE_TO_FIVE"
     ONE_TO_THREE = "ONE_TO_THREE"
     DISPLAY = "DISPLAY"
+    IMAGE = "IMAGE"
 
     def serialise(self):
         return self.value
