@@ -372,6 +372,7 @@ def render_instagram(dataset_id, row_number, column_id):
 
     return render_template("instagram_embed.html", url=row_value.value)
 
+
 @datasets.route("/dataset/code/tiktok/<dataset_id>/<row_number>/<column_id>")
 def render_tiktok(dataset_id, row_number, column_id):
     dataset = Dataset.query.get(dataset_id)
@@ -385,7 +386,6 @@ def render_tiktok(dataset_id, row_number, column_id):
     print("Video id", video_id)
 
     return render_template("tiktok_embed.html", video_id=video_id)
-
 
 
 @datasets.route("/dataset/code/oembed/<dataset_id>/<row_number>/<column_id>")

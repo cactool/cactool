@@ -39,7 +39,7 @@ iframe {
     }
 
     .code-window.with-social-media {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 0.4fr 0.5fr;
     }
 
     .code-window.without-social-media {
