@@ -24,6 +24,7 @@ const INSTAGRAM_HOSTS = [
 ]
 
 const TIKTOK_HOSTS = [
+    "www.tiktok.com",
     "tiktok.com"
 ]
 
@@ -274,7 +275,12 @@ function social_media_embed(url, id, column_id){
     else if (INSTAGRAM_HOSTS.includes(host)) {
         instagram_embed(id, column_id);
     }
+    else if (TIKTOK_HOSTS.includes(host)) {
+        tiktok_embed(id, column_id);
+    }
+
     else {
+        console.log(host)
         oembed(id, column_id);
     }
 }
@@ -288,6 +294,11 @@ function instagram_embed(id, column_id){
 }
 
 function tiktok_embed(id, column_id) {
+    iframe = document.createElement("iframe")
+    iframe.setAttribute("src", `/dataset/code/tiktok/${window.dataset_id}/${window.row_number}/${column_id}`)
+    iframe.style.width = "70vw"
+    iframe.style.height = "100vh"
+    document.getElementById(id).replaceChildren(iframe)
 
 }
 

@@ -331,7 +331,7 @@ def code_dataset(dataset_id):
         return redirect(url_for("datasets.view_datasets"))
     if not current_user.can_code(dataset):
         flash("You don't have access to this dataset")
-        redirect(url_for("datasets.show_datasets"))
+        return redirect(url_for("datasets.show_datasets"))
     if request.method == "GET":
         return render_template("code_dataset.html", dataset=dataset)
     data = request.json
@@ -371,6 +371,21 @@ def render_instagram(dataset_id, row_number, column_id):
     row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
 
     return render_template("instagram_embed.html", url=row_value.value)
+
+@datasets.route("/dataset/code/tiktok/<dataset_id>/<row_number>/<column_id>")
+def render_tiktok(dataset_id, row_number, column_id):
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset or not current_user.can_code(dataset):
+        flash("You don't have access to that dataset")
+        return redirect(url_for("show_datasets"))
+
+    row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id)).value
+    url = requests.utils.urlparse(row_value)
+    video_id = url.path.split("/")[-1]
+    print("Video id", video_id)
+
+    return render_template("tiktok_embed.html", video_id=video_id)
+
 
 
 @datasets.route("/dataset/code/oembed/<dataset_id>/<row_number>/<column_id>")
