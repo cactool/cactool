@@ -38,6 +38,11 @@
           class="btn btn-outline-dark"
           >Edit</a
         >
+        <a
+          href="/dataset/{{ dataset.id }}/images/upload"
+          class="btn btn-outline-dark"
+          >Images</a
+        >
         {% endif %}
         {% if user.can_export(dataset) %}
         <input

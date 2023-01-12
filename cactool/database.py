@@ -1,6 +1,7 @@
 import base64
 import csv
 import operator
+import os
 import secrets
 
 import cryptography.fernet
@@ -203,6 +204,8 @@ class Dataset(db.Model):
 
     granted_access = db.relationship("DatasetAccess", cascade="all, delete-orphan")
 
+    files = db.relationship("DatasetFile", cascade="all, delete-orphan")
+
     def emit_csv(self) -> str:
         writer = csv.DictWriter()
         pass
@@ -331,6 +334,18 @@ class DatasetRowValue(db.Model):
         ),
         db.UniqueConstraint(dataset_id, dataset_row_number, column_id),
     )
+
+
+class DatasetFile(db.Model):
+    dataset_id = db.Column(db.ForeignKey(Dataset.id), primary_key=True)
+    file_name = db.Column(db.String(255), primary_key=True)
+    mime_type = db.Column(db.String(32))
+
+    def content(self, instance_directory):
+        location = os.path.join(instance_directory, self.dataset_id, self.file_name)
+        with open(location, "rb") as file:
+            content = file.read()
+        return content
 
 
 class Project(db.Model):

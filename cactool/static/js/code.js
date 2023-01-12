@@ -309,6 +309,7 @@ function display_image(id, column_id) {
     console.log("displaying image")
     image = document.createElement("img")
     image.setAttribute("src", `/dataset/code/image/${window.dataset_id}/${window.row_number}/${column_id}.svg`)
+    image.style.maxWidth = "70%";
     document.getElementById(id).replaceChildren(image)
 }
 

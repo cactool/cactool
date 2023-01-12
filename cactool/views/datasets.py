@@ -1,9 +1,12 @@
 import csv
 import itertools
+import mimetypes
 import os
 import sqlite3
 import tempfile
 import uuid
+import zipfile
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
@@ -27,6 +30,7 @@ from ..database import (
     AccessLevel,
     Dataset,
     DatasetAccess,
+    DatasetFile,
     DatasetRow,
     DatasetRowValue,
     Project,
@@ -135,6 +139,43 @@ def read_dataset(file, database_location, description=None):
     db.session.commit()
 
     return dataset
+
+
+@datasets.route("/dataset/<dataset_id>/images/upload", methods=["GET", "POST"])
+def upload_image(dataset_id):
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        return "This dataset does not exist"
+    if not current_user:
+        return "You need to be logged in to complete this action"
+    if not current_user.can_edit(dataset):
+        return "You do not have access to this dataset"
+
+    if request.method == "GET":
+        return render_template("upload_images.html", dataset=dataset)
+
+    file = request.files.get("file")
+    zf = zipfile.ZipFile(file)
+    if not file:
+        raise Exception("Malformed request")
+
+    dataset_directory = os.path.join(current_app.instance_path, dataset_id)
+    os.makedirs(dataset_directory, exist_ok=True)
+    for file_name in zf.namelist():
+        if file_name.endswith("/"):
+            continue
+        basename = os.path.basename(file_name)
+        with open(os.path.join(dataset_directory, basename), "wb") as file:
+            file.write(zf.read(file_name))
+        mime_type, _ = mimetypes.guess_type(basename)
+        if not mime_type:
+            mime_type = ""
+        dataset_file = DatasetFile(
+            dataset_id=dataset_id, file_name=basename, mime_type=mime_type
+        )
+        db.session.add(dataset_file)
+    db.session.commit()
+    return redirect(url_for("datasets.view_dataset", dataset_id=dataset_id))
 
 
 @datasets.route("/dataset/invite/<dataset_id>/<invite_code>", methods=["GET"])
@@ -388,14 +429,24 @@ def render_tiktok(dataset_id, row_number, column_id):
     return render_template("tiktok_embed.html", video_id=video_id)
 
 
-@datasets.route("/dataset/code/image/<dataset_id>/<row_number>/<column_id>")
-def render_image(dataset_id, row_number, column_id):
+@datasets.route("/dataset/code/image/<dataset_id>/<row_number>/<column_id>.<extension>")
+def render_image(dataset_id, row_number, column_id, extension):
     dataset = Dataset.query.get(dataset_id)
     if not dataset or not current_user.can_code(dataset):
         flash("You don't have access to that dataset")
         return redirect(url_for("show_datasets"))
 
-    return Response("", mimetype="image/svg+xml")
+    row_value = DatasetRowValue.query.get((dataset_id, row_number, column_id))
+
+    if row_value:
+        file_name = row_value.value
+        dataset_file = DatasetFile.query.get((dataset_id, file_name))
+        if dataset_file:
+            return Response(
+                dataset_file.content(current_app.instance_path),
+                mimetype=dataset_file.mime_type,
+            )
+    return Response("", mimetype=dataset_file.mime_type)
 
 
 @datasets.route("/dataset/code/oembed/<dataset_id>/<row_number>/<column_id>")

@@ -127,7 +127,6 @@ def login():
                 return redirect(url_for("authentication.verify_2fa"))
             else:
                 if user.unverified:
-                    # TODO
                     return "Your e-mail has not yet been verified"
                 login_user(user, remember=True)
                 flash("Logged in successfully")
