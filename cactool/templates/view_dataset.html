@@ -35,8 +35,42 @@
           <div class="input-group">
             <input class="form-control" value="{{ invite_link }}" readonly style="background-color: transparent; font-family: monospace;">
           </div>
-          
-          <br/>
+
+          <br>
+
+          <div class="text-center">
+              <h1 class="fw-bolder h4">Allocated rows</h1>
+          </div>
+          <table class=table>
+              <thead>
+                  <tr>
+                      <th style="width: 40%;">Name</th>
+                      <th style="width: 30%;">Start index</th>
+                      <th style="width: 30%;">End index</th>
+                  </tr>
+               </thead>
+               <tbody>
+                   {% for access in dataset.coder_access %}
+                       <td>{{ access.user.firstname }} {{access.user.surname}}</td>
+                       <td>
+                           <input autocomplete=off inputmode=numeric class=form-control style="max-width: 100px;"
+                           placeholder="1"
+                           value="{% if access.start_index is not none %}{{ access.start_index + 1 }}{%endif%}"
+                           name="{{access.user.id}}-start"
+                           form=types>
+                       </td>
+                       <td>
+                           <input autocomplete=off inputmode=numeric class=form-control style="max-width: 100px;"
+                           placeholder="{{dataset.num_rows}}"
+                           value="{% if access.end_index is not none %}{{ access.end_index + 1 }}{% endif %}"
+                           name="{{access.user.id}}-end"
+                           form=types>
+                       </td>
+                  {% endfor %}
+               </tbody>
+          </table>
+
+          <br>
 
           <div class="text-center mb-5">
             <h1 class="fw-bolder h4">Data Types</h1>

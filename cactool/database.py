@@ -47,11 +47,27 @@ class DatasetAccess(db.Model, AccessContainer):
     dataset_id = db.Column(db.ForeignKey("dataset.id"), primary_key=True)
     access_level = db.Column(db.Enum(AccessLevel))
 
+    start_index = db.Column(db.Integer, default=None)
+    end_index = db.Column(db.Integer, default=None)
+
+    user = db.relationship("User")
+    dataset = db.relationship("Dataset")
+
     @property
     def container_id(self):
         return self.dataset_id
 
-    dataset = db.relationship("Dataset")
+    @property
+    def start(self):
+        if self.start_index:
+            return self.start_index
+        return 0
+
+    @property
+    def end(self):
+        if self.end_index:
+            return self.end_index
+        return self.dataset.num_rows - 1
 
 
 class ProjectAccess(db.Model, AccessContainer):
@@ -265,6 +281,21 @@ class Dataset(db.Model):
     @property
     def ordered_columns(self):
         return sorted(self.columns, key=lambda column: column.order or 999)
+
+    @property
+    def coder_access(self):
+        result = []
+        for access in self.granted_access:
+            if access.grants(AccessLevel.CODE):
+                result.append(access)
+        return result
+
+    @property
+    def coders(self):
+        coders = []
+        for access in self.coder_access:
+            coders.append(access.user)
+        return coders
 
 
 class DatasetColumn(db.Model):

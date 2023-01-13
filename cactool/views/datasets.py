@@ -292,6 +292,14 @@ def update_dataset():
         if order and order.isdecimal():
             column.order = int(order)
 
+    for access in dataset.coder_access:
+        start = request.form.get(access.user.id + "-start")
+        end = request.form.get(access.user.id + "-end")
+        if start and start.isdecimal():
+            access.start_index = int(start) - 1
+        if end and end.isdecimal():
+            access.end_index = int(end) - 1
+
     for index, column in enumerate(dataset.ordered_columns):
         column.order = index + 1
 
@@ -302,6 +310,8 @@ def update_dataset():
 
 @datasets.route("/datasets", methods=["GET"])
 def show_datasets():
+    if not current_user.is_authenticated:
+        return redirect(url_for("authentication.login"))
     return render_template(
         "show_datasets.html", datasets=current_user.viewable_datasets()
     )
@@ -324,9 +334,15 @@ def next_row():
         flash("You don't have access to this dataset")
         return redirect(url_for("datasets.view_datasets"))
 
-    row = DatasetRow.query.filter_by(
-        dataset_id=dataset_id, coded=False, skip=False, post_unavailable=False
-    ).first()
+    access = DatasetAccess.query.filter_by(user_id=current_user.id).first()
+    row = (
+        DatasetRow.query.filter_by(
+            dataset_id=dataset_id, coded=False, skip=False, post_unavailable=False
+        )
+        .filter(access.start <= DatasetRow.row_number)
+        .filter(DatasetRow.row_number <= access.end)
+        .first()
+    )
 
     if row:
         row = row.serialise()

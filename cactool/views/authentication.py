@@ -62,6 +62,7 @@ def verify_email(verification_code):
     flash("Email verified")
     return redirect(url_for(login))
 
+
 @authentication.route("/setup-2fa", methods=["POST", "GET"])
 def setup_2fa():
     if not session["2fa-username"]:
