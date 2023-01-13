@@ -39,6 +39,8 @@ class UserEmailVerification(db.Model):
     user_id = db.Column(db.ForeignKey("user.id"))
     timestamp = db.Column(db.Integer())
 
+    user = db.relationship("User")
+
 
 class DatasetAccess(db.Model, AccessContainer):
     user_id = db.Column(db.ForeignKey("user.id"), primary_key=True)

@@ -53,6 +53,15 @@ def password_strength(password):
     return False
 
 
+@authentication.route("/verify-email/<verification_code>")
+def verify_email(verification_code):
+    email_verification = UserEmailVerification.query.get(verification_code)
+    email_verification.user.unverified = False
+    email_verification.delete()
+    db.session.commit()
+    flash("Email verified")
+    return redirect(url_for(login))
+
 @authentication.route("/setup-2fa", methods=["POST", "GET"])
 def setup_2fa():
     if not session["2fa-username"]:
@@ -127,11 +136,13 @@ def login():
                 return redirect(url_for("authentication.verify_2fa"))
             else:
                 if user.unverified:
-                    return "Your e-mail has not yet been verified"
+                    flash("Your e-mail has not yet been verified")
+                    return redirect(url_for(login))
                 login_user(user, remember=True)
                 flash("Logged in successfully")
         else:
             flash("You enterred the wrong password for this account")
+            return redirect(url_for("login"))
 
         return redirect(url_for("home.dashboard"))
 
@@ -213,12 +224,13 @@ def signup():
             verification_code = secrets.token_hex(8)
             send_email(
                 email,
-                f"Welcome to cactool! Your verification code is {verification_code}",
+                f"Welcome to cactool! Your verification code is {request.host_url}{verification_code}",
             )
             user.email_verification = [
                 UserEmailVerification(
                     verification_code=verification_code,
                     user_id=user.id,
+                    # 14 days
                     timestamp=round(time.time() + 60 * 60 * 24 * 14),
                 )
             ]
