@@ -145,12 +145,14 @@ def read_dataset(file, database_location, description=None):
 def upload_image(dataset_id):
     dataset = Dataset.query.get(dataset_id)
     if not dataset:
-        return "This dataset does not exist"
+        flash("This dataset does not exist")
+        return redirect(url_for("datasets.show_datasets"))
     if not current_user:
-        return "You need to be logged in to complete this action"
+        flash("You need to be logged in to complete this action")
+        return redirect(url_for("authentication.login"))
     if not current_user.can_edit(dataset):
-        return "You do not have access to this dataset"
-
+        flash("You do not have access to this dataset")
+        return redirect(url_for("datasets.show_datasets"))
     if request.method == "GET":
         return render_template("upload_images.html", dataset=dataset)
 
@@ -297,8 +299,13 @@ def update_dataset():
         end = request.form.get(access.user.id + "-end")
         if start and start.isdecimal():
             access.start_index = int(start) - 1
+        else:
+            access.start_index = None
+
         if end and end.isdecimal():
             access.end_index = int(end) - 1
+        else:
+            access.end_index = None
 
     for index, column in enumerate(dataset.ordered_columns):
         column.order = index + 1

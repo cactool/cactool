@@ -142,7 +142,7 @@ def login():
                 login_user(user, remember=True)
                 flash("Logged in successfully")
         else:
-            flash("You enterred the wrong password for this account")
+            flash("You entered the wrong password for this account")
             return redirect(url_for("login"))
 
         return redirect(url_for("home.dashboard"))
@@ -225,7 +225,7 @@ def signup():
             verification_code = secrets.token_hex(8)
             send_email(
                 email,
-                f"Welcome to cactool! Your verification code is {request.host_url}{verification_code}",
+                f"Welcome to cactool! Your verification code is {request.host_url}verify-email/{verification_code}",
             )
             user.email_verification = [
                 UserEmailVerification(
