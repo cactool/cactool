@@ -123,7 +123,7 @@ function submit(){
     } 
     
     for (column of window.columns) {
-        if(column.type === SOCIAL_MEDIA || column.type === HIDDEN){
+        if(column.type === SOCIAL_MEDIA || column.type === HIDDEN || column.type === IMAGE){
             continue
         }
         else if(
@@ -269,7 +269,6 @@ function social_media_embed(url, id, column_id){
         host = new URL(url).host;
     }
     catch {
-        console.log("url", url);
         display_error(id, `Unable to parse URL: ${url}`);
         return;
     }
@@ -284,7 +283,6 @@ function social_media_embed(url, id, column_id){
     }
 
     else {
-        console.log(host)
         oembed(id, column_id);
     }
 }
@@ -306,7 +304,6 @@ function tiktok_embed(id, column_id) {
 }
 
 function display_image(id, column_id) {
-    console.log("displaying image")
     image = document.createElement("img")
     image.setAttribute("src", `/dataset/code/image/${window.dataset_id}/${window.row_number}/${column_id}.svg`)
     image.style.maxWidth = "70%";
@@ -348,16 +345,31 @@ function twitter_embed(url, id) {
 }
 
 function initialise(dataset_id, columns, types) {
-    window.dataset_id = dataset_id
-    window.column_names = columns
-    window.column_types = types
+    document.getElementById("row-number").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            if (event.target.value === "") return;
+            event.preventDefault();
+            go_to_row();
+            event.target.value = "";
+        }
+    });
+    window.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && event.ctrlKey) {
+            event.preventDefault();
+            submit();
+            next_row();
+        }
+    });
+    window.dataset_id = dataset_id;
+    window.column_names = columns;
+    window.column_types = types;
     window.columns = window.column_names.map(
         function(column_name, index) {
             return {
                 name: column_name,
                 type: window.column_types[index]
-            }
+            };
         } 
-    )
-    next_row()
+    );
+    next_row();
 }
