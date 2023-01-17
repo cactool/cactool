@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from flask import (
     Blueprint,
     Response,
+    abort,
     current_app,
     flash,
     jsonify,
@@ -469,7 +470,9 @@ def render_image(dataset_id, row_number, column_id, extension):
                 dataset_file.content(current_app.instance_path),
                 mimetype=dataset_file.mime_type,
             )
-    return Response("", mimetype=dataset_file.mime_type)
+        return Response("", mimetype=dataset_file.mime_type)
+
+    abort(404)
 
 
 @datasets.route("/dataset/code/oembed/<dataset_id>/<row_number>/<column_id>")
