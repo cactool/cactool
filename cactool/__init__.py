@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from flask import Flask, g
 from flask_login import LoginManager
 from flask_migrate import Migrate, upgrade
+from werkzeug.exceptions import HTTPException
 
 from .database import AnonymousUser, User, db
 from .views.authentication import authentication
@@ -83,6 +84,15 @@ app.register_blueprint(datasets)
 app.register_blueprint(site)
 app.register_error_handler(404, page_not_found)
 app.register_error_handler(500, server_error)
+
+
+@app.errorhandler(Exception)
+def handle_exception(exception):
+    if isinstance(exception, HTTPException):
+        return exception
+
+    return server_error(exception)
+
 
 if not os.path.isdir(app.instance_path):
     try:

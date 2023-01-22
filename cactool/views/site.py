@@ -10,7 +10,7 @@ def page_not_found(error):
 
 @site.route("/error")
 def server_error(error):
-    return render_template("error.html"), 500
+    return render_template("error.html"), 200
 
 
 @site.route("/faq")
