@@ -48,12 +48,12 @@
                          <table class="table">
                             <thead>
                               <tr>
-                                  <th scope="col" style="text-align: center;">{{ column.prompt }}</th>
+                                  <th class="no-border" scope="col" style="text-align: center;">{{ column.prompt }}</th>
                               </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th scope="row" class="text-centre;">
+                                    <th class="no-border" scope="row" class="text-centre;">
                                       <div id="column-{{ column.id }}" class="text-centre"></div>
                                     </th>
                                 </tr>
@@ -64,6 +64,10 @@
               </div>
               <div class="response-window">
                 <table class="table">
+                <colgroup>
+                    <col style="width: 30%;">
+                    <col style="width: 70%;">
+                </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">Prompt</th>

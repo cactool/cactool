@@ -46,3 +46,11 @@ iframe {
         grid-template-columns: 0fr 1fr;
     }
 }
+
+.code-container {
+    width: 80%;
+}
+
+.no-border {
+    border: none;
+}
