@@ -7,7 +7,7 @@
     "require-2fa": false,
     "email-domains": [],
     "instance-name": "",
-    "verify-emails": true,
+    "verify-emails": false,
     "mail-server": {
         "host": "",
         "port": 22,
