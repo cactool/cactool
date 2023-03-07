@@ -86,6 +86,8 @@ There are some additional configuration settings available. For example those ai
 # Credits
 The project’s Principle Investigator is [Dr Liam McLoughlin](https://Leelum.com), *Lecturer in Media & Communication at the University of Liverpool*, and development was undertaken by [Sam Ezeh](https://github.com/dignissimus)
 
+Cactus image created by catalyststuff [on Freepik](https://www.freepik.com/author/catalyststuff)
+
 ## Funding
 Cactool Development was funded by the University of Liverpool’s Research Development and Initiative Fund (RDIF).
 
