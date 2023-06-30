@@ -112,7 +112,7 @@ app.config.update(config)
 
 app.secret_key = config["secret-key"]
 
-kdf = PBKDF2HMAC(algorithm=SHA256, length=32, salt=b"", iterations=390000)
+kdf = PBKDF2HMAC(algorithm=SHA256(), length=32, salt=os.urandom(32), iterations=390000)
 
 app.encryption_key = base64.urlsafe_b64encode(kdf.derive(app.secret_key.encode()))
 
