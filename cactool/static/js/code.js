@@ -123,7 +123,11 @@ function submit(){
     } 
     
     for (column of window.columns) {
-        if(column.type === SOCIAL_MEDIA || column.type === HIDDEN || column.type === IMAGE){
+        if(
+            column.type === SOCIAL_MEDIA
+            || column.type === HIDDEN
+            || column.type === IMAGE
+            || column.type === DISPLAY) {
             continue
         }
         else if(
