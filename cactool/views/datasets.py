@@ -10,33 +10,14 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-from flask import (
-    Blueprint,
-    Response,
-    abort,
-    current_app,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    send_file,
-    url_for,
-)
+from flask import (Blueprint, Response, abort, current_app, flash, jsonify,
+                   redirect, render_template, request, send_file, url_for)
 from flask_login import current_user
 from sqlalchemy import select
 from werkzeug.utils import secure_filename
 
-from ..database import (
-    AccessLevel,
-    Dataset,
-    DatasetAccess,
-    DatasetFile,
-    DatasetRow,
-    DatasetRowValue,
-    Project,
-    db,
-)
+from ..database import (AccessLevel, Dataset, DatasetAccess, DatasetFile,
+                        DatasetRow, DatasetRowValue, Project, db)
 from ..dates import date_string
 from ..types import Type
 
