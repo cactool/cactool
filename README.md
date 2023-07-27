@@ -24,7 +24,7 @@ Using Cactool is easy, after the initial installation, you can create users, imp
 # Features
 
 - **No more coding via spreadsheets:** Coding via your browser (tested working on Chrome, Firefox, Edge, & Safari) with posts visible as they would be on the social media platform. This allows your coders to evaluate social media content in their native format.
-- **Simple Import and Export:** Take your pre-existing social media URLs from software such as [4Cat](https://github.com/digitalmethodsinitiative/4cat), [NodeXL](https://www.smrfoundation.org/nodexl/), or API Scrapers such as [Tweepy](https://www.tweepy.org/) and import them as a CSV list. When done, you can export your data via CSV to whatever analysis software you desire.
+- **Simple Import and Export:** Take your pre-existing social media URLs from software such as [4Cat](https://github.com/digitalmethodsinitiative/4cat), [NodeXL](https://www.smrfoundation.org/nodexl/), or API Scrapers such as [Tweepy](https://www.tweepy.org/) and import them as a CSV list. When done, you can export your data via CSV to whatever analysis software you desire (Such as SPSS/Excel).
 - **Importing of image/text data:** Have data from secondary source with no URLs? No Problem.
 - **Manage Multiple Datasets:** Want to split your project by source/themes? You can manage multiple concurrent datasets at the same time.
 - **Built for collaboration:** Cactool comes pre-packaged with user management; codes attributed are attributed to each coder for coder reliability calculation (such as [ReCal](http://dfreelon.org/utils/recalfront/)). Multiple people can be coding at the same time without sharing documents. No need to worry about version control or splitting up data.
@@ -44,7 +44,7 @@ Cactool works for across multiple-social media platforms. The following data typ
 
 
 # Documentation
-Easy to follow installation instructions and user guides can be found via the documentation on [Read the Docs](https://cactool.readthedocs.io)
+Easy to follow installation instructions and user guides can be found [the Cactool website](https://cactool.github.io/)
 
 # Installation and usage
 You can install Cactool on your local machine or on a server through [Docker](https://www.docker.com/) or directly using [PIP (package manager)](https://pip.pypa.io/en/stable/). Running Cactool through a server is useful if you want to have multiple coders, or want to code through your mobile while situated away from your main computer. 
